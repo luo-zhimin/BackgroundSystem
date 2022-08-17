@@ -5,7 +5,7 @@ spring:
     url: jdbc:mysql://rm-7xvkbcfxrhi0ht10cto.mysql.rds.aliyuncs.com/backgroundSystem?rewriteBatchedStatements=true&useSSL=false&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8
     username: root
     password: XNXxnx520@
-    driverClassName : com.mysql.cj.jdbc.Driver
+    driverClassName: com.mysql.cj.jdbc.Driver
   application:
     name: backgroundSystem
 logging:

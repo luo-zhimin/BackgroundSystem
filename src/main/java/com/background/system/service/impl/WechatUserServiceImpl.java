@@ -75,6 +75,7 @@ public class WechatUserServiceImpl implements WechatUserService{
         log.info("configMap[{}]",map);
         String url = String.format("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code",
                 map.get("wechat_appid"), map.get("wechat_secret"), code);
+        log.info("code url [{}]",url);
         HttpGet httpGet = new HttpGet(url);
         CloseableHttpClient httpClient = HttpClients.createDefault();
         try (CloseableHttpResponse response = httpClient.execute(httpGet)) {

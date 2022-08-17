@@ -13,8 +13,8 @@ logging:
     sql: debug
     com.background.system*: debug
 
-#swagger:
-#  enable: true
+swagger:
+  enable: true
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml,classpath:mapper/*/*.xml
 

@@ -1,5 +1,5 @@
 server:
-  port: 8102
+  port: 8100
 spring:
   datasource:
     url: jdbc:mysql://rm-7xvkbcfxrhi0ht10cto.mysql.rds.aliyuncs.com/backgroundSystem?rewriteBatchedStatements=true&useSSL=false&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8

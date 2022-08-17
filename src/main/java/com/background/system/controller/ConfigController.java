@@ -2,7 +2,7 @@ package com.background.system.controller;
 
 import com.background.system.entity.Config;
 import com.background.system.service.ConfigService;
-import com.background.system.service.impl.ConfigServiceImpl;
+import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +16,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/config")
+@Api(tags = "密钥配置")
 public class ConfigController {
     /**
      * 服务对象

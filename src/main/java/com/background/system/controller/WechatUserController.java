@@ -3,6 +3,7 @@ package com.background.system.controller;
 import com.background.system.entity.WechatUser;
 import com.background.system.service.WechatUserService;
 import com.background.system.util.Result;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("/wechat")
 @Slf4j
+@Api(tags = "小程序管理")
 public class WechatUserController {
     /**
      * 服务对象
@@ -34,7 +36,7 @@ public class WechatUserController {
     }
 
 
-    @PostMapping("/login")
+    @GetMapping("/login")
     public Result<?> wechatLogin(@RequestParam("code") String code) {
         log.info("wechat login[{}]",code);
         return Result.success(wechatUserService.wechatLogin(code));

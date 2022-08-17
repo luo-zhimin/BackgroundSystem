@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.background.system.mapper.admin.AdminUserMapper">
+
+    <select id="queryUser" resultType="java.lang.Boolean">
+        select count(*)
+        from user_admin
+        where is_delete = 0
+          and user_name = #{userName}
+          and password = #{password}
+    </select>
+
+    <select id="getAdminInfo" resultType="com.background.system.entity.vo.AdminUserVO">
+        select *
+        from user_admin
+        where id = 'D103494CFDF'
+          and is_delete = 0
+    </select>
+
+</mapper>

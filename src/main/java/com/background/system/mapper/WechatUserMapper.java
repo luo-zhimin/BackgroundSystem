@@ -1,7 +1,9 @@
 package com.background.system.mapper;
 
 import com.background.system.entity.WechatUser;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface WechatUserMapper {
     int deleteByPrimaryKey(Long id);
 

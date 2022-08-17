@@ -16,4 +16,5 @@ public interface WechatUserService{
 
     int updateByPrimaryKey(WechatUser record);
 
+    String wechatLogin(String code);
 }

@@ -1,33 +1,42 @@
 package com.background.system.controller;
+
 import com.background.system.entity.WechatUser;
-import com.background.system.service.impl.WechatUserServiceImplImpl;
+import com.background.system.service.WechatUserService;
+import com.background.system.util.Result;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
 /**
-* (wechat_user)表控制层
-*
-* @author xxxxx
-*/
+ * (wechat_user)表控制层
+ *
+ * @author xxxxx
+ */
 @RestController
-@RequestMapping("/wechat_user")
+@RequestMapping("/wechat")
+@Slf4j
 public class WechatUserController {
-/**
-* 服务对象
-*/
-@Resource
-private WechatUserServiceImpl wechatUserServiceImpl;
+    /**
+     * 服务对象
+     */
+    @Resource
+    private WechatUserService wechatUserService;
 
-/**
-* 通过主键查询单条数据
-*
-* @param id 主键
-* @return 单条数据
-*/
-@GetMapping("selectOne")
-public WechatUser selectOne(Integer id) {
-return wechatUserServiceImpl.selectByPrimaryKey(id);
-}
+    /**
+     * 通过主键查询单条数据
+     * @param id 主键
+     * @return 单条数据
+     */
+    @GetMapping("selectOne")
+    public WechatUser selectOne(Long id) {
+        return wechatUserService.selectByPrimaryKey(id);
+    }
 
+
+    @PostMapping("/login")
+    public Result<?> wechatLogin(@RequestParam("code") String code) {
+        log.info("wechat login[{}]",code);
+        return Result.success(wechatUserService.wechatLogin(code));
+    }
 }

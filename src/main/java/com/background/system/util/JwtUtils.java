@@ -3,6 +3,7 @@ package com.background.system.util;
 import cn.hutool.http.server.HttpServerRequest;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTUtil;
+import com.background.system.entity.vo.AdminLoginVo;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -16,10 +17,11 @@ public class JwtUtils {
 
     public static final String SECRET = "#$!@#@!$!$!@#!#@!";
 
-    public static String getToken(String payload) {
+    public static String getToken(AdminLoginVo loginVo, String openId) {
         HashMap<String, Object> mp = new HashMap<>();
-        mp.put("id", "1");
-        mp.put("username", payload);
+        mp.put("openId", openId);
+        mp.put("username", loginVo.getUsername());
+        mp.put("password", loginVo.getPassword());
         mp.put("expire_time",System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 15);
         return JWTUtil.createToken(mp, SECRET.getBytes(StandardCharsets.UTF_8));
     }

@@ -1,5 +1,6 @@
 package com.background.system.controller;
 
+import com.background.system.annotation.IgnoreLogin;
 import com.background.system.entity.WechatUser;
 import com.background.system.service.WechatUserService;
 import com.background.system.util.Result;
@@ -36,6 +37,7 @@ public class WechatUserController {
     }
 
 
+    @IgnoreLogin
     @GetMapping("/login")
     public Result<?> wechatLogin(@RequestParam("code") String code) {
         log.info("wechat login[{}]",code);

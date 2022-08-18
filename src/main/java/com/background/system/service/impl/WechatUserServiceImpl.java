@@ -20,6 +20,7 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -74,7 +75,7 @@ public class WechatUserServiceImpl implements WechatUserService{
         Map<String, String> map = getConfigMap();
         log.info("configMap[{}]",map);
         String url = String.format("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code",
-                map.get("wechat_appid"), map.get("wechat_secret"), code);
+                map.get("wechat_appid").trim(), map.get("wechat_secret").trim(), URLEncoder.encode(code));
         log.info("code url [{}]",url);
         HttpGet httpGet = new HttpGet(url);
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -105,4 +106,5 @@ public class WechatUserServiceImpl implements WechatUserService{
         }
         return configMap;
     }
+
 }

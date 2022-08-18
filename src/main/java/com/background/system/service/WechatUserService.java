@@ -1,6 +1,7 @@
 package com.background.system.service;
 
 import com.background.system.entity.WechatUser;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Map;
 
@@ -19,4 +20,6 @@ public interface WechatUserService {
     int updateByPrimaryKey(WechatUser record);
 
     Map<String, Object> wechatLogin(String code);
+
+    Boolean selectByOpenId(@Param("openId") String openId);
 }

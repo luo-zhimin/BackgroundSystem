@@ -1,9 +1,11 @@
 package com.background.system.intercept;
 
+import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTUtil;
 import com.background.system.annotation.IgnoreLogin;
 import com.background.system.entity.vo.AdminUserVO;
 import com.background.system.exception.VerifyException;
+import com.background.system.service.WechatUserService;
 import com.background.system.service.admin.IAdminUseService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -27,10 +29,13 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
 
     @Autowired
     private IAdminUseService adminUseService;
+    @Autowired
+    private WechatUserService wechatUserService;
 
     private final String ALLOW_URL = "/error";
     private final String TOKEN_KEY = "Authorization";
     private final String ADMIN_REQUEST_TYPE = "/admin";
+    private final String WX_TOKEN_KEY = "openId";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -63,13 +68,20 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
         if (url.contains(ADMIN_REQUEST_TYPE)) {
             try {
                 AdminUserVO admin = adminUseService.getAdminInfo();
-                String token_key = admin.getUserName() + admin.getPassword();
-                verify = JWTUtil.verify(authorization, token_key.getBytes());
+                String tokenKey = admin.getUserName() + admin.getPassword();
+                verify = JWTUtil.verify(authorization, tokenKey.getBytes());
             } catch (Exception e) {
                 throw VerifyException.builder().code(200).exceptionMsg("token无效请重新登录").build();
             }
         } else {
-            
+            JWT jwt = JWTUtil.parseToken(authorization);
+            String openId = jwt.getPayload(WX_TOKEN_KEY).toString();
+            // todo去数据库查是否有该openId
+            Boolean exist = wechatUserService.selectByOpenId(openId);
+            if (!exist) {
+                throw VerifyException.builder().code(200).exceptionMsg("token无效请重新登录").build();
+            }
+            return true;
         }
 
         if (!verify) {

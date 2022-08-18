@@ -1,5 +1,6 @@
 package com.background.system.service.impl;
 
+import cn.hutool.jwt.JWTUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.background.system.entity.Config;
@@ -7,7 +8,6 @@ import com.background.system.entity.WechatUser;
 import com.background.system.mapper.ConfigMapper;
 import com.background.system.mapper.WechatUserMapper;
 import com.background.system.service.WechatUserService;
-import com.background.system.util.JwtUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -75,6 +75,11 @@ public class WechatUserServiceImpl implements WechatUserService {
         return getOpenIdByCode(code);
     }
 
+    @Override
+    public Boolean selectByOpenId(String openId) {
+        return wechatUserMapper.selectByOpenId(openId);
+    }
+
     private Map<String, Object> getOpenIdByCode(String code) {
         Map<String, String> map = getConfigMap();
         log.info("configMap[{}]", map);
@@ -98,7 +103,16 @@ public class WechatUserServiceImpl implements WechatUserService {
                 return result;
             }
             HashMap<String, Object> result = new HashMap<>(1);
-            result.put("token", JwtUtils.getToken(null, openId));
+            long expireTime = System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 15;
+            Map<String, Object> params = new HashMap<String, Object>(2) {
+                private static final long serialVersionUID = 1L;
+
+                {
+                    put("open_id", openId);
+                    put("expire_time", expireTime);
+                }
+            };
+            result.put("token", JWTUtil.createToken(params, openId.getBytes()));
 
             // select
             if (!wechatUserMapper.selectByOpenId(openId)) {

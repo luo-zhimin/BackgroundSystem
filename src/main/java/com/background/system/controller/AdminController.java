@@ -56,24 +56,23 @@ public class AdminController {
 
     private Token createToken(String userName, String password) {
         String tokenKey = userName + password;
-        long expire_time = System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 15;
-        Map<String, Object> params = new HashMap<String, Object>() {
+        long expireTime = System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 15;
+        Map<String, Object> params = new HashMap<String, Object>(3) {
             private static final long serialVersionUID = 1L;
 
             {
                 put("user_name", userName);
                 put("password", password);
-                put("expire_time", expire_time);
+                put("expire_time", expireTime);
             }
         };
         String tokenValue = JWTUtil.createToken(params, tokenKey.getBytes());
 
         return Token.builder()
-                .token(tokenValue)
-                .expireTime(expire_time)
-                .username(userName)
-                .password(password)
-                .build();
+            .token(tokenValue)
+            .expireTime(expireTime)
+            .username(userName)
+            .password(password)
+            .build();
     }
-
 }

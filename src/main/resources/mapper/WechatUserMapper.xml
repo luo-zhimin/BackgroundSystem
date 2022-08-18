@@ -116,4 +116,11 @@
             create_time = #{createTime,jdbcType=TIMESTAMP}
         where id = #{id,jdbcType=BIGINT}
     </update>
+
+    <select id="selectByOpenId" resultType="java.lang.Boolean">
+        select count(*)
+        from wechat_user
+        where is_del = '0'
+            and open_id = #{openId} and limit 1
+    </select>
 </mapper>

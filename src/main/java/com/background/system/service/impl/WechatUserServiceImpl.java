@@ -7,6 +7,7 @@ import com.background.system.entity.WechatUser;
 import com.background.system.mapper.ConfigMapper;
 import com.background.system.mapper.WechatUserMapper;
 import com.background.system.service.WechatUserService;
+import com.background.system.util.JwtUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +98,17 @@ public class WechatUserServiceImpl implements WechatUserService {
                 return result;
             }
             HashMap<String, Object> result = new HashMap<>(1);
-            result.put("returnObj", openId);
+            result.put("token", JwtUtils.getToken(null, openId));
+
+            // select
+            if (!wechatUserMapper.selectByOpenId(openId)) {
+                WechatUser wechatUser = new WechatUser();
+                wechatUser.setOpenId(openId);
+                wechatUser.setIsDel("0");
+                wechatUser.setCreateTime(new Date());
+                int insert = wechatUserMapper.insert(wechatUser);
+            }
+
             return result;
         } catch (Exception e) {
             log.error("小程序获取openId出错", e);

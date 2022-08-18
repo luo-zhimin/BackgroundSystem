@@ -5,8 +5,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.background.system.entity.Config;
 import com.background.system.entity.WechatUser;
+import com.background.system.exception.ServiceException;
 import com.background.system.mapper.ConfigMapper;
 import com.background.system.mapper.WechatUserMapper;
+import com.background.system.request.WechatUserInfo;
 import com.background.system.service.WechatUserService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -20,6 +22,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.net.URLEncoder;
@@ -71,6 +74,7 @@ public class WechatUserServiceImpl implements WechatUserService {
     }
 
     @Override
+    @Transactional
     public Map<String, Object> wechatLogin(String code) {
         return getOpenIdByCode(code);
     }
@@ -78,6 +82,18 @@ public class WechatUserServiceImpl implements WechatUserService {
     @Override
     public Boolean selectByOpenId(String openId) {
         return wechatUserMapper.selectByOpenId(openId);
+    }
+
+    @Override
+    @Transactional
+    public Boolean updateUserInfo(WechatUserInfo userInfo) {
+        if (StringUtils.isEmpty(userInfo.getOpenId())){
+            throw new ServiceException(1000,"openId不可以为空！");
+        }
+        if (selectByOpenId(userInfo.getOpenId())) {
+            return this.wechatUserMapper.updateUserInfoByOpenId(userInfo.getOpenId(), userInfo.getUserInfo())>0;
+        }
+        return false;
     }
 
     private Map<String, Object> getOpenIdByCode(String code) {

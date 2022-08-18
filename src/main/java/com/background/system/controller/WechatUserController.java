@@ -2,14 +2,13 @@ package com.background.system.controller;
 
 import com.background.system.annotation.IgnoreLogin;
 import com.background.system.entity.WechatUser;
+import com.background.system.request.WechatUserInfo;
 import com.background.system.service.WechatUserService;
 import com.background.system.util.Result;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -47,8 +46,16 @@ public class WechatUserController {
 
     @IgnoreLogin
     @GetMapping("/login")
+    @ApiOperation("微信登陆")
     public Result<?> wechatLogin(@RequestParam("code") String code) {
         log.info("wechat login[{}]", code);
         return Result.success(wechatUserService.wechatLogin(code));
     }
+
+    @PostMapping("/getUserInfo")
+    @ApiOperation("微信登陆")
+    public Result<?> updateUserInfo(@RequestBody WechatUserInfo userInfo) {
+        return Result.success(wechatUserService.updateUserInfo(userInfo));
+    }
+
 }

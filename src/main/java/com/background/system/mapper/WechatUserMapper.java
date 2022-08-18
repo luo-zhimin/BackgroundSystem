@@ -19,4 +19,7 @@ public interface WechatUserMapper {
     int updateByPrimaryKey(WechatUser record);
 
     Boolean selectByOpenId(@Param("openId") String openId);
+
+    int updateUserInfoByOpenId(@Param("openId")String openId,
+                               @Param("userInfo")String userInfo);
 }

@@ -122,4 +122,8 @@
         where is_del = 0
             and open_id = #{openId}  limit 1
     </select>
+
+    <update id="updateUserInfoByOpenId">
+        UPDATE wechat_user set user_info=#{userInfo} WHERE open_id=#{openId} and is_del=0
+    </update>
 </mapper>

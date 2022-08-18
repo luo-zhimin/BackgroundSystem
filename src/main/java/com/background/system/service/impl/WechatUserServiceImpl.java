@@ -96,7 +96,7 @@ public class WechatUserServiceImpl implements WechatUserService {
                 return result;
             }
             HashMap<String, Object> result = new HashMap<>(1);
-            result.put("openId", result);
+            result.put("openId", openId);
             return result;
         } catch (Exception e) {
             log.error("小程序获取openId出错", e);

@@ -30,6 +30,7 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
 
     private final String ALLOW_URL = "/error";
     private final String TOKEN_KEY = "Authorization";
+    private final String ADMIN_REQUEST_TYPE = "/admin";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -54,15 +55,23 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
         if (StringUtils.isBlank(authorization)) {
             throw VerifyException.builder().code(200).exceptionMsg("请登录之后再操作").build();
         }
-        AdminUserVO admin = adminUseService.getAdminInfo();
-        String token_key = admin.getUserName() + admin.getPassword();
+
         // 校验token
         boolean verify = false;
-        try {
-            verify = JWTUtil.verify(authorization, token_key.getBytes());
-        } catch (Exception e) {
-            throw VerifyException.builder().code(200).exceptionMsg("token无效请重新登录").build();
+
+        // 管理后台请求token校验
+        if (url.contains(ADMIN_REQUEST_TYPE)) {
+            try {
+                AdminUserVO admin = adminUseService.getAdminInfo();
+                String token_key = admin.getUserName() + admin.getPassword();
+                verify = JWTUtil.verify(authorization, token_key.getBytes());
+            } catch (Exception e) {
+                throw VerifyException.builder().code(200).exceptionMsg("token无效请重新登录").build();
+            }
+        } else {
+            
         }
+
         if (!verify) {
             throw VerifyException.builder().code(200).exceptionMsg("token无效请重新登录").build();
         }

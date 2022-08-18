@@ -1,8 +1,10 @@
 package com.background.system.service;
 
 import com.background.system.entity.WechatUser;
-public interface WechatUserService{
 
+import java.util.Map;
+
+public interface WechatUserService {
 
     int deleteByPrimaryKey(Long id);
 
@@ -16,5 +18,5 @@ public interface WechatUserService{
 
     int updateByPrimaryKey(WechatUser record);
 
-    String wechatLogin(String code);
+    Map<String, Object> wechatLogin(String code);
 }

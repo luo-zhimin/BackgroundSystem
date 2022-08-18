@@ -10,7 +10,7 @@ public interface WechatUserMapper {
 
     int insert(WechatUser record);
 
-    int insertSelective(WechatUser record);
+    int insertSelective(@Param("record") WechatUser record);
 
     WechatUser selectByPrimaryKey(Long id);
 

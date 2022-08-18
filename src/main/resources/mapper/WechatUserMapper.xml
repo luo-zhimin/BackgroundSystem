@@ -35,10 +35,9 @@
     </delete>
     <insert id="insert" parameterType="com.background.system.entity.WechatUser">
         <!--@mbg.generated-->
-        insert into wechat_user (id, open_id, union_id,
-                                 user_info, is_del, create_time)
+        insert into wechat_user (id, open_id, union_id, user_info, is_del, create_time)
         values (#{id,jdbcType=BIGINT}, #{openId,jdbcType=VARCHAR}, #{unionId,jdbcType=VARCHAR},
-                #{userInfo,jdbcType=VARCHAR}, #{isDel,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP})
+                #{userInfo,jdbcType=VARCHAR}, #{isDel,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
     </insert>
     <insert id="insertSelective" parameterType="com.background.system.entity.WechatUser">
         <!--@mbg.generated-->
@@ -120,7 +119,7 @@
     <select id="selectByOpenId" resultType="java.lang.Boolean">
         select count(*)
         from wechat_user
-        where is_del = '0'
-            and open_id = #{openId} and limit 1
+        where is_del = 0
+            and open_id = #{openId}  limit 1
     </select>
 </mapper>

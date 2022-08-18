@@ -68,13 +68,12 @@ public class AdminController {
         };
         String tokenValue = JWTUtil.createToken(params, tokenKey.getBytes());
 
-        Token token = Token.builder()
+        return Token.builder()
                 .token(tokenValue)
                 .expireTime(expire_time)
                 .username(userName)
                 .password(password)
                 .build();
-        return token;
     }
 
 }

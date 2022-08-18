@@ -32,8 +32,14 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
     private final String TOKEN_KEY = "Authorization";
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        HandlerMethod method = (HandlerMethod) handler;
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+        throws Exception {
+
+        if (!(handler instanceof HandlerMethod)) {
+            return super.preHandle(request, response, handler);
+        }
+
+        HandlerMethod method = (HandlerMethod)handler;
         // 有IgnoreLogin注解修饰的方法不需要拦截
         IgnoreLogin ignoreLogin = method.getMethodAnnotation(IgnoreLogin.class);
         if (Objects.nonNull(ignoreLogin)) {

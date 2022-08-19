@@ -1,6 +1,5 @@
 package com.background.system.controller;
 
-import com.background.system.annotation.IgnoreLogin;
 import com.background.system.service.GoodsService;
 import com.background.system.util.Result;
 import io.swagger.annotations.Api;
@@ -27,7 +26,6 @@ public class GoodsController {
 
     @GetMapping("/list")
     @ApiOperation("商品列表")
-    @IgnoreLogin
     public Result<?> getGoodsList(@RequestParam(value = "page",defaultValue = "0")Integer page,
                                   @RequestParam(value = "size",defaultValue = "10")Integer size)
     {
@@ -36,7 +34,6 @@ public class GoodsController {
 
     @GetMapping("/detail")
     @ApiOperation("详情")
-    @IgnoreLogin
     public Result<?> getGoodsDetail(@RequestParam(value = "id")Long id)
     {
         return Result.success(goodsService.getGoodsDetail(id));

@@ -151,4 +151,8 @@
     <select id="getGoodsList" resultMap="BaseResultMap">
         select <include refid="Base_Column_List" />  from goods where is_del=0 limit #{page},#{size}
     </select>
+
+    <select id="getGoodsCount" resultType="int">
+        select count(*) from goods where is_del=0
+    </select>
 </mapper>

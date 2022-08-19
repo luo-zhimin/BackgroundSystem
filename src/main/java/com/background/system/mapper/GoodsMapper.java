@@ -16,4 +16,8 @@ public interface GoodsMapper extends BaseMapper<Goods> {
 
     List<Goods> getGoodsList(@Param("page")Integer page,
                              @Param("size")Integer size);
+
+    int getGoodsCount();
+
+    Goods selectByPrimaryKey(@Param("id")Long id);
 }

@@ -1,5 +1,6 @@
 package com.background.system.service;
 
+import com.background.system.response.GoodsResponse;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 /**
@@ -10,5 +11,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
  */
 public interface GoodsService {
 
-    Page getGoodsList(Integer page, Integer size);
+    Page<GoodsResponse> getGoodsList(Integer page, Integer size);
+
+    GoodsResponse getGoodsDetail(Long id);
 }

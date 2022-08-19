@@ -1,5 +1,6 @@
 package com.background.system.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -8,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -48,12 +50,20 @@ public class Goods {
     private Boolean isDel;
 
     @ApiModelProperty(value = "'创建时间'")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(
+            pattern = "yyyy-MM-dd HH:mm:ss"
+    )
     private LocalDateTime createTime;
 
     @ApiModelProperty(value = "'修改时间'")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(
+            pattern = "yyyy-MM-dd HH:mm:ss"
+    )
     private LocalDateTime updateTime;
 
-    private List<String> getPictureIds() {
+    public List<String> getPictureIds() {
         if (StringUtils.isNotBlank(this.pictureId)) {
             return Lists.newArrayList(this.pictureId.split(","));
         }

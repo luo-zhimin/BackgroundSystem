@@ -1,6 +1,7 @@
 package com.background.system.mapper;
 
 import com.background.system.entity.Picture;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 * @Author : 志敏.罗
 * @create 2022/8/19 22:03
 */
-public interface PictureMapper {
+public interface PictureMapper extends BaseMapper<Picture> {
 
     int deleteByPrimaryKey(Long id);
 

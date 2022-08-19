@@ -1,11 +1,12 @@
 package com.background.system.mapper;
 
 import com.background.system.entity.WechatUser;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface WechatUserMapper {
+public interface WechatUserMapper extends BaseMapper<WechatUser> {
     int deleteByPrimaryKey(Long id);
 
     int insert(WechatUser record);

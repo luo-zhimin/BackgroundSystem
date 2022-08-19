@@ -1,13 +1,14 @@
 package com.background.system.mapper;
 
 import com.background.system.entity.Order;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
 * Created by IntelliJ IDEA.
 * @Author : 志敏.罗
 * @create 2022/8/19 22:03
 */
-public interface OrderMapper {
+public interface OrderMapper extends BaseMapper<Order> {
     int deleteByPrimaryKey(Long id);
 
     int insert(Order record);

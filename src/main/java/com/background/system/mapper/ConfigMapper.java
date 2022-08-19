@@ -1,13 +1,14 @@
 package com.background.system.mapper;
 
 import com.background.system.entity.Config;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface ConfigMapper {
+public interface ConfigMapper extends BaseMapper<Config> {
     int deleteByPrimaryKey(Integer id);
 
     int insert(Config record);

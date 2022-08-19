@@ -37,7 +37,7 @@
         <!--@mbg.generated-->
         insert into wechat_user (id, open_id, union_id, user_info, is_del, create_time)
         values (#{id,jdbcType=BIGINT}, #{openId,jdbcType=VARCHAR}, #{unionId,jdbcType=VARCHAR},
-                #{userInfo,jdbcType=VARCHAR}, #{isDel,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
+                #{userInfo,jdbcType=VARCHAR}, #{isDel,jdbcType=INTEGER}, now())
     </insert>
     <insert id="insertSelective" parameterType="com.background.system.entity.WechatUser">
         <!--@mbg.generated-->

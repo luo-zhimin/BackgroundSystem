@@ -2,7 +2,7 @@ server:
   port: 8100
 spring:
   datasource:
-    url: jdbc:mysql://rm-7xvkbcfxrhi0ht10cto.mysql.rds.aliyuncs.com/backgroundSystem?rewriteBatchedStatements=true&useSSL=false&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8
+    url: jdbc:mysql://rm-7xvkbcfxrhi0ht10cto.mysql.rds.aliyuncs.com/backgroundSystem?rewriteBatchedStatements=true&useSSL=false&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
     password: XNXxnx520@
     driverClassName: com.mysql.cj.jdbc.Driver

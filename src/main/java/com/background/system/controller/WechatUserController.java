@@ -52,10 +52,9 @@ public class WechatUserController {
         return Result.success(wechatUserService.wechatLogin(code));
     }
 
-    @PostMapping("/getUserInfo")
-    @ApiOperation("微信登陆")
+    @PostMapping("/userInfo")
+    @ApiOperation("更新用户信息")
     public Result<?> updateUserInfo(@RequestBody WechatUserInfo userInfo) {
         return Result.success(wechatUserService.updateUserInfo(userInfo));
     }
-
 }

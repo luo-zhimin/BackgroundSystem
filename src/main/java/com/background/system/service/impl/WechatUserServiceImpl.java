@@ -26,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.net.URLEncoder;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,11 +97,11 @@ public class WechatUserServiceImpl implements WechatUserService {
 
     private Map<String, Object> getOpenIdByCode(String code) {
         Map<String, String> map = getConfigMap();
-        log.info("configMap[{}]", map);
+//        log.info("configMap[{}]", map);
         String url = String.format(
             "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code",
             map.get("wechat_appid").trim(), map.get("wechat_secret").trim(), URLEncoder.encode(code));
-        log.info("code url [{}]", url);
+//        log.info("code url [{}]", url);
         HttpGet httpGet = new HttpGet(url);
         CloseableHttpClient httpClient = HttpClients.createDefault();
         try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
@@ -135,8 +134,7 @@ public class WechatUserServiceImpl implements WechatUserService {
                 WechatUser wechatUser = new WechatUser();
                 wechatUser.setOpenId(openId);
                 wechatUser.setIsDel("0");
-                wechatUser.setCreateTime(new Date());
-                int insert = wechatUserMapper.insert(wechatUser);
+                wechatUserMapper.insert(wechatUser);
             }
 
             return result;

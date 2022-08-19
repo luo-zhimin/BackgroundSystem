@@ -43,6 +43,7 @@ public class AliUploadUtils {
         try {
             PutObjectRequest request = new PutObjectRequest(BUCKET_NAME, path, new ByteArrayInputStream(file.getBytes()));
             PutObjectResult putObjectResult = ossClient.putObject(request);
+            PushPlusUtils.push(putObjectResult);
             log.info("[上传信息] - " + putObjectResult);
         } catch (IOException e) {
             return "";

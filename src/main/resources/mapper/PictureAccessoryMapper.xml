@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.background.system.mapper.PictureAccessoryMapper">
+  <resultMap id="BaseResultMap" type="com.background.system.entity.PictureAccessory">
+    <!--@Table picture_accessory-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="picture_id" jdbcType="BIGINT" property="pictureId" />
+    <result column="like" jdbcType="BIGINT" property="like" />
+    <result column="num" jdbcType="BIGINT" property="num" />
+    <result column="pv" jdbcType="BIGINT" property="pv" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, picture_id, `like`, num, pv
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from picture_accessory
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from picture_accessory
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.background.system.entity.PictureAccessory">
+    insert into picture_accessory (id, picture_id, `like`, 
+      num, pv)
+    values (#{id,jdbcType=BIGINT}, #{pictureId,jdbcType=BIGINT}, #{like,jdbcType=BIGINT}, 
+      #{num,jdbcType=BIGINT}, #{pv,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.background.system.entity.PictureAccessory">
+    insert into picture_accessory
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="pictureId != null">
+        picture_id,
+      </if>
+      <if test="like != null">
+        `like`,
+      </if>
+      <if test="num != null">
+        num,
+      </if>
+      <if test="pv != null">
+        pv,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="pictureId != null">
+        #{pictureId,jdbcType=BIGINT},
+      </if>
+      <if test="like != null">
+        #{like,jdbcType=BIGINT},
+      </if>
+      <if test="num != null">
+        #{num,jdbcType=BIGINT},
+      </if>
+      <if test="pv != null">
+        #{pv,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.PictureAccessory">
+    update picture_accessory
+    <set>
+      <if test="pictureId != null">
+        picture_id = #{pictureId,jdbcType=BIGINT},
+      </if>
+      <if test="like != null">
+        `like` = #{like,jdbcType=BIGINT},
+      </if>
+      <if test="num != null">
+        num = #{num,jdbcType=BIGINT},
+      </if>
+      <if test="pv != null">
+        pv = #{pv,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.background.system.entity.PictureAccessory">
+    update picture_accessory
+    set picture_id = #{pictureId,jdbcType=BIGINT},
+      `like` = #{like,jdbcType=BIGINT},
+      num = #{num,jdbcType=BIGINT},
+      pv = #{pv,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

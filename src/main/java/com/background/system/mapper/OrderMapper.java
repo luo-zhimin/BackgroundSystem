@@ -1,0 +1,22 @@
+package com.background.system.mapper;
+
+import com.background.system.entity.Order;
+
+/**
+* Created by IntelliJ IDEA.
+* @Author : 志敏.罗
+* @create 2022/8/19 22:03
+*/
+public interface OrderMapper {
+    int deleteByPrimaryKey(Long id);
+
+    int insert(Order record);
+
+    int insertSelective(Order record);
+
+    Order selectByPrimaryKey(Long id);
+
+    int updateByPrimaryKeySelective(Order record);
+
+    int updateByPrimaryKey(Order record);
+}

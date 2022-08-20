@@ -67,7 +67,7 @@ public class OrderController {
      */
     @GetMapping("coupon")
     @ApiOperation("使用优惠券")
-    public Result<?> coupon(String couponId, String orderId) {
+    public Result<?> coupon(Long couponId, String orderId) {
         Coupon coupon = couponMapper.selectById(couponId);
         BigDecimal price = coupon.getPrice();
         Order order = orderMapper.selectById(orderId);

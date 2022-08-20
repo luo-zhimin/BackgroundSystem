@@ -13,13 +13,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * @Description:
  * @Author: 方糖
  * @Date: 2022/8/20 3:15 PM
  */
-@Api("订单管理")
+@Api(tags = "订单管理")
 @RestController
 @RequestMapping("/order")
 public class OrderController {
@@ -101,12 +102,13 @@ public class OrderController {
      * @param file
      * @return
      */
-    @PostMapping("getPictute")
+    @PostMapping("getPicture")
     @ApiOperation("上传图片")
-    public Result<?> getPictute(@RequestBody MultipartFile file) {
+    public Result<?> getPicture(@RequestBody MultipartFile file) {
         String aDefault = AliUploadUtils.uploadImage(file, "default");
         Picture picture = new Picture();
         picture.setUrl(aDefault);
+        picture.setCreateTime(LocalDateTime.now());
         int insert = pictureMapper.insert(picture);
         return Result.success(picture.getId());
     }

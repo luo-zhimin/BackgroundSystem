@@ -12,6 +12,5 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 public interface CouponService {
     Page<Coupon> getCouponList(Integer page, Integer size);
 
-
     Coupon getCouponDetail(Long id);
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
  * @Author : 志敏.罗
  * @create 2022/8/20 11:52
  */
-@Api("地址管理")
+@Api(tags = "地址管理")
 @RestController
 @RequestMapping("/address")
 public class AddressController {
@@ -44,7 +44,7 @@ public class AddressController {
     }
 
     @GetMapping("/list")
-    @ApiOperation("地址列表")
+    @ApiOperation("获取当前用户地址列表")
     public Result<?> getAddressList(@RequestParam(value = "page",defaultValue = "1")Integer page,
                                     @RequestParam(value = "size",defaultValue = "10")Integer size)
     {

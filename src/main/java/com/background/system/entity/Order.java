@@ -1,10 +1,13 @@
 package com.background.system.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.math.BigDecimal;
-import java.util.Date;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
 * Created by IntelliJ IDEA.
@@ -36,10 +39,18 @@ public class Order {
     private String isDel;
 
     @ApiModelProperty(value="创建时间")
-    private Date createTime;
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(
+            pattern = "yyyy-MM-dd HH:mm:ss"
+    )
+    private LocalDateTime createTime;
 
     @ApiModelProperty(value="修改时间")
-    private Date updateTime;
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(
+            pattern = "yyyy-MM-dd HH:mm:ss"
+    )
+    private LocalDateTime updateTime;
 
     @ApiModelProperty(value="商品总价（不包含优惠券）")
     private BigDecimal total;

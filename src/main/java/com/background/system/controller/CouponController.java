@@ -24,7 +24,7 @@ public class CouponController {
     private CouponService couponService;
 
     @GetMapping("/list")
-    @ApiOperation("消费卷列表")
+    @ApiOperation("获取当前用户消费卷列表")
     public Result<?> getCouponList(@RequestParam(value = "page",defaultValue = "1")Integer page,
                                    @RequestParam(value = "size",defaultValue = "10")Integer size)
     {

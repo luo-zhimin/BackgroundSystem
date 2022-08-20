@@ -7,6 +7,7 @@ import com.background.system.mapper.SizeMapper;
 import com.background.system.response.SizeResponse;
 import com.background.system.service.BaseService;
 import com.background.system.service.SizeService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +46,7 @@ public class SizeServiceImpl extends BaseService implements SizeService {
         page = (page - 1) * size;
 
         List<Size> sizeList = sizeMapper.getSizeList(page, size);
-        int sizeCount = sizeMapper.getSizeCount();
+        Long sizeCount = sizeMapper.selectCount(new QueryWrapper<>());
         if (CollectionUtils.isEmpty(sizeList)) {
             return sizePage;
         }

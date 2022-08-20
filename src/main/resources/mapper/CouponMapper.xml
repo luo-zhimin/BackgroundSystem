@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.background.system.mapper.CouponMapper">
+
     <resultMap id="BaseResultMap" type="com.background.system.entity.Coupon">
         <!--@Table coupon-->
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -11,6 +12,7 @@
         <result column="use_limit" jdbcType="INTEGER" property="useLimit"/>
         <result column="open_id" jdbcType="BIGINT" property="openId"/>
     </resultMap>
+
     <sql id="Base_Column_List">
         id,
         coupon_id,
@@ -20,23 +22,27 @@
         use_limit,
         open_id
     </sql>
+
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from coupon
         where id = #{id,jdbcType=BIGINT}
     </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
         from coupon
         where id = #{id,jdbcType=BIGINT}
     </delete>
+
     <insert id="insert" parameterType="com.background.system.entity.Coupon">
         insert into coupon (id, coupon_id, is_used,
                             price, use_limit, open_id)
         values (#{id,jdbcType=BIGINT}, #{couponId,jdbcType=VARCHAR}, #{isUsed,jdbcType=CHAR},
                 #{price,jdbcType=DECIMAL}, #{useLimit,jdbcType=INTEGER}, #{openId,jdbcType=BIGINT})
     </insert>
+
     <insert id="insertSelective" parameterType="com.background.system.entity.Coupon">
         insert into coupon
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -80,6 +86,7 @@
             </if>
         </trim>
     </insert>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.Coupon">
         update coupon
         <set>
@@ -101,6 +108,7 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
+
     <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Coupon">
         update coupon
         set coupon_id = #{couponId,jdbcType=VARCHAR},
@@ -113,13 +121,14 @@
 
     <select id="getCouponsList" resultMap="BaseResultMap">
         select  <include refid="Base_Column_List"/>
-        from coupon
+        from coupon where open_id=#{openId}
         <if test="page != null and size != null">
             limit #{page},#{size}
         </if>
     </select>
 
-    <select id="countCoupons" resultType="int">
-        select count(*) from coupon
+    <select id="countCouponsByCurrentUser" resultType="int">
+        select count(*) from coupon where open_id=#{openId}
     </select>
+
 </mapper>

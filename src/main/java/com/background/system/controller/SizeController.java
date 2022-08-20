@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Author : 志敏.罗
  * @create 2022/8/19 21:11
  */
-@Api("尺寸管理")
+@Api(tags = "尺寸管理")
 @RestController
 @RequestMapping("/size")
 public class SizeController {

@@ -26,7 +26,9 @@ public interface AddressMapper extends BaseMapper<Address> {
 
     int deleteAddressById(@Param("id")Long id);
 
-    List<Address> getAddressList(@Param("page")Integer page,@Param("size")Integer size);
+    List<Address> getAddressList(@Param("page")Integer page,
+                                 @Param("size")Integer size,
+                                 @Param("openId")String openId);
 
     List<Address> selectAddressesByOpenId(@Param("openId")String openId);
 

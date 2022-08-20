@@ -10,7 +10,9 @@ import java.util.List;
 @Repository
 public interface CouponMapper extends BaseMapper<Coupon> {
 
-    List<Coupon> getCouponsList(@Param("page") Integer page, @Param("size") Integer size);
+    List<Coupon> getCouponsList(@Param("page") Integer page,
+                                @Param("size") Integer size,
+                                @Param("openId")String openId);
 
-    int countCoupons();
+    int countCouponsByCurrentUser(@Param("openId")String openId);
 }

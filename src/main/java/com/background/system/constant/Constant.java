@@ -13,6 +13,7 @@ public class Constant {
     public static final String TOKEN_KEY = "Authorization";
 
     public static final String ADMIN_REQUEST_TYPE = "/admin";
+
     public static final String SWAGGER_TYPE = "/swagger";
 
     public static final String WX_TOKEN_KEY = "open_id";

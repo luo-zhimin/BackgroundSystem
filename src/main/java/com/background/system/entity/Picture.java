@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Picture {
+
     @ApiModelProperty(value="")
     private Long id;
 
@@ -29,4 +30,13 @@ public class Picture {
     @ApiModelProperty(value="是否删除")
     private String isDel;
 
+    @ApiModelProperty(value = "父级目录")
+    private String father;
+
+    @ApiModelProperty(value = "创建时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(
+            pattern = "yyyy-MM-dd HH:mm:ss"
+    )
+    private LocalDateTime createTime;
 }

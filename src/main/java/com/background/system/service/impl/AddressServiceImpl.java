@@ -62,8 +62,14 @@ public class AddressServiceImpl extends BaseService implements AddressService {
 
     @Override
     public Page<Address> getAddressList(Integer page, Integer size) {
-        Long count = addressMapper.selectCount(new QueryWrapper<Address>().eq("is_del", Boolean.FALSE));
-        List<Address> addresses = addressMapper.getAddressList((page - 1) * size, size);
+        Token currentUser = getWeChatCurrentUser();
+        Long count = addressMapper.selectCount(
+                new QueryWrapper<Address>()
+                        .eq("is_del", Boolean.FALSE)
+                        .eq("openId", currentUser.getUsername())
+        );
+        List<Address> addresses = addressMapper.getAddressList((page - 1) * size,
+                size, currentUser.getUsername());
         Page<Address> addressPage = new Page<>();
         addressPage.setTotal(count);
         addressPage.setRecords(addresses);

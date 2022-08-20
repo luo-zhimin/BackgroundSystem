@@ -9,6 +9,7 @@
         <result column="is_del" jdbcType="CHAR" property="isDel"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
     </resultMap>
+
     <sql id="Base_Column_List">
         id,
         url,
@@ -16,23 +17,27 @@
         is_del,
         create_time
     </sql>
+
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from picture
         where id = #{id,jdbcType=BIGINT}
     </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
         from picture
         where id = #{id,jdbcType=BIGINT}
     </delete>
+
     <insert id="insert" parameterType="com.background.system.entity.Picture">
         insert into picture (id, url,
                              father, is_del, create_time)
         values (#{id,jdbcType=BIGINT}, #{url,jdbcType=VARCHAR},
                 #{father,jdbcType=VARCHAR}, #{isDel,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP})
     </insert>
+
     <insert id="insertSelective" parameterType="com.background.system.entity.Picture">
         insert into picture
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -70,6 +75,7 @@
             </if>
         </trim>
     </insert>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.Picture">
         update picture
         <set>
@@ -89,6 +95,7 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
+
     <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Picture">
         update picture
         set url         = #{url,jdbcType=VARCHAR},

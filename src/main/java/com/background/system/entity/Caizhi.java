@@ -2,8 +2,10 @@ package com.background.system.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.math.BigDecimal;
 import lombok.Data;
+import lombok.ToString;
+
+import java.math.BigDecimal;
 
 /**
 * Created by IntelliJ IDEA.
@@ -12,7 +14,9 @@ import lombok.Data;
 */
 @ApiModel(value="caizhi")
 @Data
+@ToString
 public class Caizhi {
+
     @ApiModelProperty(value="")
     private Long id;
 

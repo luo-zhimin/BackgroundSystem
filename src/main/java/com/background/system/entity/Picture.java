@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -17,18 +18,13 @@ import java.time.LocalDateTime;
 @ApiModel(value="picture")
 @Data
 @AllArgsConstructor
+@ToString
 public class Picture {
     @ApiModelProperty(value="")
     private Long id;
 
-    @ApiModelProperty(value="图片名称")
-    private String title;
-
     @ApiModelProperty(value="图片地址")
     private String url;
-
-    @ApiModelProperty(value="置顶")
-    private String top;
 
     @ApiModelProperty(value="上级目录")
     private String father;

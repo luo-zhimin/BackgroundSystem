@@ -1,6 +1,9 @@
 package com.background.system.mapper;
 
 import com.background.system.entity.Caizhi;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * Created by IntelliJ IDEA.
@@ -19,4 +22,8 @@ public interface CaizhiMapper {
     int updateByPrimaryKeySelective(Caizhi record);
 
     int updateByPrimaryKey(Caizhi record);
+
+    List<Caizhi> getMaterialQualitiesList(@Param("page")Integer page,@Param("size")Integer size);
+
+    int countMaterialQualities();
 }

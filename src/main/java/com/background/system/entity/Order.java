@@ -18,7 +18,7 @@ public class Order {
     private Long id;
 
     @ApiModelProperty(value="微信支付订单号")
-    private String orderNo;
+    private String wxNo;
 
     @ApiModelProperty(value="快递单号")
     private String kdNo;
@@ -58,4 +58,10 @@ public class Order {
 
     @ApiModelProperty(value="下单图片id，逗号分割")
     private String pictureId;
+
+    @ApiModelProperty(value="尺寸ID")
+    private Long sizeId;
+
+    @ApiModelProperty(value="材质ID")
+    private Long caizhiId;
 }

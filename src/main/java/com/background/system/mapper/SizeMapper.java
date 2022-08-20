@@ -1,6 +1,9 @@
 package com.background.system.mapper;
 
 import com.background.system.entity.Size;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * Created by IntelliJ IDEA.
@@ -19,4 +22,8 @@ public interface SizeMapper {
     int updateByPrimaryKeySelective(Size record);
 
     int updateByPrimaryKey(Size record);
+
+    List<Size> getSizeList(@Param("page") Integer page, @Param("size") Integer size);
+
+    int getSizeCount();
 }

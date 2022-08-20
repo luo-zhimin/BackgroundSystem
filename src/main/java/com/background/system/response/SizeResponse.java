@@ -1,7 +1,7 @@
 package com.background.system.response;
 
-import com.background.system.entity.Goods;
 import com.background.system.entity.Picture;
+import com.background.system.entity.Size;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,7 +18,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString
-public class GoodsResponse extends Goods {
+public class SizeResponse extends Size {
 
     @ApiModelProperty(value = "图片集合")
     private List<Picture> pictures;

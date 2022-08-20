@@ -1,94 +1,118 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.background.system.mapper.SizeMapper">
-  <resultMap id="BaseResultMap" type="com.background.system.entity.Size">
-    <!--@Table `size`-->
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="pic" jdbcType="VARCHAR" property="pic" />
-    <result column="price" jdbcType="DECIMAL" property="price" />
-    <result column="u_price" jdbcType="DECIMAL" property="uPrice" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, `name`, pic, price, u_price
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from `size`
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from `size`
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.background.system.entity.Size">
-    insert into `size` (id, `name`, pic, 
-      price, u_price)
-    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR}, 
-      #{price,jdbcType=DECIMAL}, #{uPrice,jdbcType=DECIMAL})
-  </insert>
-  <insert id="insertSelective" parameterType="com.background.system.entity.Size">
-    insert into `size`
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
+    <resultMap id="BaseResultMap" type="com.background.system.entity.Size">
+        <!--@Table `size`-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="pic" jdbcType="VARCHAR" property="pic"/>
+        <result column="price" jdbcType="DECIMAL" property="price"/>
+        <result column="u_price" jdbcType="DECIMAL" property="uPrice"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
         id,
-      </if>
-      <if test="name != null and name != ''">
         `name`,
-      </if>
-      <if test="pic != null and pic != ''">
         pic,
-      </if>
-      <if test="price != null">
         price,
-      </if>
-      <if test="uPrice != null">
-        u_price,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="name != null and name != ''">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="pic != null and pic != ''">
-        #{pic,jdbcType=VARCHAR},
-      </if>
-      <if test="price != null">
-        #{price,jdbcType=DECIMAL},
-      </if>
-      <if test="uPrice != null">
-        #{uPrice,jdbcType=DECIMAL},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.Size">
-    update `size`
-    <set>
-      <if test="name != null and name != ''">
-        `name` = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="pic != null and pic != ''">
-        pic = #{pic,jdbcType=VARCHAR},
-      </if>
-      <if test="price != null">
-        price = #{price,jdbcType=DECIMAL},
-      </if>
-      <if test="uPrice != null">
-        u_price = #{uPrice,jdbcType=DECIMAL},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Size">
-    update `size`
-    set `name` = #{name,jdbcType=VARCHAR},
-      pic = #{pic,jdbcType=VARCHAR},
-      price = #{price,jdbcType=DECIMAL},
-      u_price = #{uPrice,jdbcType=DECIMAL}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+        u_price
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `size`
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from `size`
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.background.system.entity.Size">
+        insert into `size` (id, `name`, pic,
+                            price, u_price)
+        values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR},
+                #{price,jdbcType=DECIMAL}, #{uPrice,jdbcType=DECIMAL})
+    </insert>
+    <insert id="insertSelective" parameterType="com.background.system.entity.Size">
+        insert into `size`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null and name != ''">
+                `name`,
+            </if>
+            <if test="pic != null and pic != ''">
+                pic,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="uPrice != null">
+                u_price,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="name != null and name != ''">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="pic != null and pic != ''">
+                #{pic,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="uPrice != null">
+                #{uPrice,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.Size">
+        update `size`
+        <set>
+            <if test="name != null and name != ''">
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="pic != null and pic != ''">
+                pic = #{pic,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="uPrice != null">
+                u_price = #{uPrice,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Size">
+        update `size`
+        set `name`  = #{name,jdbcType=VARCHAR},
+            pic     = #{pic,jdbcType=VARCHAR},
+            price   = #{price,jdbcType=DECIMAL},
+            u_price = #{uPrice,jdbcType=DECIMAL}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="getSizeList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `size`
+        <if test="page != null and size != null">
+            limit #{page},#{size}
+        </if>
+    </select>
+
+    <select id="getSizeCount" resultType="int">
+        select count(*) from size
+    </select>
 </mapper>

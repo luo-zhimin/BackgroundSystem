@@ -15,7 +15,6 @@ public class OrderServiceImpl {
 
     @Resource
     private OrderMapper orderMapper;
-
     
     public int deleteByPrimaryKey(Long id) {
         return orderMapper.deleteByPrimaryKey(id);

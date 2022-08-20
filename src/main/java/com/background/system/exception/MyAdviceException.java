@@ -30,7 +30,7 @@ public class MyAdviceException {
     @ExceptionHandler(value = ConstraintViolationException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Result verifyErrorHandler(HttpServletRequest request, Exception e) {
+    public Result<?> verifyErrorHandler(HttpServletRequest request, Exception e) {
         log.error("[exception:GlobalExceptionHandler] {} {}", request.getMethod(), request.getRequestURI());
         ConstraintViolationException ce = (ConstraintViolationException) e;
         Set<ConstraintViolation<?>> constraintViolationSet = ce.getConstraintViolations();
@@ -44,7 +44,7 @@ public class MyAdviceException {
             }
             sb.deleteCharAt(sb.length() - 1);
         }
-        Result result = new Result();
+        Result<?> result = new Result<>();
         result.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         //system error
         result.setMessage(sb.toString());
@@ -55,7 +55,7 @@ public class MyAdviceException {
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Result verifyErrorHandlers(HttpServletRequest request, Exception e) {
+    public Result<?> verifyErrorHandlers(HttpServletRequest request, Exception e) {
         log.error("[exception:GlobalExceptionHandler] {} {}", request.getMethod(), request.getRequestURI());
         MethodArgumentNotValidException ce = (MethodArgumentNotValidException) e;
         BindingResult bindingResult = ce.getBindingResult();
@@ -68,7 +68,7 @@ public class MyAdviceException {
             }
             sb.deleteCharAt(sb.length() - 1);
         }
-        Result result = new Result();
+        Result<?> result = new Result<>();
         result.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         //system error
         result.setMessage(sb.toString());
@@ -78,21 +78,33 @@ public class MyAdviceException {
 
     @ExceptionHandler(value = ServiceException.class)
     @ResponseBody
-    public Result handlerNameAlreadyExistedException(HttpServletRequest request, Exception e) {
-        log.error("[exception:NameAlreadyExistedException] {} {}", request.getMethod(), request.getRequestURI());
+    public Result<ServiceException> handlerServiceException(HttpServletRequest request, Exception e) {
+        log.error("[exception:ServiceException] {} {}", request.getMethod(), request.getRequestURI());
         ServiceException exception = (ServiceException) e;
-        Result result = new Result();
+        Result<ServiceException> result = new Result<>();
         result.setCode(exception.getCode());
         result.setMessage(exception.getMessage());
-        log.error("[exception:NameAlreadyExistedException] controller class raise exception ", e);
+        log.error("[exception:ServiceException] controller class raise exception ", e);
+        return result;
+    }
+
+    @ExceptionHandler(value = VerifyException.class)
+    @ResponseBody
+    public Result<VerifyException> handlerVerifyException(HttpServletRequest request, Exception e) {
+        log.error("[exception:VerifyException] {} {}", request.getMethod(), request.getRequestURI());
+        VerifyException exception = (VerifyException) e;
+        Result<VerifyException> result = new Result<>();
+        result.setCode(exception.getCode());
+        result.setMessage(exception.getExceptionMsg());
+        log.error("[exception:VerifyException] controller class raise exception ", e);
         return result;
     }
 
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    public Result handler(HttpServletRequest request, Exception e) {
+    public Result<?> handler(HttpServletRequest request, Exception e) {
         log.error("[exception:GlobalExceptionHandler] {} {}", request.getMethod(), request.getRequestURI());
-        Result result = new Result();
+        Result<?> result = new Result<>();
         result.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         result.setMessage("系统异常，请稍后重试");
         log.error("[exception:GlobalExceptionHandler] controller class raise exception ", e);

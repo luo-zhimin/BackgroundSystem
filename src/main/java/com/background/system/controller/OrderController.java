@@ -77,6 +77,7 @@ public class OrderController {
             newTotal = BigDecimal.ZERO;
         }
         order.setTotal(newTotal);
+        order.setCouponId(couponId);
         orderMapper.updateById(order);
         return Result.success(newTotal);
     }

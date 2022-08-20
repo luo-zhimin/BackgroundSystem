@@ -22,12 +22,14 @@ public class Coupon {
 
     private String couponId;
 
-    private String isUsed;
+    private Boolean isUsed;
 
     private BigDecimal price;
 
     private Integer useLimit;
 
-    private Long openId;
+    private String openId;
 
+    @ApiModelProperty(value = "'是否失效'")
+    private Boolean status;
 }

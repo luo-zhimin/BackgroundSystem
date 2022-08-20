@@ -1,6 +1,6 @@
 package com.background.system.controller;
 
-import com.background.system.service.MaterialQualityService;
+import com.background.system.service.CouponService;
 import com.background.system.util.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,29 +13,28 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Created by IntelliJ IDEA.
  * @Author : 志敏.罗
- * @create 2022/8/20 15:43
+ * @create 2022/8/20 16:11
  */
 @RestController
-@RequestMapping("/material")
-@Api(tags = "材质管理")
-public class MaterialQualityController {
+@RequestMapping("/coupon")
+@Api(tags = "消费卷")
+public class CouponController {
 
     @Autowired
-    private MaterialQualityService qualityService;
-
+    private CouponService couponService;
 
     @GetMapping("/list")
-    @ApiOperation("材质列表")
-    public Result<?> getMaterialQualityList(@RequestParam(value = "page",defaultValue = "1")Integer page,
-                                            @RequestParam(value = "size",defaultValue = "10")Integer size)
+    @ApiOperation("消费卷列表")
+    public Result<?> getCouponList(@RequestParam(value = "page",defaultValue = "1")Integer page,
+                                   @RequestParam(value = "size",defaultValue = "10")Integer size)
     {
-        return Result.success(qualityService.getMaterialQualityList(page,size));
+        return Result.success(couponService.getCouponList(page,size));
     }
 
     @GetMapping("/detail")
-    @ApiOperation("材质详情")
+    @ApiOperation("消费卷详情")
     public Result<?> getGoodsDetail(@RequestParam(value = "id")Long id)
     {
-        return Result.success(qualityService.getMaterialQualityDetail(id));
+        return Result.success(couponService.getCouponDetail(id));
     }
 }

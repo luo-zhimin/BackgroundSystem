@@ -5,6 +5,7 @@ import com.background.system.entity.Size;
 import com.background.system.exception.ServiceException;
 import com.background.system.mapper.SizeMapper;
 import com.background.system.response.SizeResponse;
+import com.background.system.service.BaseService;
 import com.background.system.service.SizeService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 */
 @Service
 @Slf4j
-public class SizeServiceImpl implements SizeService {
+public class SizeServiceImpl extends BaseService implements SizeService {
 
     @Resource
     private SizeMapper sizeMapper;
@@ -39,15 +40,14 @@ public class SizeServiceImpl implements SizeService {
         log.info("getGoodsList page[{}],size[{}]", page, size);
         //todo 商品-> 尺寸 下单(图片+尺寸+材质)
         List<SizeResponse> goodsResponses = new ArrayList<>();
-        Page<SizeResponse> goodsPage = new Page<>();
-        goodsPage.setPages(page);
-        goodsPage.setSize(size);
+        Page<SizeResponse> sizePage = initPage(page, size);
+
         page = (page - 1) * size;
 
         List<Size> sizeList = sizeMapper.getSizeList(page, size);
         int sizeCount = sizeMapper.getSizeCount();
         if (CollectionUtils.isEmpty(sizeList)) {
-            return goodsPage;
+            return sizePage;
         }
         List<String> ids = Lists.newArrayList();
         //组装数据
@@ -67,9 +67,9 @@ public class SizeServiceImpl implements SizeService {
                         .collect(Collectors.toList()))
         );
 
-        goodsPage.setRecords(goodsResponses);
-        goodsPage.setTotal(sizeCount);
-        return goodsPage;
+        sizePage.setRecords(goodsResponses);
+        sizePage.setTotal(sizeCount);
+        return sizePage;
     }
 
     @Override

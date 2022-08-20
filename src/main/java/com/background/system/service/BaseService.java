@@ -5,6 +5,7 @@ import cn.hutool.jwt.JWTUtil;
 import com.background.system.constant.Constant;
 import com.background.system.entity.token.Token;
 import com.background.system.exception.ServiceException;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -17,6 +18,21 @@ import javax.servlet.http.HttpServletRequest;
  * @create 2022/8/20 12:08
  */
 public abstract class BaseService {
+
+
+    /**
+     * 初始化page
+     * @param page 页数
+     * @param size 条数
+     * @return page
+     */
+    @SuppressWarnings("all")
+    public Page initPage(Integer page,Integer size){
+        Page initPage = new Page<>();
+        initPage.setPages(page);
+        initPage.setSize(size);
+        return initPage;
+    }
 
 
     /**

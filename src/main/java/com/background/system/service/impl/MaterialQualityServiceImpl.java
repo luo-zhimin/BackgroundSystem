@@ -2,6 +2,7 @@ package com.background.system.service.impl;
 
 import com.background.system.entity.Caizhi;
 import com.background.system.mapper.CaizhiMapper;
+import com.background.system.service.BaseService;
 import com.background.system.service.MaterialQualityService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
@@ -18,16 +19,14 @@ import java.util.List;
 */
 @Service
 @Slf4j
-public class MaterialQualityServiceImpl implements MaterialQualityService {
+public class MaterialQualityServiceImpl extends BaseService implements MaterialQualityService {
 
     @Resource
     private CaizhiMapper caizhiMapper;
 
     @Override
     public Page<Caizhi> getMaterialQualityList(Integer page, Integer size) {
-        Page<Caizhi> materialPage = new Page<>();
-        materialPage.setPages(page);
-        materialPage.setSize(size);
+        Page<Caizhi> materialPage = initPage(page, size);
 
         List<Caizhi> materialQualitiesList = caizhiMapper.getMaterialQualitiesList((page - 1) * size, size);
         if (CollectionUtils.isEmpty(materialQualitiesList)){

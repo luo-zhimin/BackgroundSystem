@@ -7,11 +7,7 @@
     <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
     <result column="kd_no" jdbcType="VARCHAR" property="kdNo" />
     <result column="is_pay" jdbcType="CHAR" property="isPay" />
-    <result column="province" jdbcType="VARCHAR" property="province" />
-    <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="contact_name" jdbcType="VARCHAR" property="contactName" />
-    <result column="contact_phone" jdbcType="CHAR" property="contactPhone" />
     <result column="port_price" jdbcType="DECIMAL" property="portPrice" />
     <result column="is_del" jdbcType="CHAR" property="isDel" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -19,10 +15,13 @@
     <result column="total" jdbcType="DECIMAL" property="total" />
     <result column="coupon_id" jdbcType="BIGINT" property="couponId" />
     <result column="status" jdbcType="CHAR" property="status" />
+    <result column="address_id" jdbcType="BIGINT" property="addressId" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="picture_id" jdbcType="VARCHAR" property="pictureId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_no, kd_no, is_pay, province, address, remark, contact_name, contact_phone, 
-    port_price, is_del, create_time, update_time, total, coupon_id, `status`
+    id, order_no, kd_no, is_pay, remark, port_price, is_del, create_time, update_time, 
+    total, coupon_id, `status`, address_id, num, picture_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -36,17 +35,17 @@
   </delete>
   <insert id="insert" parameterType="com.background.system.entity.Order">
     insert into `order` (id, order_no, kd_no, 
-      is_pay, province, address, 
-      remark, contact_name, contact_phone, 
-      port_price, is_del, create_time, 
-      update_time, total, coupon_id, 
-      `status`)
+      is_pay, remark, port_price, 
+      is_del, create_time, update_time, 
+      total, coupon_id, `status`, 
+      address_id, num, picture_id
+      )
     values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=VARCHAR}, #{kdNo,jdbcType=VARCHAR}, 
-      #{isPay,jdbcType=CHAR}, #{province,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR}, #{contactName,jdbcType=VARCHAR}, #{contactPhone,jdbcType=CHAR}, 
-      #{portPrice,jdbcType=DECIMAL}, #{isDel,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{total,jdbcType=DECIMAL}, #{couponId,jdbcType=BIGINT}, 
-      #{status,jdbcType=CHAR})
+      #{isPay,jdbcType=CHAR}, #{remark,jdbcType=VARCHAR}, #{portPrice,jdbcType=DECIMAL}, 
+      #{isDel,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{total,jdbcType=DECIMAL}, #{couponId,jdbcType=BIGINT}, #{status,jdbcType=CHAR}, 
+      #{addressId,jdbcType=BIGINT}, #{num,jdbcType=INTEGER}, #{pictureId,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.background.system.entity.Order">
     insert into `order`
@@ -63,20 +62,8 @@
       <if test="isPay != null and isPay != ''">
         is_pay,
       </if>
-      <if test="province != null and province != ''">
-        province,
-      </if>
-      <if test="address != null and address != ''">
-        address,
-      </if>
       <if test="remark != null and remark != ''">
         remark,
-      </if>
-      <if test="contactName != null and contactName != ''">
-        contact_name,
-      </if>
-      <if test="contactPhone != null and contactPhone != ''">
-        contact_phone,
       </if>
       <if test="portPrice != null">
         port_price,
@@ -99,6 +86,15 @@
       <if test="status != null and status != ''">
         `status`,
       </if>
+      <if test="addressId != null">
+        address_id,
+      </if>
+      <if test="num != null">
+        num,
+      </if>
+      <if test="pictureId != null and pictureId != ''">
+        picture_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -113,20 +109,8 @@
       <if test="isPay != null and isPay != ''">
         #{isPay,jdbcType=CHAR},
       </if>
-      <if test="province != null and province != ''">
-        #{province,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null and address != ''">
-        #{address,jdbcType=VARCHAR},
-      </if>
       <if test="remark != null and remark != ''">
         #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="contactName != null and contactName != ''">
-        #{contactName,jdbcType=VARCHAR},
-      </if>
-      <if test="contactPhone != null and contactPhone != ''">
-        #{contactPhone,jdbcType=CHAR},
       </if>
       <if test="portPrice != null">
         #{portPrice,jdbcType=DECIMAL},
@@ -149,6 +133,15 @@
       <if test="status != null and status != ''">
         #{status,jdbcType=CHAR},
       </if>
+      <if test="addressId != null">
+        #{addressId,jdbcType=BIGINT},
+      </if>
+      <if test="num != null">
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="pictureId != null and pictureId != ''">
+        #{pictureId,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.Order">
@@ -163,20 +156,8 @@
       <if test="isPay != null and isPay != ''">
         is_pay = #{isPay,jdbcType=CHAR},
       </if>
-      <if test="province != null and province != ''">
-        province = #{province,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null and address != ''">
-        address = #{address,jdbcType=VARCHAR},
-      </if>
       <if test="remark != null and remark != ''">
         remark = #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="contactName != null and contactName != ''">
-        contact_name = #{contactName,jdbcType=VARCHAR},
-      </if>
-      <if test="contactPhone != null and contactPhone != ''">
-        contact_phone = #{contactPhone,jdbcType=CHAR},
       </if>
       <if test="portPrice != null">
         port_price = #{portPrice,jdbcType=DECIMAL},
@@ -199,6 +180,15 @@
       <if test="status != null and status != ''">
         `status` = #{status,jdbcType=CHAR},
       </if>
+      <if test="addressId != null">
+        address_id = #{addressId,jdbcType=BIGINT},
+      </if>
+      <if test="num != null">
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="pictureId != null and pictureId != ''">
+        picture_id = #{pictureId,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -207,18 +197,17 @@
     set order_no = #{orderNo,jdbcType=VARCHAR},
       kd_no = #{kdNo,jdbcType=VARCHAR},
       is_pay = #{isPay,jdbcType=CHAR},
-      province = #{province,jdbcType=VARCHAR},
-      address = #{address,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR},
-      contact_name = #{contactName,jdbcType=VARCHAR},
-      contact_phone = #{contactPhone,jdbcType=CHAR},
       port_price = #{portPrice,jdbcType=DECIMAL},
       is_del = #{isDel,jdbcType=CHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       total = #{total,jdbcType=DECIMAL},
       coupon_id = #{couponId,jdbcType=BIGINT},
-      `status` = #{status,jdbcType=CHAR}
+      `status` = #{status,jdbcType=CHAR},
+      address_id = #{addressId,jdbcType=BIGINT},
+      num = #{num,jdbcType=INTEGER},
+      picture_id = #{pictureId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

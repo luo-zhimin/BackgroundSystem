@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
+import static com.background.system.constant.Constant.SWAGGER_TYPE;
+
 /**
  * 请求拦截器
  *
@@ -35,13 +37,13 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-        throws Exception {
+            throws Exception {
 
         if (!(handler instanceof HandlerMethod)) {
             return super.preHandle(request, response, handler);
         }
 
-        HandlerMethod method = (HandlerMethod)handler;
+        HandlerMethod method = (HandlerMethod) handler;
         // 有IgnoreLogin注解修饰的方法不需要拦截
         IgnoreLogin ignoreLogin = method.getMethodAnnotation(IgnoreLogin.class);
         if (Objects.nonNull(ignoreLogin)) {
@@ -49,7 +51,7 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
         }
         // 错误页路径不需要拦截
         String url = request.getServletPath();
-        if (url.contains(Constant.ALLOW_URL)) {
+        if (url.contains(Constant.ALLOW_URL) || url.contains(SWAGGER_TYPE)) {
             return true;
         }
         String authorization = request.getHeader(Constant.TOKEN_KEY);

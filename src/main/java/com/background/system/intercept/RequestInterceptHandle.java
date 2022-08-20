@@ -3,6 +3,7 @@ package com.background.system.intercept;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTUtil;
 import com.background.system.annotation.IgnoreLogin;
+import com.background.system.constant.Constant;
 import com.background.system.entity.vo.AdminUserVO;
 import com.background.system.exception.VerifyException;
 import com.background.system.service.WechatUserService;
@@ -32,11 +33,6 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
     @Autowired
     private WechatUserService wechatUserService;
 
-    private final String ALLOW_URL = "/error";
-    private final String TOKEN_KEY = "Authorization";
-    private final String ADMIN_REQUEST_TYPE = "/admin";
-    private final String WX_TOKEN_KEY = "open_id";
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
         throws Exception {
@@ -53,10 +49,10 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
         }
         // 错误页路径不需要拦截
         String url = request.getServletPath();
-        if (url.contains(ALLOW_URL)) {
+        if (url.contains(Constant.ALLOW_URL)) {
             return true;
         }
-        String authorization = request.getHeader(TOKEN_KEY);
+        String authorization = request.getHeader(Constant.TOKEN_KEY);
         if (StringUtils.isBlank(authorization)) {
             throw VerifyException.builder().code(200).exceptionMsg("请登录之后再操作").build();
         }
@@ -65,7 +61,7 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
         boolean verify = false;
 
         // 管理后台请求token校验
-        if (url.contains(ADMIN_REQUEST_TYPE)) {
+        if (url.contains(Constant.ADMIN_REQUEST_TYPE)) {
             try {
                 AdminUserVO admin = adminUseService.getAdminInfo();
                 String tokenKey = admin.getUserName() + admin.getPassword();
@@ -75,7 +71,7 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
             }
         } else {
             JWT jwt = JWTUtil.parseToken(authorization);
-            String openId = jwt.getPayload(WX_TOKEN_KEY).toString();
+            String openId = jwt.getPayload(Constant.WX_TOKEN_KEY).toString();
             // todo去数据库查是否有该openId
             Boolean exist = wechatUserService.selectByOpenId(openId);
             if (!exist) {

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by IntelliJ IDEA.
- *
  * @Author : 志敏.罗
  * @create 2022/8/19 21:11
  */
@@ -26,7 +25,7 @@ public class GoodsController {
 
     @GetMapping("/list")
     @ApiOperation("商品列表")
-    public Result<?> getGoodsList(@RequestParam(value = "page",defaultValue = "0")Integer page,
+    public Result<?> getGoodsList(@RequestParam(value = "page",defaultValue = "1")Integer page,
                                   @RequestParam(value = "size",defaultValue = "10")Integer size)
     {
         return Result.success(goodsService.getGoodsList(page,size));

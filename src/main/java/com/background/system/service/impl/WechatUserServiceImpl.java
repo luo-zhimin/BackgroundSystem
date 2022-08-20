@@ -9,6 +9,7 @@ import com.background.system.exception.ServiceException;
 import com.background.system.mapper.ConfigMapper;
 import com.background.system.mapper.WechatUserMapper;
 import com.background.system.request.WechatUserInfo;
+import com.background.system.service.BaseService;
 import com.background.system.service.WechatUserService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class WechatUserServiceImpl implements WechatUserService {
+public class WechatUserServiceImpl extends BaseService implements WechatUserService {
 
     @Resource
     private WechatUserMapper wechatUserMapper;

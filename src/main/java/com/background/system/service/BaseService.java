@@ -1,0 +1,60 @@
+package com.background.system.service;
+
+import cn.hutool.jwt.JWT;
+import cn.hutool.jwt.JWTUtil;
+import com.background.system.entity.token.Token;
+import com.background.system.exception.ServiceException;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+
+/**
+ * Created by IntelliJ IDEA.
+ * @Author : 志敏.罗
+ * @create 2022/8/20 12:08
+ */
+public abstract class BaseService {
+
+
+    /**
+     * 获取小程序当前登录用户信息
+     * @return token->userName
+     */
+    public Token getWeChatCurrentUser() {
+        //拦截器已经校验 这里不进行校验
+        JWT currentJwt = getCurrentJwt();
+        return Token.builder()
+                .username(currentJwt.getPayload("open_id").toString())
+                .type(1)
+                .build();
+    }
+
+
+    /**
+     * 获取后台当前登录用户信息
+     * @return token->userName
+     */
+    public Token getCurrentUser() {
+        //拦截器已经校验 这里不进行校验
+        JWT currentJwt = getCurrentJwt();
+        return Token.builder()
+                .username(currentJwt.getPayload("user_name").toString())
+                .type(2)
+                .build();
+    }
+
+    private HttpServletRequest request() {
+        return ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
+    }
+
+
+    private JWT getCurrentJwt(){
+        String authorization = request().getHeader("Authorization");
+        if (StringUtils.isEmpty(authorization)) {
+            throw new ServiceException(403, "登陆过期，请重新登陆");
+        }
+        return JWTUtil.parseToken(authorization);
+    }
+}

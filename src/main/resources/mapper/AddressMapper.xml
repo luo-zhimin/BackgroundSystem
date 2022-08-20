@@ -1,129 +1,178 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.background.system.mapper.AddressMapper">
-  <resultMap id="BaseResultMap" type="com.background.system.entity.Address">
-    <!--@Table address-->
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="openId" jdbcType="BIGINT" property="openid" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="phone" jdbcType="VARCHAR" property="phone" />
-    <result column="province" jdbcType="VARCHAR" property="province" />
-    <result column="address" jdbcType="VARCHAR" property="address" />
-    <result column="is_del" jdbcType="CHAR" property="isDel" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, openId, `name`, phone, province, address, is_del, create_time
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from address
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from address
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.background.system.entity.Address">
-    insert into address (id, openId, `name`, 
-      phone, province, address, 
-      is_del, create_time)
-    values (#{id,jdbcType=BIGINT}, #{openid,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
-      #{phone,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
-      #{isDel,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP})
-  </insert>
-  <insert id="insertSelective" parameterType="com.background.system.entity.Address">
-    insert into address
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
+    <resultMap id="BaseResultMap" type="com.background.system.entity.Address">
+        <!--@Table address-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="openId" jdbcType="BIGINT" property="openid"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="province" jdbcType="VARCHAR" property="province"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="is_del" jdbcType="CHAR" property="isDel"/>
+        <result column="is_default" jdbcType="CHAR" property="isDefault"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
         id,
-      </if>
-      <if test="openid != null">
         openId,
-      </if>
-      <if test="name != null and name != ''">
         `name`,
-      </if>
-      <if test="phone != null and phone != ''">
         phone,
-      </if>
-      <if test="province != null and province != ''">
         province,
-      </if>
-      <if test="address != null and address != ''">
         address,
-      </if>
-      <if test="isDel != null and isDel != ''">
+        is_default,
         is_del,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="openid != null">
-        #{openid,jdbcType=BIGINT},
-      </if>
-      <if test="name != null and name != ''">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="phone != null and phone != ''">
-        #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="province != null and province != ''">
-        #{province,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null and address != ''">
-        #{address,jdbcType=VARCHAR},
-      </if>
-      <if test="isDel != null and isDel != ''">
-        #{isDel,jdbcType=CHAR},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.Address">
-    update address
-    <set>
-      <if test="openid != null">
-        openId = #{openid,jdbcType=BIGINT},
-      </if>
-      <if test="name != null and name != ''">
-        `name` = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="phone != null and phone != ''">
-        phone = #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="province != null and province != ''">
-        province = #{province,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null and address != ''">
-        address = #{address,jdbcType=VARCHAR},
-      </if>
-      <if test="isDel != null and isDel != ''">
-        is_del = #{isDel,jdbcType=CHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Address">
-    update address
-    set openId = #{openid,jdbcType=BIGINT},
-      `name` = #{name,jdbcType=VARCHAR},
-      phone = #{phone,jdbcType=VARCHAR},
-      province = #{province,jdbcType=VARCHAR},
-      address = #{address,jdbcType=VARCHAR},
-      is_del = #{isDel,jdbcType=CHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+        create_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from address
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from address
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.background.system.entity.Address">
+        insert into address (id, openId, `name`,
+                             phone, province, address,
+                             is_del, create_time)
+        values (#{id,jdbcType=BIGINT}, #{openid,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR},
+                #{phone,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+                #{isDel,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.background.system.entity.Address">
+        insert into address
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="openid != null">
+                openId,
+            </if>
+            <if test="name != null and name != ''">
+                `name`,
+            </if>
+            <if test="phone != null and phone != ''">
+                phone,
+            </if>
+            <if test="province != null and province != ''">
+                province,
+            </if>
+            <if test="address != null and address != ''">
+                address,
+            </if>
+            <if test="isDel != null and isDel != ''">
+                is_del,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="openid != null">
+                #{openid,jdbcType=BIGINT},
+            </if>
+            <if test="name != null and name != ''">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null and phone != ''">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null and province != ''">
+                #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null and address != ''">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="isDel != null and isDel != ''">
+                #{isDel,jdbcType=CHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.Address">
+        update address
+        <set>
+            <if test="openid != null">
+                openId = #{openid,jdbcType=BIGINT},
+            </if>
+            <if test="name != null and name != ''">
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null and province != ''">
+                province = #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="isDel != null and isDel != ''">
+                is_del = #{isDel,jdbcType=CHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Address">
+        update address
+        set `name`   = #{name,jdbcType=VARCHAR},
+            phone    = #{phone,jdbcType=VARCHAR},
+            province = #{province,jdbcType=VARCHAR},
+            address  = #{address,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="deleteAddressById">
+        update address
+        set is_del=1
+        where id = #{id}
+    </update>
+
+    <select id="getAddressList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from address
+        where is_del = 0
+        <if test="page != null and size != null">
+            limit #{page}
+                , #{size}
+        </if>
+    </select>
+
+    <select id="selectAddressesByOpenId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from address
+        where is_del = 0
+          and openId = #{openId}
+    </select>
+
+    <update id="updateDefaultAddressById">
+        update address
+        set is_default = 1
+        where id = #{id}
+    </update>
+
+    <update id="updateNoDefaultAddressByIds">
+        update address
+        set is_default = 0 where is_del = 0
+                             and id in
+        <foreach collection="ids" item="key" index="index" open="(" close=")" separator=",">
+            #{key,jdbcType=VARCHAR}
+        </foreach>
+    </update>
 </mapper>

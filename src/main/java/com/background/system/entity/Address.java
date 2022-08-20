@@ -1,10 +1,13 @@
 package com.background.system.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.Date;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDateTime;
 
 /**
 * Created by IntelliJ IDEA.
@@ -13,13 +16,14 @@ import lombok.Data;
 */
 @ApiModel(value="address")
 @Data
-@AllArgsConstructor
+@EqualsAndHashCode
+//@AllArgsConstructor
 public class Address {
     @ApiModelProperty(value="")
     private Long id;
 
     @ApiModelProperty(value="用户唯一标识")
-    private Long openid;
+    private String openid;
 
     @ApiModelProperty(value="姓名")
     private String name;
@@ -33,9 +37,15 @@ public class Address {
     @ApiModelProperty(value="详细地址")
     private String address;
 
-    @ApiModelProperty(value="")
-    private String isDel;
+    private Boolean isDefault;
 
     @ApiModelProperty(value="")
-    private Date createTime;
+    private Boolean isDel;
+
+    @ApiModelProperty(value="")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(
+            pattern = "yyyy-MM-dd HH:mm:ss"
+    )
+    private LocalDateTime createTime;
 }

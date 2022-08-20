@@ -27,4 +27,8 @@ public class Token {
      */
     private String password;
 
+    /**
+     * 用户类型 小程序 1 后台2
+     */
+    private Integer type;
 }

@@ -28,11 +28,6 @@ public class WechatUserController {
     @Resource
     private WechatUserService wechatUserService;
 
-    @RequestMapping("/test")
-    public String test() {
-        return "success";
-    }
-
     /**
      * 通过主键查询单条数据
      *

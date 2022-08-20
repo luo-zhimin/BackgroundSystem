@@ -37,6 +37,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Page<GoodsResponse> getGoodsList(Integer page, Integer size) {
         log.info("getGoodsList page[{}],size[{}]", page, size);
+        //todo 商品-> 尺寸 下单(图片+尺寸+材质)
         List<GoodsResponse> goodsResponses = new ArrayList<>();
         Page<GoodsResponse> goodsPage = new Page<>();
         goodsPage.setPages(page);

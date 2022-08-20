@@ -35,7 +35,7 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
     private final String ALLOW_URL = "/error";
     private final String TOKEN_KEY = "Authorization";
     private final String ADMIN_REQUEST_TYPE = "/admin";
-    private final String WX_TOKEN_KEY = "openId";
+    private final String WX_TOKEN_KEY = "open_id";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)

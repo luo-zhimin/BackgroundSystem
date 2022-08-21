@@ -34,5 +34,5 @@ public interface AddressMapper extends BaseMapper<Address> {
 
     int updateDefaultAddressById(@Param("id")Long id);
 
-    int updateNoDefaultAddressByIds(@Param("ids")List<Long> ids);
+    int updateNoDefaultAddressByIds(@Param("ids")List<String> ids);
 }

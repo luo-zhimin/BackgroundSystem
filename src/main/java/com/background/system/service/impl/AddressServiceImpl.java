@@ -47,7 +47,7 @@ public class AddressServiceImpl extends BaseService implements AddressService {
     public Boolean updateAddress(AddressRequest request) {
         log.info("updateAddress request[{}]",request);
         //校验
-        if (checkUser(request.getId())) {
+        if (checkUser(Long.parseLong(request.getId()))) {
             return updateByPrimaryKeySelective(request)>0;
         }
         return false;
@@ -91,7 +91,7 @@ public class AddressServiceImpl extends BaseService implements AddressService {
             //所有的address 该用户的
             List<Address> addresses = addressMapper.selectAddressesByOpenId(weChatCurrentUser.getUsername());
             //修改其他为非默认地址
-            addresses = addresses.stream().filter(address -> !address.getId().equals(id)).collect(Collectors.toList());
+            addresses = addresses.stream().filter(address -> !address.getId().equals(id+"")).collect(Collectors.toList());
             if (CollectionUtils.isNotEmpty(addresses)){
                 addressMapper.updateNoDefaultAddressByIds(addresses.stream().map(Address::getId).collect(Collectors.toList()));
             }

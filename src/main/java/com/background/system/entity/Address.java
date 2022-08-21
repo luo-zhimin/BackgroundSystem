@@ -19,8 +19,9 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 //@AllArgsConstructor
 public class Address {
+
     @ApiModelProperty(value="主键id")
-    private Long id;
+    private String id;
 
     @ApiModelProperty(value="用户唯一标识")
     private String openid;

@@ -18,13 +18,13 @@ import java.util.List;
 @ApiModel(value="`size`")
 @Data
 public class Size {
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="主键id")
     private Long id;
 
     @ApiModelProperty(value="尺寸")
     private String name;
 
-    @ApiModelProperty(value="尺寸详情页的大图")
+    @ApiModelProperty(value="尺寸详情页的大图 多个逗号分隔")
     private String pic;
 
     @ApiModelProperty(value="原价")

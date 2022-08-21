@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @ApiModel(value="`order`")
 @Data
 public class Order {
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="主键Id")
     private Long id;
 
     @ApiModelProperty(value="微信支付订单号")

@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 public class OrderElement {
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="主键Id")
     private Long id;
 
     @ApiModelProperty(value="订单号")

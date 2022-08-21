@@ -14,7 +14,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class PictureAccessory {
-    @ApiModelProperty(value="")
+
+    @ApiModelProperty(value="主键id")
     private Long id;
 
     @ApiModelProperty(value="图片id")

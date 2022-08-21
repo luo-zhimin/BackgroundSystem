@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 //@AllArgsConstructor
 public class Address {
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="主键id")
     private Long id;
 
     @ApiModelProperty(value="用户唯一标识")
@@ -37,12 +37,13 @@ public class Address {
     @ApiModelProperty(value="详细地址")
     private String address;
 
+    @ApiModelProperty(value="是否是默认地址")
     private Boolean isDefault;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="是否删除")
     private Boolean isDel;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="创建时间")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(
             pattern = "yyyy-MM-dd HH:mm:ss"

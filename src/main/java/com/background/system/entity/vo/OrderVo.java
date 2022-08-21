@@ -4,13 +4,10 @@ package com.background.system.entity.vo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 
 @Data
 public class OrderVo {
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="主键id")
     private Long id;
 
     @ApiModelProperty(value="备注")

@@ -1,5 +1,6 @@
 package com.background.system.request;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
 
@@ -13,7 +14,9 @@ import lombok.ToString;
 @ToString
 public class WechatUserInfo {
 
+    @ApiModelProperty(value="小程序唯一标识")
     private String openId;
 
+    @ApiModelProperty(value="用户信息")
     private String userInfo;
 }

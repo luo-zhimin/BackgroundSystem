@@ -1,6 +1,7 @@
 package com.background.system.request;
 
 import com.background.system.entity.Address;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,7 +14,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class AddressRequest extends Address {
 
+    @ApiModelProperty(value="页码")
     private Integer page = 0;
 
+    @ApiModelProperty(value="条数")
     private Integer size = 10;
 }

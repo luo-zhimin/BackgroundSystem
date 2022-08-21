@@ -1,6 +1,7 @@
 package com.background.system.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,28 +12,25 @@ import java.time.LocalDateTime;
 @ToString
 public class WechatUser {
 
+    @ApiModelProperty(value="主键id")
     private Long id;
 
-    /**
-     * open Id
-     */
+    @ApiModelProperty(value="小程序唯一标识")
     private String openId;
 
+    @ApiModelProperty(value="开放平台唯一标识")
     private String unionId;
 
-    /**
-     * 用户信息
-     */
+    @ApiModelProperty(value="用户信息")
     private String userInfo;
 
-    /**
-     * 是否删除
-     */
+    @ApiModelProperty(value="是否删除")
     private String isDel;
 
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(
             pattern = "yyyy-MM-dd HH:mm:ss"
     )
+    @ApiModelProperty(value="创建时间")
     private LocalDateTime createTime;
 }

@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Picture {
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="主键Id")
     private Long id;
 
     @ApiModelProperty(value="图片地址")

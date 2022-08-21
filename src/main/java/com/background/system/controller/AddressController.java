@@ -60,7 +60,7 @@ public class AddressController {
 
     @PostMapping("/default")
     @ApiOperation("设置为默认地址")
-    public Result<?> updateDefaultAddress(@RequestParam(value = "id")Long id)
+    public Result<?> updateDefaultAddress(Long id)
     {
         return Result.success(addressService.updateDefaultAddress(id));
     }

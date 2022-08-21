@@ -1,6 +1,7 @@
 package com.background.system.controller;
 
 import com.background.system.request.AddressRequest;
+import com.background.system.request.BaseRequest;
 import com.background.system.service.AddressService;
 import com.background.system.util.Result;
 import io.swagger.annotations.Api;
@@ -60,8 +61,8 @@ public class AddressController {
 
     @PostMapping("/default")
     @ApiOperation("设置为默认地址")
-    public Result<?> updateDefaultAddress(Long id)
+    public Result<?> updateDefaultAddress(@RequestBody BaseRequest request)
     {
-        return Result.success(addressService.updateDefaultAddress(id));
+        return Result.success(addressService.updateDefaultAddress(request.getId()));
     }
 }

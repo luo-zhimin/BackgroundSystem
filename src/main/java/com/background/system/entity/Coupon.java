@@ -1,7 +1,6 @@
 package com.background.system.entity;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
 
@@ -14,7 +13,7 @@ import java.math.BigDecimal;
  */
 @Data
 //@Builder
-@AllArgsConstructor
+//@AllArgsConstructor
 @ToString
 public class Coupon {
 
@@ -33,13 +32,12 @@ public class Coupon {
     @ApiModelProperty(value = "消费限制")
     private Integer useLimit;
 
-//    @ApiModelProperty(value = "小程序唯一标识")
-//    private String openId;
+    @ApiModelProperty(value = "小程序唯一标识")
+    private String openId;
 
     @ApiModelProperty(value = "'是否失效'")
     private Boolean status;
 
     private String pictureId;
 
-    private Picture picture;
 }

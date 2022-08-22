@@ -4,6 +4,7 @@
     <resultMap id="BaseResultMap" type="com.background.system.entity.Picture">
         <!--@Table picture-->
         <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="url" jdbcType="VARCHAR" property="url"/>
         <result column="father" jdbcType="VARCHAR" property="father"/>
         <result column="is_del" jdbcType="CHAR" property="isDel"/>
@@ -12,6 +13,7 @@
 
     <sql id="Base_Column_List">
         id,
+        `name`,
         url,
         father,
         is_del,
@@ -114,4 +116,5 @@
             #{key,jdbcType=VARCHAR}
         </foreach>
     </select>
+
 </mapper>

@@ -20,7 +20,7 @@ public class Coupon {
     @ApiModelProperty(value = "主键Id")
     private Long id;
 
-    @ApiModelProperty(value = "优惠券id")
+    @ApiModelProperty(value = "兑换码")
     private String couponId;
 
     @ApiModelProperty(value = "是否被使用")
@@ -39,5 +39,4 @@ public class Coupon {
     private Boolean status;
 
     private String pictureId;
-
 }

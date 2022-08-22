@@ -1,213 +1,234 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.background.system.mapper.OrderMapper">
-  <resultMap id="BaseResultMap" type="com.background.system.entity.Order">
-    <!--@Table `order`-->
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
-    <result column="kd_no" jdbcType="VARCHAR" property="kdNo" />
-    <result column="is_pay" jdbcType="CHAR" property="isPay" />
-    <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="port_price" jdbcType="DECIMAL" property="portPrice" />
-    <result column="is_del" jdbcType="CHAR" property="isDel" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="total" jdbcType="DECIMAL" property="total" />
-    <result column="coupon_id" jdbcType="BIGINT" property="couponId" />
-    <result column="status" jdbcType="CHAR" property="status" />
-    <result column="address_id" jdbcType="BIGINT" property="addressId" />
-    <result column="num" jdbcType="INTEGER" property="num" />
-    <result column="picture_id" jdbcType="VARCHAR" property="pictureId" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, order_no, kd_no, is_pay, remark, port_price, is_del, create_time, update_time, 
-    total, coupon_id, `status`, address_id, num, picture_id
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from `order`
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from `order`
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.background.system.entity.Order">
-    insert into `order` (id, order_no, kd_no, 
-      is_pay, remark, port_price, 
-      is_del, create_time, update_time, 
-      total, coupon_id, `status`, 
-      address_id, num, picture_id
-      )
-    values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=VARCHAR}, #{kdNo,jdbcType=VARCHAR}, 
-      #{isPay,jdbcType=CHAR}, #{remark,jdbcType=VARCHAR}, #{portPrice,jdbcType=DECIMAL}, 
-      #{isDel,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{total,jdbcType=DECIMAL}, #{couponId,jdbcType=BIGINT}, #{status,jdbcType=CHAR}, 
-      #{addressId,jdbcType=BIGINT}, #{num,jdbcType=INTEGER}, #{pictureId,jdbcType=VARCHAR}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.background.system.entity.Order">
-    insert into `order`
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
+
+    <resultMap id="BaseResultMap" type="com.background.system.entity.Order">
+        <!--@Table `order`-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="order_no" jdbcType="VARCHAR" property="wxNo"/>
+        <result column="kd_no" jdbcType="VARCHAR" property="kdNo"/>
+        <result column="is_pay" jdbcType="CHAR" property="isPay"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="port_price" jdbcType="DECIMAL" property="portPrice"/>
+        <result column="is_del" jdbcType="CHAR" property="isDel"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="total" jdbcType="DECIMAL" property="total"/>
+        <result column="coupon_id" jdbcType="BIGINT" property="couponId"/>
+        <result column="status" jdbcType="CHAR" property="status"/>
+        <result column="address_id" jdbcType="BIGINT" property="addressId"/>
+        <result column="num" jdbcType="INTEGER" property="num"/>
+        <result column="picture_id" jdbcType="VARCHAR" property="pictureId"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
         id,
-      </if>
-      <if test="orderNo != null and orderNo != ''">
         order_no,
-      </if>
-      <if test="kdNo != null and kdNo != ''">
         kd_no,
-      </if>
-      <if test="isPay != null and isPay != ''">
         is_pay,
-      </if>
-      <if test="remark != null and remark != ''">
         remark,
-      </if>
-      <if test="portPrice != null">
         port_price,
-      </if>
-      <if test="isDel != null and isDel != ''">
         is_del,
-      </if>
-      <if test="createTime != null">
         create_time,
-      </if>
-      <if test="updateTime != null">
         update_time,
-      </if>
-      <if test="total != null">
         total,
-      </if>
-      <if test="couponId != null">
         coupon_id,
-      </if>
-      <if test="status != null and status != ''">
         `status`,
-      </if>
-      <if test="addressId != null">
         address_id,
-      </if>
-      <if test="num != null">
         num,
-      </if>
-      <if test="pictureId != null and pictureId != ''">
-        picture_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="orderNo != null and orderNo != ''">
-        #{orderNo,jdbcType=VARCHAR},
-      </if>
-      <if test="kdNo != null and kdNo != ''">
-        #{kdNo,jdbcType=VARCHAR},
-      </if>
-      <if test="isPay != null and isPay != ''">
-        #{isPay,jdbcType=CHAR},
-      </if>
-      <if test="remark != null and remark != ''">
-        #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="portPrice != null">
-        #{portPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="isDel != null and isDel != ''">
-        #{isDel,jdbcType=CHAR},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="total != null">
-        #{total,jdbcType=DECIMAL},
-      </if>
-      <if test="couponId != null">
-        #{couponId,jdbcType=BIGINT},
-      </if>
-      <if test="status != null and status != ''">
-        #{status,jdbcType=CHAR},
-      </if>
-      <if test="addressId != null">
-        #{addressId,jdbcType=BIGINT},
-      </if>
-      <if test="num != null">
-        #{num,jdbcType=INTEGER},
-      </if>
-      <if test="pictureId != null and pictureId != ''">
-        #{pictureId,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.Order">
-    update `order`
-    <set>
-      <if test="orderNo != null and orderNo != ''">
-        order_no = #{orderNo,jdbcType=VARCHAR},
-      </if>
-      <if test="kdNo != null and kdNo != ''">
-        kd_no = #{kdNo,jdbcType=VARCHAR},
-      </if>
-      <if test="isPay != null and isPay != ''">
-        is_pay = #{isPay,jdbcType=CHAR},
-      </if>
-      <if test="remark != null and remark != ''">
-        remark = #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="portPrice != null">
-        port_price = #{portPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="isDel != null and isDel != ''">
-        is_del = #{isDel,jdbcType=CHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="total != null">
-        total = #{total,jdbcType=DECIMAL},
-      </if>
-      <if test="couponId != null">
-        coupon_id = #{couponId,jdbcType=BIGINT},
-      </if>
-      <if test="status != null and status != ''">
-        `status` = #{status,jdbcType=CHAR},
-      </if>
-      <if test="addressId != null">
-        address_id = #{addressId,jdbcType=BIGINT},
-      </if>
-      <if test="num != null">
-        num = #{num,jdbcType=INTEGER},
-      </if>
-      <if test="pictureId != null and pictureId != ''">
-        picture_id = #{pictureId,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Order">
-    update `order`
-    set order_no = #{orderNo,jdbcType=VARCHAR},
-      kd_no = #{kdNo,jdbcType=VARCHAR},
-      is_pay = #{isPay,jdbcType=CHAR},
-      remark = #{remark,jdbcType=VARCHAR},
-      port_price = #{portPrice,jdbcType=DECIMAL},
-      is_del = #{isDel,jdbcType=CHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      total = #{total,jdbcType=DECIMAL},
-      coupon_id = #{couponId,jdbcType=BIGINT},
-      `status` = #{status,jdbcType=CHAR},
-      address_id = #{addressId,jdbcType=BIGINT},
-      num = #{num,jdbcType=INTEGER},
-      picture_id = #{pictureId,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+        picture_id
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `order`
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from `order`
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.background.system.entity.Order">
+        insert into `order` (id, order_no, kd_no,
+                             is_pay, remark, port_price,
+                             is_del, create_time, update_time,
+                             total, coupon_id, `status`,
+                             address_id, num, picture_id)
+        values (#{id,jdbcType=BIGINT}, #{wxNo,jdbcType=VARCHAR}, #{kdNo,jdbcType=VARCHAR},
+                #{isPay,jdbcType=CHAR}, #{remark,jdbcType=VARCHAR}, #{portPrice,jdbcType=DECIMAL},
+                #{isDel,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+                #{total,jdbcType=DECIMAL}, #{couponId,jdbcType=BIGINT}, #{status,jdbcType=CHAR},
+                #{addressId,jdbcType=BIGINT}, #{num,jdbcType=INTEGER}, #{pictureId,jdbcType=VARCHAR})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.background.system.entity.Order">
+        insert into `order`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="wxNo != null and wxNo != ''">
+                order_no,
+            </if>
+            <if test="kdNo != null and kdNo != ''">
+                kd_no,
+            </if>
+            <if test="isPay != null and isPay != ''">
+                is_pay,
+            </if>
+            <if test="remark != null and remark != ''">
+                remark,
+            </if>
+            <if test="portPrice != null">
+                port_price,
+            </if>
+            <if test="isDel != null and isDel != ''">
+                is_del,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="total != null">
+                total,
+            </if>
+            <if test="couponId != null">
+                coupon_id,
+            </if>
+            <if test="status != null and status != ''">
+                `status`,
+            </if>
+            <if test="addressId != null">
+                address_id,
+            </if>
+            <if test="num != null">
+                num,
+            </if>
+            <if test="pictureId != null and pictureId != ''">
+                picture_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="wxNo != null and wxNo != ''">
+                #{wxNo,jdbcType=VARCHAR},
+            </if>
+            <if test="kdNo != null and kdNo != ''">
+                #{kdNo,jdbcType=VARCHAR},
+            </if>
+            <if test="isPay != null and isPay != ''">
+                #{isPay,jdbcType=CHAR},
+            </if>
+            <if test="remark != null and remark != ''">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="portPrice != null">
+                #{portPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="isDel != null and isDel != ''">
+                #{isDel,jdbcType=CHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="total != null">
+                #{total,jdbcType=DECIMAL},
+            </if>
+            <if test="couponId != null">
+                #{couponId,jdbcType=BIGINT},
+            </if>
+            <if test="status != null and status != ''">
+                #{status,jdbcType=CHAR},
+            </if>
+            <if test="addressId != null">
+                #{addressId,jdbcType=BIGINT},
+            </if>
+            <if test="num != null">
+                #{num,jdbcType=INTEGER},
+            </if>
+            <if test="pictureId != null and pictureId != ''">
+                #{pictureId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.Order">
+        update `order`
+        <set>
+            <if test="wxNo != null and wxNo != ''">
+                order_no = #{wxNo,jdbcType=VARCHAR},
+            </if>
+            <if test="kdNo != null and kdNo != ''">
+                kd_no = #{kdNo,jdbcType=VARCHAR},
+            </if>
+            <if test="isPay != null and isPay != ''">
+                is_pay = #{isPay,jdbcType=CHAR},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="portPrice != null">
+                port_price = #{portPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="isDel != null and isDel != ''">
+                is_del = #{isDel,jdbcType=CHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="total != null">
+                total = #{total,jdbcType=DECIMAL},
+            </if>
+            <if test="couponId != null">
+                coupon_id = #{couponId,jdbcType=BIGINT},
+            </if>
+            <if test="status != null and status != ''">
+                `status` = #{status,jdbcType=CHAR},
+            </if>
+            <if test="addressId != null">
+                address_id = #{addressId,jdbcType=BIGINT},
+            </if>
+            <if test="num != null">
+                num = #{num,jdbcType=INTEGER},
+            </if>
+            <if test="pictureId != null and pictureId != ''">
+                picture_id = #{pictureId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Order">
+        update `order`
+        set order_no    = #{wxNo,jdbcType=VARCHAR},
+            kd_no       = #{kdNo,jdbcType=VARCHAR},
+            is_pay      = #{isPay,jdbcType=CHAR},
+            remark      = #{remark,jdbcType=VARCHAR},
+            port_price  = #{portPrice,jdbcType=DECIMAL},
+            is_del      = #{isDel,jdbcType=CHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            update_time = #{updateTime,jdbcType=TIMESTAMP},
+            total       = #{total,jdbcType=DECIMAL},
+            coupon_id   = #{couponId,jdbcType=BIGINT},
+            `status`    = #{status,jdbcType=CHAR},
+            address_id  = #{addressId,jdbcType=BIGINT},
+            num         = #{num,jdbcType=INTEGER},
+            picture_id  = #{pictureId,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
 </mapper>

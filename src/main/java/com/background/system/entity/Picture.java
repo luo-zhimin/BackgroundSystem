@@ -24,6 +24,9 @@ public class Picture {
     @ApiModelProperty(value="主键Id")
     private String id;
 
+    @ApiModelProperty(value="文件名字")
+    private String name;
+
     @ApiModelProperty(value="图片地址")
     private String url;
 

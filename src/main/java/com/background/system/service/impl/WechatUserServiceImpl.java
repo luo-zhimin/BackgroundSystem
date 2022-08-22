@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.background.system.entity.Config;
 import com.background.system.entity.WechatUser;
 import com.background.system.exception.ServiceException;
-import com.background.system.mapper.ConfigMapper;
 import com.background.system.mapper.WechatUserMapper;
 import com.background.system.request.WechatUserInfo;
 import com.background.system.service.BaseService;
@@ -39,7 +38,7 @@ public class WechatUserServiceImpl extends BaseService implements WechatUserServ
     @Resource
     private WechatUserMapper wechatUserMapper;
     @Resource
-    private ConfigMapper configMapper;
+    private ConfigServiceImpl configService;
 
     private Map<String, String> configMap = Maps.newHashMap();
 
@@ -150,7 +149,7 @@ public class WechatUserServiceImpl extends BaseService implements WechatUserServ
             return configMap;
         }
         //init configMap
-        List<Config> configs = configMapper.getConfigsByKeys(Lists.newArrayList("wechat_appid", "wechat_secret"));
+        List<Config> configs = configService.getConfigsByKeys(Lists.newArrayList("wechat_appid", "wechat_secret"));
         if (CollectionUtils.isNotEmpty(configs)) {
             configMap = configs.stream().collect(Collectors.toMap(Config::getConfigKey, Config::getConfigValue));
         }

@@ -109,6 +109,8 @@ public class OrderController {
         Picture picture = new Picture();
         picture.setUrl(aDefault);
         picture.setIsDel(false);
+        picture.setFather("default");
+        picture.setName(file.getName());
         picture.setCreateTime(LocalDateTime.now());
         int insert = pictureMapper.insert(picture);
         return Result.success(picture.getId());

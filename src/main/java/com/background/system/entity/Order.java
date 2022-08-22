@@ -36,7 +36,7 @@ public class Order {
     private BigDecimal portPrice;
 
     @ApiModelProperty(value="是否删除")
-    private String isDel;
+    private Boolean isDel;
 
     @ApiModelProperty(value="创建时间")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")

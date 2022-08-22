@@ -1,15 +1,26 @@
 package com.background.system.service.impl;
 
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-import com.background.system.mapper.ConfigMapper;
 import com.background.system.entity.Config;
+import com.background.system.mapper.ConfigMapper;
 import com.background.system.service.ConfigService;
+import com.google.common.collect.Lists;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class ConfigServiceImpl implements ConfigService{
 
     @Resource
     private ConfigMapper configMapper;
+
+
+    public List<Config> getConfigsByKeys(List<String> keys){
+        return Optional.ofNullable(configMapper.getConfigsByKeys(keys)).orElse(Lists.newArrayList());
+    }
+
 
     @Override
     public int deleteByPrimaryKey(Integer id) {

@@ -3,38 +3,42 @@
 <mapper namespace="com.background.system.mapper.SizeMapper">
     <resultMap id="BaseResultMap" type="com.background.system.entity.Size">
         <!--@Table `size`-->
-        <id column="id" jdbcType="BIGINT" property="id"/>
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="pic" jdbcType="VARCHAR" property="pic"/>
         <result column="price" jdbcType="DECIMAL" property="price"/>
         <result column="u_price" jdbcType="DECIMAL" property="uPrice"/>
+        <result column="material_id" jdbcType="VARCHAR" property="materialId"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,
+        title,
         `name`,
         pic,
         price,
-        u_price
+        u_price,
+        material_id
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from `size`
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
         from `size`
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </delete>
 
     <insert id="insert" parameterType="com.background.system.entity.Size">
         insert into `size` (id, `name`, pic,
                             price, u_price)
-        values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR},
+        values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR},
                 #{price,jdbcType=DECIMAL}, #{uPrice,jdbcType=DECIMAL})
     </insert>
     <insert id="insertSelective" parameterType="com.background.system.entity.Size">
@@ -58,7 +62,7 @@
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
-                #{id,jdbcType=BIGINT},
+                #{id,jdbcType=VARCHAR},
             </if>
             <if test="name != null and name != ''">
                 #{name,jdbcType=VARCHAR},
@@ -91,7 +95,7 @@
                 u_price = #{uPrice,jdbcType=DECIMAL},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </update>
 
     <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Size">
@@ -100,7 +104,7 @@
             pic     = #{pic,jdbcType=VARCHAR},
             price   = #{price,jdbcType=DECIMAL},
             u_price = #{uPrice,jdbcType=DECIMAL}
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </update>
 
     <select id="getSizeList" resultMap="BaseResultMap">

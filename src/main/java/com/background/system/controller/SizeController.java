@@ -1,5 +1,6 @@
 package com.background.system.controller;
 
+import com.background.system.annotation.IgnoreLogin;
 import com.background.system.service.SizeService;
 import com.background.system.util.Result;
 import io.swagger.annotations.Api;
@@ -25,6 +26,7 @@ public class SizeController {
 
     @GetMapping("/list")
     @ApiOperation("尺寸列表")
+    @IgnoreLogin
     public Result<?> getGoodsList(@RequestParam(value = "page",defaultValue = "1")Integer page,
                                   @RequestParam(value = "size",defaultValue = "10")Integer size)
     {
@@ -33,7 +35,8 @@ public class SizeController {
 
     @GetMapping("/detail")
     @ApiOperation("尺寸详情")
-    public Result<?> getGoodsDetail(@RequestParam(value = "id")Long id)
+    @IgnoreLogin
+    public Result<?> getGoodsDetail(@RequestParam(value = "id")String id)
     {
         return Result.success(sizeService.getSizeDetail(id));
     }

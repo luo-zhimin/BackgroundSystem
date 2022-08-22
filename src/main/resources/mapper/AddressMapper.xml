@@ -3,8 +3,8 @@
 <mapper namespace="com.background.system.mapper.AddressMapper">
     <resultMap id="BaseResultMap" type="com.background.system.entity.Address">
         <!--@Table address-->
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="openId" jdbcType="BIGINT" property="openid"/>
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="openId" jdbcType="VARCHAR" property="openid"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="phone" jdbcType="VARCHAR" property="phone"/>
         <result column="province" jdbcType="VARCHAR" property="province"/>
@@ -28,18 +28,18 @@
         select
         <include refid="Base_Column_List"/>
         from address
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
         from address
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </delete>
     <insert id="insert" parameterType="com.background.system.entity.Address">
         insert into address (id, openId, `name`,
                              phone, province, address,
                              is_del, create_time)
-        values (#{id,jdbcType=BIGINT}, #{openid,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR},
+        values (#{id,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
                 #{phone,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
                 #{isDel,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP})
     </insert>
@@ -73,10 +73,10 @@
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
-                #{id,jdbcType=BIGINT},
+                #{id,jdbcType=VARCHAR},
             </if>
             <if test="openid != null">
-                #{openid,jdbcType=BIGINT},
+                #{openid,jdbcType=VARCHAR},
             </if>
             <if test="name != null and name != ''">
                 #{name,jdbcType=VARCHAR},
@@ -103,7 +103,7 @@
         update address
         <set>
             <if test="openid != null">
-                openId = #{openid,jdbcType=BIGINT},
+                openId = #{openid,jdbcType=VARCHAR},
             </if>
             <if test="name != null and name != ''">
                 `name` = #{name,jdbcType=VARCHAR},
@@ -124,7 +124,7 @@
                 create_time = #{createTime,jdbcType=TIMESTAMP},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </update>
 
     <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Address">
@@ -133,7 +133,7 @@
             phone    = #{phone,jdbcType=VARCHAR},
             province = #{province,jdbcType=VARCHAR},
             address  = #{address,jdbcType=VARCHAR}
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </update>
 
     <update id="deleteAddressById">

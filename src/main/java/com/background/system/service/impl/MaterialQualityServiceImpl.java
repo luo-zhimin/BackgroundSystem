@@ -38,6 +38,11 @@ public class MaterialQualityServiceImpl extends BaseService implements MaterialQ
         return materialPage;
     }
 
+    public List<Caizhi> getMaterialListByIds(List<String> ids){
+        return caizhiMapper.getMaterialQualitiesList(null, null);
+    }
+
+
     @Override
     public Caizhi getMaterialQualityDetail(Long id) {
         return selectByPrimaryKey(id);

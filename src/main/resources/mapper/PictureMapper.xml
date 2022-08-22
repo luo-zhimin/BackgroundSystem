@@ -3,7 +3,7 @@
 <mapper namespace="com.background.system.mapper.PictureMapper">
     <resultMap id="BaseResultMap" type="com.background.system.entity.Picture">
         <!--@Table picture-->
-        <id column="id" jdbcType="BIGINT" property="id"/>
+        <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="url" jdbcType="VARCHAR" property="url"/>
         <result column="father" jdbcType="VARCHAR" property="father"/>
         <result column="is_del" jdbcType="CHAR" property="isDel"/>
@@ -22,19 +22,19 @@
         select
         <include refid="Base_Column_List"/>
         from picture
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
         from picture
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </delete>
 
     <insert id="insert" parameterType="com.background.system.entity.Picture">
         insert into picture (id, url,
                              father, is_del, create_time)
-        values (#{id,jdbcType=BIGINT}, #{url,jdbcType=VARCHAR},
+        values (#{id,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR},
                 #{father,jdbcType=VARCHAR}, #{isDel,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP})
     </insert>
 
@@ -59,7 +59,7 @@
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
-                #{id,jdbcType=BIGINT},
+                #{id,jdbcType=VARCHAR},
             </if>
             <if test="url != null and url != ''">
                 #{url,jdbcType=VARCHAR},
@@ -93,7 +93,7 @@
                 create_time = #{createTime,jdbcType=TIMESTAMP},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </update>
 
     <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Picture">
@@ -102,7 +102,7 @@
             father      = #{father,jdbcType=VARCHAR},
             is_del      = #{isDel,jdbcType=CHAR},
             create_time = #{createTime,jdbcType=TIMESTAMP}
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </update>
 
     <select id="getPicturesByIds" resultMap="BaseResultMap">

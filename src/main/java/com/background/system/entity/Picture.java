@@ -22,13 +22,13 @@ import java.time.LocalDateTime;
 public class Picture {
 
     @ApiModelProperty(value="主键Id")
-    private Long id;
+    private String id;
 
     @ApiModelProperty(value="图片地址")
     private String url;
 
     @ApiModelProperty(value="是否删除")
-    private String isDel;
+    private Boolean isDel;
 
     @ApiModelProperty(value = "父级目录")
     private String father;

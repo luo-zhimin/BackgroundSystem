@@ -1,5 +1,6 @@
 package com.background.system.service.impl;
 
+import com.background.system.entity.Caizhi;
 import com.background.system.entity.Picture;
 import com.background.system.entity.Size;
 import com.background.system.exception.ServiceException;
@@ -36,6 +37,9 @@ public class SizeServiceImpl extends BaseService implements SizeService {
     @Autowired
     private PictureServiceImpl pictureService;
 
+    @Autowired
+    private MaterialQualityServiceImpl materialQualityService;
+
     @Override
     public Page<SizeResponse> getSizeList(Integer page, Integer size) {
         log.info("getGoodsList page[{}],size[{}]", page, size);
@@ -51,9 +55,11 @@ public class SizeServiceImpl extends BaseService implements SizeService {
             return sizePage;
         }
         List<String> ids = Lists.newArrayList();
+//        List<String> materialIds = Lists.newArrayList();
         //组装数据
         sizeList.forEach(goods -> {
             ids.addAll(goods.getPictureIds());
+//            materialIds.addAll(goods.getMaterialIds());
             SizeResponse sizeResponse = new SizeResponse();
             BeanUtils.copyProperties(goods, sizeResponse);
             goodsResponses.add(sizeResponse);
@@ -61,12 +67,16 @@ public class SizeServiceImpl extends BaseService implements SizeService {
 
         //避免长连接
         List<Picture> pictures = pictureService.getPicturesByIds(ids);
+//        List<Caizhi> materialLists = materialQualityService.getMaterialListByIds(materialIds);
 
-        goodsResponses.forEach(response ->
-                response.setPictures(pictures.stream()
-                        .filter(picture -> response.getPictureIds().contains(picture.getId() + ""))
-                        .collect(Collectors.toList()))
-        );
+        goodsResponses.forEach(response -> {
+            response.setPictures(pictures.stream()
+                    .filter(picture -> response.getPictureIds().contains(picture.getId() + ""))
+                    .collect(Collectors.toList()));
+//            response.setMaterials(materialLists.stream()
+//                    .filter(material -> response.getMaterialIds().contains(material.getId()+""))
+//                    .collect(Collectors.toList()));
+        });
 
         sizePage.setRecords(goodsResponses);
         sizePage.setTotal(sizeCount);
@@ -74,16 +84,18 @@ public class SizeServiceImpl extends BaseService implements SizeService {
     }
 
     @Override
-    public SizeResponse getSizeDetail(Long id) {
+    public SizeResponse getSizeDetail(String id) {
         if (id == null){
             throw new ServiceException(1000,"id不可以为空");
         }
         SizeResponse sizeResponse = new SizeResponse();
-        Size size = sizeMapper.selectByPrimaryKey(id);
+        Size size = sizeMapper.selectByPrimaryKey(Long.parseLong(id));
         if(size!=null){
             BeanUtils.copyProperties(size,sizeResponse);
             List<Picture> pictures = pictureService.getPicturesByIds(size.getPictureIds());
             sizeResponse.setPictures(pictures);
+            List<Caizhi> materials = materialQualityService.getMaterialListByIds(size.getMaterialIds());
+            sizeResponse.setMaterials(materials);
         }
         return sizeResponse;
     }

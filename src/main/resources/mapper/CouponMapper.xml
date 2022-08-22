@@ -10,7 +10,8 @@
         <result column="status" jdbcType="CHAR" property="status"/>
         <result column="price" jdbcType="DECIMAL" property="price"/>
         <result column="use_limit" jdbcType="INTEGER" property="useLimit"/>
-        <result column="open_id" jdbcType="BIGINT" property="openId"/>
+        <result column="open_id" jdbcType="VARCHAR" property="openId"/>
+        <result column="picture_id" jdbcType="VARCHAR" property="pictureId"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -20,7 +21,8 @@
         status,
         price,
         use_limit,
-        open_id
+        open_id,
+        picture_id
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -40,7 +42,7 @@
         insert into coupon (id, coupon_id, is_used,
                             price, use_limit, open_id)
         values (#{id,jdbcType=BIGINT}, #{couponId,jdbcType=VARCHAR}, #{isUsed,jdbcType=CHAR},
-                #{price,jdbcType=DECIMAL}, #{useLimit,jdbcType=INTEGER}, #{openId,jdbcType=BIGINT})
+                #{price,jdbcType=DECIMAL}, #{useLimit,jdbcType=INTEGER}, #{openId,jdbcType=VARCHAR})
     </insert>
 
     <insert id="insertSelective" parameterType="com.background.system.entity.Coupon">
@@ -82,7 +84,7 @@
                 #{useLimit,jdbcType=INTEGER},
             </if>
             <if test="openId != null">
-                #{openId,jdbcType=BIGINT},
+                #{openId,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -103,7 +105,7 @@
                 use_limit = #{useLimit,jdbcType=INTEGER},
             </if>
             <if test="openId != null">
-                open_id = #{openId,jdbcType=BIGINT},
+                open_id = #{openId,jdbcType=VARCHAR},
             </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
@@ -115,12 +117,12 @@
             is_used   = #{isUsed,jdbcType=CHAR},
             price     = #{price,jdbcType=DECIMAL},
             use_limit = #{useLimit,jdbcType=INTEGER},
-            open_id   = #{openId,jdbcType=BIGINT}
+            open_id   = #{openId,jdbcType=VARCHAR}
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <select id="getCouponsList" resultMap="BaseResultMap">
-        select  <include refid="Base_Column_List"/>
+    <select id="getCouponsList"  resultType="com.background.system.entity.Coupon">
+        select   id, coupon_id, is_used, status, price, use_limit, open_id as openId
         from coupon where open_id=#{openId}
         <if test="page != null and size != null">
             limit #{page},#{size}

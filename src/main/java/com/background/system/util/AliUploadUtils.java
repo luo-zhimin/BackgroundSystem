@@ -32,7 +32,7 @@ public class AliUploadUtils {
      * @param father 上级目录（上传哪个文件夹）
      */
     public static String uploadImage(MultipartFile file, String father) {
-
+        log.info("file name[{}]",file.getName());
         OSS ossClient = new OSSClientBuilder().build(ENDPOINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET);
         String type =
             Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf("."));

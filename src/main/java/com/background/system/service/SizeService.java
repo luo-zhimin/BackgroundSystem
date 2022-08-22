@@ -13,5 +13,5 @@ public interface SizeService {
 
     Page<SizeResponse> getSizeList(Integer page, Integer size);
 
-    SizeResponse getSizeDetail(Long id);
+    SizeResponse getSizeDetail(String id);
 }

@@ -108,6 +108,7 @@ public class OrderController {
         String aDefault = AliUploadUtils.uploadImage(file, "default");
         Picture picture = new Picture();
         picture.setUrl(aDefault);
+        picture.setIsDel(false);
         picture.setCreateTime(LocalDateTime.now());
         int insert = pictureMapper.insert(picture);
         return Result.success(picture.getId());

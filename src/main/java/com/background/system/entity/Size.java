@@ -15,11 +15,14 @@ import java.util.List;
 * @Author : 志敏.罗
 * @create 2022/8/20 14:53
 */
-@ApiModel(value="`size`")
+@ApiModel(value="尺寸")
 @Data
 public class Size {
     @ApiModelProperty(value="主键id")
-    private Long id;
+    private String id;
+
+    @ApiModelProperty(value="标题")
+    private String title;
 
     @ApiModelProperty(value="尺寸")
     private String name;
@@ -33,9 +36,19 @@ public class Size {
     @ApiModelProperty(value="优惠后价格")
     private BigDecimal uPrice;
 
+    @ApiModelProperty(value = "材质id集合")
+    private String materialId;
+
     public List<String> getPictureIds() {
         if (StringUtils.isNotBlank(this.pic)) {
             return Lists.newArrayList(this.pic.split(","));
+        }
+        return Collections.emptyList();
+    }
+
+    public List<String> getMaterialIds(){
+        if (StringUtils.isNotBlank(this.materialId)) {
+            return Lists.newArrayList(this.materialId.split(","));
         }
         return Collections.emptyList();
     }

@@ -1,6 +1,7 @@
 package com.background.system.service;
 
 import com.background.system.entity.vo.OrderVo;
+import com.background.system.response.OrderResponse;
 
 import java.math.BigDecimal;
 
@@ -16,4 +17,6 @@ public interface OrderService {
     BigDecimal coupon(Long couponId, String orderId);
 
     Boolean changeAddress(String orderId, Long addressId);
+
+    OrderResponse info(String orderId);
 }

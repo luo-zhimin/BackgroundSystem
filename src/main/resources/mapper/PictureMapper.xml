@@ -33,13 +33,6 @@
         where id = #{id,jdbcType=VARCHAR}
     </delete>
 
-    <insert id="insert" parameterType="com.background.system.entity.Picture">
-        insert into picture (id, url,
-                             father, is_del, create_time)
-        values (#{id,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR},
-                #{father,jdbcType=VARCHAR}, #{isDel,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP})
-    </insert>
-
     <insert id="insertSelective" parameterType="com.background.system.entity.Picture">
         insert into picture
         <trim prefix="(" suffix=")" suffixOverrides=",">

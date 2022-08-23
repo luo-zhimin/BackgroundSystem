@@ -7,7 +7,10 @@ import com.background.system.entity.Order;
 import com.background.system.entity.Size;
 import com.background.system.entity.vo.OrderVo;
 import com.background.system.mapper.*;
+import com.background.system.response.OrderResponse;
 import com.background.system.service.OrderService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +36,21 @@ public class OrderServiceImpl implements OrderService {
 
     @Resource
     private CouponMapper couponMapper;
+
+    @Autowired
+    private PictureServiceImpl pictureService;
+
+    @Autowired
+    private AddressServiceImpl addressService;
+
+    @Autowired
+    private SizeServiceImpl sizeService;
+
+    @Autowired
+    private MaterialQualityServiceImpl materialQualityService;
+
+    @Autowired
+    private CouponServiceImpl couponService;
 
     @Override
     @Transactional
@@ -74,5 +92,19 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderMapper.selectById(orderId);
         order.setAddressId(addressId);
         return orderMapper.updateById(order)>0;
+    }
+
+    @Override
+    public OrderResponse info(String orderId) {
+        OrderResponse orderResponse = new OrderResponse();
+        Order order = orderMapper.selectById(orderId);
+        BeanUtils.copyProperties(order,orderResponse);
+        //图片 地址 尺寸 优惠卷
+        orderResponse.setPictures(pictureService.getPicturesByIds(order.getPictureIds()));
+        orderResponse.setAddress(addressService.getAddressDetail(order.getAddressId()));
+        orderResponse.setSize(sizeService.getSizeDetail(order.getSizeId()+""));
+        orderResponse.setCaizhi(materialQualityService.getMaterialQualityDetail(order.getCaizhiId()));
+        orderResponse.setCoupon(couponService.getCouponDetail(order.getCouponId()));
+        return orderResponse;
     }
 }

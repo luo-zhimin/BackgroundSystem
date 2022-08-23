@@ -1,17 +1,17 @@
 package com.background.system.controller;
 
+import com.background.system.annotation.IgnoreLogin;
 import com.background.system.service.PictureService;
 import com.background.system.util.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.util.Arrays;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,8 +33,9 @@ public class PictureController {
      */
     @PostMapping("getPicture")
     @ApiOperation("上传图片")
-    public Result<?> getPicture(@RequestBody List<MultipartFile> files) {
-        return Result.success(pictureService.getPicture(files));
+    @IgnoreLogin
+    public Result<?> getPicture(MultipartFile[] file) {
+        return Result.success(pictureService.getPicture(Arrays.asList(file)));
     }
 
 }

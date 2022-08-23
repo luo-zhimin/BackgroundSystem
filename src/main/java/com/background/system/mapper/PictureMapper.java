@@ -15,8 +15,6 @@ public interface PictureMapper extends BaseMapper<Picture> {
 
     int deleteByPrimaryKey(Long id);
 
-    int insert(Picture record);
-
     int insertSelective(Picture record);
 
     Picture selectByPrimaryKey(Long id);

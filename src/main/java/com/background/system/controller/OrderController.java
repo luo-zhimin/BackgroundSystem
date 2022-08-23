@@ -48,7 +48,7 @@ public class OrderController {
     @GetMapping("info")
     @ApiOperation("订单详情")
     public Result<?> info (String orderId) {
-        return Result.success(orderMapper.selectById(orderId));
+        return Result.success(orderService.info(orderId));
     }
 
     /**

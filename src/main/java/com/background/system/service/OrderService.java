@@ -15,6 +15,5 @@ public interface OrderService {
 
     BigDecimal coupon(Long couponId, String orderId);
 
-
     Boolean changeAddress(String orderId, Long addressId);
 }

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * @Author : 镜像
@@ -31,8 +33,8 @@ public class PictureController {
      */
     @PostMapping("getPicture")
     @ApiOperation("上传图片")
-    public Result<?> getPicture(@RequestBody MultipartFile file) {
-        return Result.success(pictureService.getPicture(file));
+    public Result<?> getPicture(@RequestBody List<MultipartFile> files) {
+        return Result.success(pictureService.getPicture(files));
     }
 
 }

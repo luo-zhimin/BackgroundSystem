@@ -10,6 +10,8 @@
         <result column="price" jdbcType="DECIMAL" property="price"/>
         <result column="u_price" jdbcType="DECIMAL" property="uPrice"/>
         <result column="material_id" jdbcType="VARCHAR" property="materialId"/>
+        <result column="size" jdbcType="VARCHAR" property="size"/>
+        <result column="faces" jdbcType="VARCHAR" property='faces'/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -19,7 +21,9 @@
         pic,
         price,
         u_price,
-        material_id
+        material_id,
+        `size`,
+        `faces`
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -35,12 +39,7 @@
         where id = #{id,jdbcType=VARCHAR}
     </delete>
 
-    <insert id="insert" parameterType="com.background.system.entity.Size">
-        insert into `size` (id, `name`, pic,
-                            price, u_price)
-        values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR},
-                #{price,jdbcType=DECIMAL}, #{uPrice,jdbcType=DECIMAL})
-    </insert>
+
     <insert id="insertSelective" parameterType="com.background.system.entity.Size">
         insert into `size`
         <trim prefix="(" suffix=")" suffixOverrides=",">

@@ -15,4 +15,6 @@ public interface CouponMapper extends BaseMapper<Coupon> {
                                 @Param("openId")String openId);
 
     int countCouponsByCurrentUser(@Param("openId")String openId);
+
+    int updateIsUsedCoupon(@Param("couponId")Long couponId);
 }

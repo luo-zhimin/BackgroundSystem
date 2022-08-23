@@ -134,4 +134,8 @@
         select count(*) from coupon where open_id=#{openId}
     </select>
 
+    <update id="updateIsUsedCoupon">
+        update coupon set is_used = 1 where coupon_id=#{couponId}
+    </update>
+
 </mapper>

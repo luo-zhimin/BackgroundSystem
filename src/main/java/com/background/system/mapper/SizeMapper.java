@@ -14,8 +14,6 @@ import java.util.List;
 public interface SizeMapper extends BaseMapper<Size> {
     int deleteByPrimaryKey(Long id);
 
-    int insert(Size record);
-
     int insertSelective(Size record);
 
     Size selectByPrimaryKey(Long id);

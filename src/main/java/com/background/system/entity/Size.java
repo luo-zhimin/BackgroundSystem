@@ -39,6 +39,12 @@ public class Size {
     @ApiModelProperty(value = "材质id集合")
     private String materialId;
 
+    @ApiModelProperty(value = "尺寸 第一个width 第二个height")
+    private String size;
+
+    @ApiModelProperty(value = "单面 or 双面")
+    private String faces;
+
     public List<String> getPictureIds() {
         if (StringUtils.isNotBlank(this.pic)) {
             return Lists.newArrayList(this.pic.split(","));

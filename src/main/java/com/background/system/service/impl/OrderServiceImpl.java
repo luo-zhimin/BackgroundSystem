@@ -5,9 +5,12 @@ import com.background.system.entity.Caizhi;
 import com.background.system.entity.Coupon;
 import com.background.system.entity.Order;
 import com.background.system.entity.Size;
+import com.background.system.entity.token.Token;
 import com.background.system.entity.vo.OrderVo;
+import com.background.system.exception.ServiceException;
 import com.background.system.mapper.*;
 import com.background.system.response.OrderResponse;
+import com.background.system.service.BaseService;
 import com.background.system.service.OrderService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
 * Created by IntelliJ IDEA.
@@ -23,7 +27,7 @@ import java.math.BigDecimal;
 * @create 2022/8/20 14:53
 */
 @Service
-public class OrderServiceImpl implements OrderService {
+public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Resource
     private OrderMapper orderMapper;
@@ -60,9 +64,19 @@ public class OrderServiceImpl implements OrderService {
         // 计算价格
         Size size = sizeMapper.selectById(order.getSizeId());
         Caizhi caizhi = caizhiMapper.selectById(order.getCaizhiId());
+        if (size==null || caizhi==null){
+            throw new ServiceException(1000,"请选择材质或者尺寸！");
+        }
         BigDecimal uPrice = size.getUPrice();
         BigDecimal price = caizhi.getPrice();
         order.setTotal(uPrice.add(price));
+        order.setIsPay(false);
+        order.setIsDel(false);
+        order.setCreateTime(LocalDateTime.now());
+        order.setUpdateTime(LocalDateTime.now());
+        //谁下单的
+        Token currentUser = getWeChatCurrentUser();
+        order.setCreateUser(currentUser.getUsername());
         orderMapper.insert(order);
         return order.getId();
     }

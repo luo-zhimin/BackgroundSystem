@@ -31,7 +31,7 @@ public class Order {
     private String kdNo;
 
     @ApiModelProperty(value="是否支付")
-    private String isPay;
+    private Boolean isPay;
 
     @ApiModelProperty(value="备注")
     private String remark;
@@ -79,6 +79,8 @@ public class Order {
 
     @ApiModelProperty(value="材质ID")
     private Long caizhiId;
+
+    private String createUser;
 
     public List<String> getPictureIds() {
         if (StringUtils.isNotBlank(this.pictureId)) {

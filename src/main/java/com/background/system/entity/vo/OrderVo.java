@@ -30,4 +30,6 @@ public class OrderVo {
 
     @ApiModelProperty(value="材质ID")
     private Long caizhiId;
+
+    private String createUser;
 }

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Service
 public class ConfigServiceImpl implements ConfigService{
@@ -16,9 +18,13 @@ public class ConfigServiceImpl implements ConfigService{
     @Resource
     private ConfigMapper configMapper;
 
-
     public List<Config> getConfigsByKeys(List<String> keys){
         return Optional.ofNullable(configMapper.getConfigsByKeys(keys)).orElse(Lists.newArrayList());
+    }
+
+    public ConcurrentHashMap<String,String> getConfigs(){
+        List<Config> configs = configMapper.getConfigs();
+        return (ConcurrentHashMap<String, String>) configs.stream().collect(Collectors.toConcurrentMap(Config::getConfigKey, Config::getConfigValue));
     }
 
 

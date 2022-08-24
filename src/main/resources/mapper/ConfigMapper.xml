@@ -97,4 +97,11 @@
             #{key,jdbcType=VARCHAR}
         </foreach>
     </select>
+
+    <select id="getConfigs" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from config
+    </select>
+
 </mapper>

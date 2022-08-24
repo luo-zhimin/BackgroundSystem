@@ -4,7 +4,7 @@
 
     <resultMap id="BaseResultMap" type="com.background.system.entity.Order">
         <!--@Table `order`-->
-        <id column="id" jdbcType="BIGINT" property="id"/>
+        <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="order_no" jdbcType="VARCHAR" property="wxNo"/>
         <result column="kd_no" jdbcType="VARCHAR" property="kdNo"/>
         <result column="is_pay" jdbcType="CHAR" property="isPay"/>
@@ -19,6 +19,9 @@
         <result column="address_id" jdbcType="BIGINT" property="addressId"/>
         <result column="num" jdbcType="INTEGER" property="num"/>
         <result column="picture_id" jdbcType="VARCHAR" property="pictureId"/>
+        <result column="caizhi_id" jdbcType="VARCHAR" property="caizhiId"/>
+        <result column="size_id" jdbcType="VARCHAR" property="sizeId"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -36,14 +39,17 @@
         `status`,
         address_id,
         num,
-        picture_id
+        picture_id,
+        size_id,
+        caizhi_id,
+        create_user
     </sql>
 
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from `order`
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -51,19 +57,6 @@
         from `order`
         where id = #{id,jdbcType=BIGINT}
     </delete>
-
-    <insert id="insert" parameterType="com.background.system.entity.Order">
-        insert into `order` (id, order_no, kd_no,
-                             is_pay, remark, port_price,
-                             is_del, create_time, update_time,
-                             total, coupon_id, `status`,
-                             address_id, num, picture_id)
-        values (#{id,jdbcType=BIGINT}, #{wxNo,jdbcType=VARCHAR}, #{kdNo,jdbcType=VARCHAR},
-                #{isPay,jdbcType=CHAR}, #{remark,jdbcType=VARCHAR}, #{portPrice,jdbcType=DECIMAL},
-                #{isDel,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
-                #{total,jdbcType=DECIMAL}, #{couponId,jdbcType=BIGINT}, #{status,jdbcType=CHAR},
-                #{addressId,jdbcType=BIGINT}, #{num,jdbcType=INTEGER}, #{pictureId,jdbcType=VARCHAR})
-    </insert>
 
     <insert id="insertSelective" parameterType="com.background.system.entity.Order">
         insert into `order`
@@ -215,20 +208,46 @@
     <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Order">
         update `order`
         set order_no    = #{wxNo,jdbcType=VARCHAR},
-            kd_no       = #{kdNo,jdbcType=VARCHAR},
-            is_pay      = #{isPay,jdbcType=CHAR},
-            remark      = #{remark,jdbcType=VARCHAR},
-            port_price  = #{portPrice,jdbcType=DECIMAL},
-            is_del      = #{isDel,jdbcType=CHAR},
-            create_time = #{createTime,jdbcType=TIMESTAMP},
-            update_time = #{updateTime,jdbcType=TIMESTAMP},
-            total       = #{total,jdbcType=DECIMAL},
-            coupon_id   = #{couponId,jdbcType=BIGINT},
-            `status`    = #{status,jdbcType=CHAR},
-            address_id  = #{addressId,jdbcType=BIGINT},
-            num         = #{num,jdbcType=INTEGER},
-            picture_id  = #{pictureId,jdbcType=VARCHAR}
+        kd_no       = #{kdNo,jdbcType=VARCHAR},
+        is_pay      = #{isPay,jdbcType=CHAR},
+        remark      = #{remark,jdbcType=VARCHAR},
+        port_price  = #{portPrice,jdbcType=DECIMAL},
+        is_del      = #{isDel,jdbcType=CHAR},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        total       = #{total,jdbcType=DECIMAL},
+        coupon_id   = #{couponId,jdbcType=BIGINT},
+        `status`    = #{status,jdbcType=CHAR},
+        address_id  = #{addressId,jdbcType=BIGINT},
+        num         = #{num,jdbcType=INTEGER},
+        picture_id  = #{pictureId,jdbcType=VARCHAR}
         where id = #{id,jdbcType=BIGINT}
     </update>
+
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Order" useGeneratedKeys="true">
+        insert into `order` (remark, port_price, total,
+        coupon_id, `status`, address_id,
+        num, picture_id, caizhi_id,
+        size_id, create_user,
+        create_time)
+        values (#{remark,jdbcType=VARCHAR}, #{portPrice,jdbcType=DECIMAL}, #{total,jdbcType=DECIMAL},
+        #{couponId,jdbcType=BIGINT}, #{status,jdbcType=CHAR}, #{addressId,jdbcType=BIGINT},
+        #{num,jdbcType=INTEGER}, #{pictureId,jdbcType=LONGVARCHAR}, #{caizhiId,jdbcType=BIGINT},
+        #{sizeId,jdbcType=BIGINT}, #{createUser,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <select id="getCurrentOrderCount" resultType="int">
+        select count(*) from `order` where is_del=0 and create_user=#{openId}
+    </select>
+
+    <select id="getOrderList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `order` where is_del=0 and  create_user=#{openId}
+        <if test="page != null and size != null">
+            limit #{page},#{size}
+        </if>
+    </select>
 
 </mapper>

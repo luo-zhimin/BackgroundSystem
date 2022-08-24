@@ -22,4 +22,6 @@ public interface ConfigMapper extends BaseMapper<Config> {
     int updateByPrimaryKey(Config record);
 
     List<Config> getConfigsByKeys(@Param("keys")List<String> keys);
+
+    List<Config> getConfigs();
 }

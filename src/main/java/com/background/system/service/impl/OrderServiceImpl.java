@@ -12,6 +12,8 @@ import com.background.system.mapper.*;
 import com.background.system.response.OrderResponse;
 import com.background.system.service.BaseService;
 import com.background.system.service.OrderService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
 * Created by IntelliJ IDEA.
@@ -111,14 +114,35 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     @Override
     public OrderResponse info(String orderId) {
         OrderResponse orderResponse = new OrderResponse();
-        Order order = orderMapper.selectById(orderId);
+        Order order = orderMapper.selectByPrimaryKey(orderId);
         BeanUtils.copyProperties(order,orderResponse);
         //图片 地址 尺寸 优惠卷
-        orderResponse.setPictures(pictureService.getPicturesByIds(order.getPictureIds()));
-        orderResponse.setAddress(addressService.getAddressDetail(order.getAddressId()));
-        orderResponse.setSize(sizeService.getSizeDetail(order.getSizeId()+""));
-        orderResponse.setCaizhi(materialQualityService.getMaterialQualityDetail(order.getCaizhiId()));
-        orderResponse.setCoupon(couponService.getCouponDetail(order.getCouponId()));
+        if (CollectionUtils.isNotEmpty(order.getPictureIds())){
+            orderResponse.setPictures(pictureService.getPicturesByIds(order.getPictureIds()));
+        }
+        if (order.getAddressId()!=null){
+            orderResponse.setAddress(addressService.getAddressDetail(order.getAddressId()));
+        }
+        if (order.getSizeId()!=null){
+            orderResponse.setSize(sizeService.getSizeDetail(order.getSizeId()+""));
+        }
+        if (order.getCaizhiId() != null) {
+            orderResponse.setCaizhi(materialQualityService.getMaterialQualityDetail(order.getCaizhiId()));
+        }
+        if (order.getCouponId() != null) {
+            orderResponse.setCoupon(couponService.getCouponDetail(order.getCouponId()));
+        }
         return orderResponse;
+    }
+
+    @Override
+    public Page<Order> getOrderList(Integer page, Integer size) {
+        Page<Order> orderPage = initPage(page, size);
+        Token currentUser = getWeChatCurrentUser();
+        List<Order> orderList = orderMapper.getOrderList(page, size, currentUser.getUsername());
+        int orderCount = orderMapper.getCurrentOrderCount(currentUser.getUsername());
+        orderPage.setTotal(orderCount);
+        orderPage.setRecords(orderList);
+        return orderPage;
     }
 }

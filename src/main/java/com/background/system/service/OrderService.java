@@ -1,7 +1,9 @@
 package com.background.system.service;
 
+import com.background.system.entity.Order;
 import com.background.system.entity.vo.OrderVo;
 import com.background.system.response.OrderResponse;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.math.BigDecimal;
 
@@ -19,4 +21,7 @@ public interface OrderService {
     Boolean changeAddress(String orderId, Long addressId);
 
     OrderResponse info(String orderId);
+
+
+    Page<Order> getOrderList(Integer page, Integer size);
 }

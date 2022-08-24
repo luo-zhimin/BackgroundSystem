@@ -38,6 +38,18 @@ public class PdfUtil {
     private static final String FILE_PATH = "/opt/files/upload";
     private static String mergedPdfName;
 
+
+    public static void main(String[] args) {
+        List<String> r = new ArrayList<>();
+        r.add("https://img1.baidu.com/it/u=1966616150,2146512490&fm=253&fmt=auto&app=138&f=JPEG?w=751&h=500");
+        try {
+            String s = imageToMergePdf(r);
+            log.info(s);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * 多图片转pdf并且进行pdf合并
      *

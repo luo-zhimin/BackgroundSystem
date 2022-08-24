@@ -2,8 +2,6 @@ package com.background.system.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 /**
  * Created by IntelliJ IDEA.
  * @Author : 镜像
@@ -11,5 +9,5 @@ import java.util.List;
  */
 public interface PictureService {
 
-    String getPicture(List<MultipartFile> file);
+    String getPicture(MultipartFile file);
 }

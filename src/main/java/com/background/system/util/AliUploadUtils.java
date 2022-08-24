@@ -1,6 +1,7 @@
 package com.background.system.util;
 
 import cn.hutool.core.lang.UUID;
+import com.alibaba.fastjson.JSON;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.PutObjectRequest;
@@ -32,7 +33,7 @@ public class AliUploadUtils {
      * @param father 上级目录（上传哪个文件夹）
      */
     public static String uploadImage(MultipartFile file, String father) {
-        log.info("file name[{}]",file.getName());
+        log.info("file name[{}]",file.getOriginalFilename());
         OSS ossClient = new OSSClientBuilder().build(ENDPOINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET);
         String type =
             Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf("."));
@@ -43,7 +44,7 @@ public class AliUploadUtils {
                 new PutObjectRequest(BUCKET_NAME, path, new ByteArrayInputStream(file.getBytes()));
             PutObjectResult putObjectResult = ossClient.putObject(request);
             PushPlusUtils.push(putObjectResult);
-            log.info("[上传信息] - " + putObjectResult);
+            log.info("[上传信息] - " + JSON.toJSONString(putObjectResult));
         } catch (IOException e) {
             return "";
         } finally {

@@ -109,6 +109,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         BigDecimal price = coupon.getPrice();
         Order order = orderMapper.selectById(orderId);
         BigDecimal total = order.getTotal();
+        //需要验证消费限制 是否满足
+        Integer useLimit = coupon.getUseLimit();
+        if (total.compareTo(BigDecimal.valueOf(useLimit))>=0){
+            throw new ServiceException(1001,"不满足消费限制，该优惠卷限制使用");
+        }
+
         BigDecimal newTotal = total.subtract(price);
         if (newTotal.compareTo(BigDecimal.ZERO) <= 0) {
             newTotal = BigDecimal.ZERO;

@@ -1,19 +1,16 @@
 package com.background.system.service;
 
 import com.background.system.entity.Config;
+import com.background.system.request.ConfigRequest;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
 public interface ConfigService{
 
+    Config selectByPrimaryKey(Long id);
 
-    int deleteByPrimaryKey(Integer id);
+    Page<Config> getConfigList(Integer page, Integer size);
 
-    int insert(Config record);
+    Boolean addConfig(ConfigRequest request);
 
-    int insertSelective(Config record);
-
-    Config selectByPrimaryKey(Integer id);
-
-    int updateByPrimaryKeySelective(Config record);
-
-    int updateByPrimaryKey(Config record);
-
+    Boolean updateConfig(ConfigRequest request);
 }

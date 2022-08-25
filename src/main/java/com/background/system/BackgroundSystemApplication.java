@@ -10,7 +10,6 @@ public class BackgroundSystemApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(BackgroundSystemApplication.class, args);
-        System.out.println("～～～project start～～～");
     }
 
 }

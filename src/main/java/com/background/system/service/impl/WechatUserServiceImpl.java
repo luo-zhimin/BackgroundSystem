@@ -3,17 +3,14 @@ package com.background.system.service.impl;
 import cn.hutool.jwt.JWTUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.background.system.entity.Config;
+import com.background.system.cache.ConfigCache;
 import com.background.system.entity.WechatUser;
-import com.background.system.exception.ServiceException;
+import com.background.system.entity.token.Token;
 import com.background.system.mapper.WechatUserMapper;
 import com.background.system.request.WechatUserInfo;
 import com.background.system.service.BaseService;
 import com.background.system.service.WechatUserService;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -27,9 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 @Slf4j
@@ -37,39 +33,10 @@ public class WechatUserServiceImpl extends BaseService implements WechatUserServ
 
     @Resource
     private WechatUserMapper wechatUserMapper;
-    @Resource
-    private ConfigServiceImpl configService;
-
-    private Map<String, String> configMap = Maps.newHashMap();
-
-    @Override
-    public int deleteByPrimaryKey(Long id) {
-        return wechatUserMapper.deleteByPrimaryKey(id);
-    }
-
-    @Override
-    public int insert(WechatUser record) {
-        return wechatUserMapper.insert(record);
-    }
-
-    @Override
-    public int insertSelective(WechatUser record) {
-        return wechatUserMapper.insertSelective(record);
-    }
 
     @Override
     public WechatUser selectByPrimaryKey(Long id) {
         return wechatUserMapper.selectByPrimaryKey(id);
-    }
-
-    @Override
-    public int updateByPrimaryKeySelective(WechatUser record) {
-        return wechatUserMapper.updateByPrimaryKeySelective(record);
-    }
-
-    @Override
-    public int updateByPrimaryKey(WechatUser record) {
-        return wechatUserMapper.updateByPrimaryKey(record);
     }
 
     @Override
@@ -86,9 +53,8 @@ public class WechatUserServiceImpl extends BaseService implements WechatUserServ
     @Override
     @Transactional
     public Boolean updateUserInfo(WechatUserInfo userInfo) {
-        if (StringUtils.isEmpty(userInfo.getOpenId())){
-            throw new ServiceException(1000,"openId不可以为空！");
-        }
+        Token currentUser = getWeChatCurrentUser();
+        userInfo.setOpenId(currentUser.getUsername());
         if (selectByOpenId(userInfo.getOpenId())) {
             return this.wechatUserMapper.updateUserInfoByOpenId(userInfo.getOpenId(), userInfo.getUserInfo())>0;
         }
@@ -96,11 +62,12 @@ public class WechatUserServiceImpl extends BaseService implements WechatUserServ
     }
 
     private Map<String, Object> getOpenIdByCode(String code) {
-        Map<String, String> map = getConfigMap();
+        ConcurrentMap<String, String> configMap = ConfigCache.configMap;
+
 //        log.info("configMap[{}]", map);
         String url = String.format(
             "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code",
-            map.get("wechat_appid").trim(), map.get("wechat_secret").trim(), URLEncoder.encode(code));
+                configMap.get("wechat_appid").trim(), configMap.get("wechat_secret").trim(), URLEncoder.encode(code));
 //        log.info("code url [{}]", url);
         HttpGet httpGet = new HttpGet(url);
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -142,17 +109,5 @@ public class WechatUserServiceImpl extends BaseService implements WechatUserServ
             log.error("小程序获取openId出错", e);
         }
         return null;
-    }
-
-    private Map<String, String> getConfigMap() {
-        if (configMap != null && configMap.values().size() >= 2) {
-            return configMap;
-        }
-        //init configMap
-        List<Config> configs = configService.getConfigsByKeys(Lists.newArrayList("wechat_appid", "wechat_secret"));
-        if (CollectionUtils.isNotEmpty(configs)) {
-            configMap = configs.stream().collect(Collectors.toMap(Config::getConfigKey, Config::getConfigValue));
-        }
-        return configMap;
     }
 }

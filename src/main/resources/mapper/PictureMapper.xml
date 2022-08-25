@@ -110,4 +110,10 @@
         </foreach>
     </select>
 
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Picture"
+            useGeneratedKeys="true">
+        insert into picture (`name`, url, father, create_time)
+        values (#{name,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{father,jdbcType=VARCHAR},
+                #{createTime,jdbcType=TIMESTAMP})
+    </insert>
 </mapper>

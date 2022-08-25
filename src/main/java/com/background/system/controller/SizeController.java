@@ -27,7 +27,7 @@ public class SizeController {
     @GetMapping("/list")
     @ApiOperation("尺寸列表")
     @IgnoreLogin
-    public Result<?> getGoodsList(@RequestParam(value = "page",defaultValue = "1")Integer page,
+    public Result<?> getSizeList(@RequestParam(value = "page",defaultValue = "1")Integer page,
                                   @RequestParam(value = "size",defaultValue = "10")Integer size)
     {
         return Result.success(sizeService.getSizeList(page,size));
@@ -36,7 +36,7 @@ public class SizeController {
     @GetMapping("/detail")
     @ApiOperation("尺寸详情")
     @IgnoreLogin
-    public Result<?> getGoodsDetail(@RequestParam(value = "id")String id)
+    public Result<?> getSizeDetail(@RequestParam(value = "id")String id)
     {
         return Result.success(sizeService.getSizeDetail(id));
     }

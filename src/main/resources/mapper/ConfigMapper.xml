@@ -29,12 +29,14 @@
         from config
         where id = #{id,jdbcType=INTEGER}
     </delete>
+
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Config"
             useGeneratedKeys="true">
         <!--@mbg.generated-->
         insert into config (config_key, config_value, remark)
         values (#{configKey,jdbcType=VARCHAR}, #{configValue,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
     </insert>
+
     <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Config"
             useGeneratedKeys="true">
         <!--@mbg.generated-->
@@ -96,5 +98,11 @@
         <foreach collection="keys" item="key" index="index" open="(" close=")" separator=",">
             #{key,jdbcType=VARCHAR}
         </foreach>
+    </select>
+
+    <select id="getConfigs" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from config
     </select>
 </mapper>

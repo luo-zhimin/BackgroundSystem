@@ -86,4 +86,13 @@ public class OrderController {
     public Result<?> changeAddress(String orderId, Long addressId) {
         return Result.success(orderService.changeAddress(orderId,addressId));
     }
+
+    @GetMapping("/list")
+    @ApiOperation("获取当前用户的订单记录")
+    public Result<?> getOrderList(@RequestParam(value = "page",defaultValue = "1")Integer page,
+                                  @RequestParam(value = "size",defaultValue = "10")Integer size)
+    {
+        return Result.success(orderService.getOrderList(page,size));
+    }
+
 }

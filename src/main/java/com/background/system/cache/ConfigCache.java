@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class ConfigCache implements CommandLineRunner {
 
-    public static ConcurrentHashMap<String, String> configMap = new ConcurrentHashMap<>();
+    public static ConcurrentMap<String,String> configMap = new ConcurrentHashMap<>();
 
     @Autowired
     private ConfigServiceImpl configService;

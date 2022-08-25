@@ -42,7 +42,7 @@ import java.security.*;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @Description:
@@ -60,7 +60,7 @@ public class PayController extends BaseService {
     @Resource
     private SizeMapper sizeMapper;
 
-    private ConcurrentHashMap<String,String> configMap = ConfigCache.configMap;
+    private ConcurrentMap<String,String> configMap = ConfigCache.configMap;
 
     @GetMapping("/createNo")
     @ApiOperation("JSAPI下单")

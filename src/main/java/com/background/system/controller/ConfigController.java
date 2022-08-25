@@ -1,11 +1,12 @@
 package com.background.system.controller;
 
 import com.background.system.entity.Config;
+import com.background.system.request.ConfigRequest;
 import com.background.system.service.ConfigService;
+import com.background.system.util.Result;
 import io.swagger.annotations.Api;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -16,7 +17,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/config")
-@Api(tags = "密钥配置")
+@Api(tags = "参数配置")
 public class ConfigController {
     /**
      * 服务对象
@@ -24,15 +25,32 @@ public class ConfigController {
     @Resource
     private ConfigService configService;
 
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @GetMapping("selectOne")
-    public Config selectOne(Integer id) {
-        return configService.selectByPrimaryKey(id);
+    @GetMapping("/list")
+    @ApiOperation("参数列表")
+    public Result<?> getConfigList(@RequestParam(value = "page",defaultValue = "1")Integer page,
+                                   @RequestParam(value = "size",defaultValue = "10")Integer size)
+    {
+        return Result.success(configService.getConfigList(page,size));
     }
 
+    @GetMapping("/detail")
+    @ApiOperation("参数详情")
+    public Result<?> getConfigDetail(@RequestParam(value = "id")Long id)
+    {
+        return Result.success(configService.selectByPrimaryKey(id));
+    }
+
+    @PostMapping("/insert")
+    @ApiOperation("参数详情")
+    public Result<?> addConfig(@RequestBody ConfigRequest request)
+    {
+        return Result.success(configService.addConfig(request));
+    }
+
+    @PostMapping("/update")
+    @ApiOperation("参数详情")
+    public Result<?> updateConfig(@RequestBody ConfigRequest request)
+    {
+        return Result.success(configService.updateConfig(request));
+    }
 }

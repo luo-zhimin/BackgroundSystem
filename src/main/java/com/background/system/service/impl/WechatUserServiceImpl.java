@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.background.system.cache.ConfigCache;
 import com.background.system.entity.WechatUser;
-import com.background.system.exception.ServiceException;
+import com.background.system.entity.token.Token;
 import com.background.system.mapper.WechatUserMapper;
 import com.background.system.request.WechatUserInfo;
 import com.background.system.service.BaseService;
@@ -25,7 +25,7 @@ import javax.annotation.Resource;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 @Slf4j
@@ -35,33 +35,8 @@ public class WechatUserServiceImpl extends BaseService implements WechatUserServ
     private WechatUserMapper wechatUserMapper;
 
     @Override
-    public int deleteByPrimaryKey(Long id) {
-        return wechatUserMapper.deleteByPrimaryKey(id);
-    }
-
-    @Override
-    public int insert(WechatUser record) {
-        return wechatUserMapper.insert(record);
-    }
-
-    @Override
-    public int insertSelective(WechatUser record) {
-        return wechatUserMapper.insertSelective(record);
-    }
-
-    @Override
     public WechatUser selectByPrimaryKey(Long id) {
         return wechatUserMapper.selectByPrimaryKey(id);
-    }
-
-    @Override
-    public int updateByPrimaryKeySelective(WechatUser record) {
-        return wechatUserMapper.updateByPrimaryKeySelective(record);
-    }
-
-    @Override
-    public int updateByPrimaryKey(WechatUser record) {
-        return wechatUserMapper.updateByPrimaryKey(record);
     }
 
     @Override
@@ -78,9 +53,8 @@ public class WechatUserServiceImpl extends BaseService implements WechatUserServ
     @Override
     @Transactional
     public Boolean updateUserInfo(WechatUserInfo userInfo) {
-        if (StringUtils.isEmpty(userInfo.getOpenId())){
-            throw new ServiceException(1000,"openId不可以为空！");
-        }
+        Token currentUser = getWeChatCurrentUser();
+        userInfo.setOpenId(currentUser.getUsername());
         if (selectByOpenId(userInfo.getOpenId())) {
             return this.wechatUserMapper.updateUserInfoByOpenId(userInfo.getOpenId(), userInfo.getUserInfo())>0;
         }
@@ -88,7 +62,7 @@ public class WechatUserServiceImpl extends BaseService implements WechatUserServ
     }
 
     private Map<String, Object> getOpenIdByCode(String code) {
-        ConcurrentHashMap<String, String> configMap = ConfigCache.configMap;
+        ConcurrentMap<String, String> configMap = ConfigCache.configMap;
 
 //        log.info("configMap[{}]", map);
         String url = String.format(

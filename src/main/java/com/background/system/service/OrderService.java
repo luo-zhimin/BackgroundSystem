@@ -14,7 +14,7 @@ public interface OrderService {
 
     Long createOrder(OrderVo orderVo);
 
-    BigDecimal coupon(Long couponId, String orderId);
+    Boolean coupon(Long couponId, String orderId);
 
     Boolean changeAddress(String orderId, Long addressId);
 

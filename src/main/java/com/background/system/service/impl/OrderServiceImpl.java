@@ -83,21 +83,29 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Override
     @Transactional
-    public BigDecimal coupon(Long couponId, String orderId) {
+    // 只有在支付成功时才会调用，直接干掉优惠券
+    public Boolean coupon(Long couponId, String orderId) {
         Coupon coupon = couponMapper.selectById(couponId);
-        BigDecimal price = coupon.getPrice();
-        Order order = orderMapper.selectById(orderId);
-        BigDecimal total = order.getTotal();
-        BigDecimal newTotal = total.subtract(price);
-        if (newTotal.compareTo(BigDecimal.ZERO) <= 0) {
-            newTotal = BigDecimal.ZERO;
+
+        if (coupon.getIsUsed()) {
+            return false;
         }
-        order.setTotal(newTotal);
+
+        // 更新订单
+        Order order = orderMapper.selectById(orderId);
+        order.setStatus("1");
+        order.setIsPay(true);
         order.setCouponId(couponId);
         orderMapper.updateById(order);
-        //如果要是要需要更新优惠卷使用
-        couponMapper.updateIsUsedCoupon(couponId);
-        return newTotal;
+
+        // 优惠券标记使用过
+        coupon.setIsUsed(true);
+        Token weChatCurrentUser = getWeChatCurrentUser();
+        String username = weChatCurrentUser.getUsername();
+        coupon.setOpenId(username);
+        couponMapper.updateById(coupon);
+
+        return true;
     }
 
     @Override

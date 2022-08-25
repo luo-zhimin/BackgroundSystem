@@ -70,6 +70,8 @@ public class PayController extends BaseService{
         // 获取订单金额
         Order order = orderMapper.selectById(orderId);
         BigDecimal total = order.getTotal();
+        // 加运费
+        total.add(order.getPortPrice());
 
         // 获取订单信息
         Size size = sizeMapper.selectById(order.getSizeId());

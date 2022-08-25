@@ -57,7 +57,7 @@ public class OrderController {
      * @return
      */
     @PostMapping("update")
-    @ApiOperation("更新订单-地址和优惠券")
+    @ApiOperation("更新订单-地址和优惠券和运费")
     public Result<?> update(@RequestBody Order order) {
         return Result.success(orderMapper.updateById(order));
     }

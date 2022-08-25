@@ -8,10 +8,15 @@ import com.background.system.entity.Size;
 import com.background.system.entity.token.Token;
 import com.background.system.entity.vo.OrderVo;
 import com.background.system.exception.ServiceException;
-import com.background.system.mapper.*;
+import com.background.system.mapper.CaizhiMapper;
+import com.background.system.mapper.CouponMapper;
+import com.background.system.mapper.OrderMapper;
+import com.background.system.mapper.SizeMapper;
 import com.background.system.response.OrderResponse;
 import com.background.system.service.BaseService;
 import com.background.system.service.OrderService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
 * Created by IntelliJ IDEA.
@@ -69,7 +75,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         }
         BigDecimal uPrice = size.getUPrice();
         BigDecimal price = caizhi.getPrice();
-        order.setTotal(uPrice.add(price));
+        BigDecimal portPrice = order.getPortPrice();
+        BigDecimal total = uPrice.add(price);
+        if (portPrice!=null){
+            total = total.add(portPrice);
+        }
+        //价格计算 单 or 双
+        String faces = size.getFaces();
+        if (CollectionUtils.isNotEmpty(order.getPictureIds())){
+            if (faces.equals("单面")){
+                total = total.multiply(BigDecimal.valueOf(order.getPictureIds().size()));
+            }else if (faces.equals("双面")){
+                total = total.multiply(BigDecimal.valueOf((order.getPictureIds().size()/2)));
+            }
+        }
+
+        order.setTotal(total);
         order.setIsPay(false);
         order.setIsDel(false);
         order.setCreateTime(LocalDateTime.now());
@@ -119,14 +140,40 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     @Override
     public OrderResponse info(String orderId) {
         OrderResponse orderResponse = new OrderResponse();
-        Order order = orderMapper.selectById(orderId);
+        Order order = orderMapper.selectByPrimaryKey(orderId);
         BeanUtils.copyProperties(order,orderResponse);
         //图片 地址 尺寸 优惠卷
-        orderResponse.setPictures(pictureService.getPicturesByIds(order.getPictureIds()));
-        orderResponse.setAddress(addressService.getAddressDetail(order.getAddressId()));
-        orderResponse.setSize(sizeService.getSizeDetail(order.getSizeId()+""));
-        orderResponse.setCaizhi(materialQualityService.getMaterialQualityDetail(order.getCaizhiId()));
-        orderResponse.setCoupon(couponService.getCouponDetail(order.getCouponId()));
+        if (CollectionUtils.isNotEmpty(order.getPictureIds())){
+            orderResponse.setPictures(pictureService.getPicturesByIds(order.getPictureIds()));
+        }
+        if (order.getAddressId()!=null){
+            orderResponse.setAddress(addressService.getAddressDetail(order.getAddressId()));
+        }
+        if (order.getSizeId()!=null){
+            orderResponse.setSize(sizeService.getSizeDetail(order.getSizeId()+""));
+        }
+        if (order.getCaizhiId() != null) {
+            orderResponse.setCaizhi(materialQualityService.getMaterialQualityDetail(order.getCaizhiId()));
+        }
+        if (order.getCouponId() != null) {
+            orderResponse.setCoupon(couponService.getCouponDetail(order.getCouponId()));
+        }
         return orderResponse;
+    }
+
+    @Override
+    public Page<Order> getOrderList(Integer page, Integer size) {
+        Page<Order> orderPage = initPage(page, size);
+        Token currentUser = getWeChatCurrentUser();
+        List<Order> orderList = orderMapper.getOrderList(page, size, currentUser.getUsername());
+        int orderCount = orderMapper.getCurrentOrderCount(currentUser.getUsername());
+        orderPage.setTotal(orderCount);
+        orderPage.setRecords(orderList);
+        return orderPage;
+    }
+
+    @Override
+    public Boolean updateOrder(Order order) {
+        return orderMapper.updateByPrimaryKeySelective(order) > 0;
     }
 }

@@ -5,8 +5,6 @@ import com.background.system.entity.vo.OrderVo;
 import com.background.system.response.OrderResponse;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
-import java.math.BigDecimal;
-
 /**
  * Created by IntelliJ IDEA.
  * @Author : 镜像
@@ -22,6 +20,7 @@ public interface OrderService {
 
     OrderResponse info(String orderId);
 
-
     Page<Order> getOrderList(Integer page, Integer size);
+
+    Boolean updateOrder(Order order);
 }

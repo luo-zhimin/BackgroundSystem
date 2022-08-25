@@ -1,6 +1,5 @@
 package com.background.system.cache;
 
-import com.alibaba.fastjson.JSON;
 import com.background.system.service.impl.ConfigServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,6 @@ public class ConfigCache implements CommandLineRunner {
     public void run(String... args) throws Exception {
         configMap = configService.getConfigs();
         //todo config 页面更新 更新二级缓冲或者重新加载
-        log.info("runner cache map[{}]", JSON.toJSONString(configMap));
+        log.info("runner cache mapSize[{}]", configMap.size());
     }
 }

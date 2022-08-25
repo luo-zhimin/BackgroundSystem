@@ -8,7 +8,10 @@ import com.background.system.entity.Size;
 import com.background.system.entity.token.Token;
 import com.background.system.entity.vo.OrderVo;
 import com.background.system.exception.ServiceException;
-import com.background.system.mapper.*;
+import com.background.system.mapper.CaizhiMapper;
+import com.background.system.mapper.CouponMapper;
+import com.background.system.mapper.OrderMapper;
+import com.background.system.mapper.SizeMapper;
 import com.background.system.response.OrderResponse;
 import com.background.system.service.BaseService;
 import com.background.system.service.OrderService;
@@ -72,7 +75,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         }
         BigDecimal uPrice = size.getUPrice();
         BigDecimal price = caizhi.getPrice();
-        order.setTotal(uPrice.add(price));
+        BigDecimal portPrice = order.getPortPrice();
+        BigDecimal total = uPrice.add(price);
+        if (portPrice!=null){
+            total = total.add(portPrice);
+        }
+        //价格计算 单 or 双
+        String faces = size.getFaces();
+        if (CollectionUtils.isNotEmpty(order.getPictureIds())){
+            if (faces.equals("单面")){
+                total = total.multiply(BigDecimal.valueOf(order.getPictureIds().size()));
+            }else if (faces.equals("双面")){
+                total = total.multiply(BigDecimal.valueOf((order.getPictureIds().size()/2)));
+            }
+        }
+
+        order.setTotal(total);
         order.setIsPay(false);
         order.setIsDel(false);
         order.setCreateTime(LocalDateTime.now());

@@ -1,6 +1,5 @@
 package com.background.system.controller;
 
-import com.background.system.entity.Config;
 import com.background.system.request.ConfigRequest;
 import com.background.system.service.ConfigService;
 import com.background.system.util.Result;

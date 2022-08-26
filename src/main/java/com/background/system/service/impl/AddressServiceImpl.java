@@ -6,7 +6,6 @@ import com.background.system.exception.ServiceException;
 import com.background.system.mapper.AddressMapper;
 import com.background.system.request.AddressRequest;
 import com.background.system.service.AddressService;
-import com.background.system.service.BaseService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;

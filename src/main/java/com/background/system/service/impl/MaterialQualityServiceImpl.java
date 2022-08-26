@@ -2,7 +2,6 @@ package com.background.system.service.impl;
 
 import com.background.system.entity.Caizhi;
 import com.background.system.mapper.CaizhiMapper;
-import com.background.system.service.BaseService;
 import com.background.system.service.MaterialQualityService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;

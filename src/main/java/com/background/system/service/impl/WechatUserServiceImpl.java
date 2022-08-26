@@ -8,7 +8,6 @@ import com.background.system.entity.WechatUser;
 import com.background.system.entity.token.Token;
 import com.background.system.mapper.WechatUserMapper;
 import com.background.system.request.WechatUserInfo;
-import com.background.system.service.BaseService;
 import com.background.system.service.WechatUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -61,7 +60,7 @@ public class WechatUserServiceImpl extends BaseService implements WechatUserServ
         return false;
     }
 
-    private Map<String, Object> getOpenIdByCode(String code) {
+    public Map<String, Object> getOpenIdByCode(String code) {
         ConcurrentMap<String, String> configMap = ConfigCache.configMap;
 
 //        log.info("configMap[{}]", map);

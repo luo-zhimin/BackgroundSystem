@@ -6,7 +6,6 @@ import com.background.system.entity.Size;
 import com.background.system.exception.ServiceException;
 import com.background.system.mapper.SizeMapper;
 import com.background.system.response.SizeResponse;
-import com.background.system.service.BaseService;
 import com.background.system.service.SizeService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -98,36 +97,6 @@ public class SizeServiceImpl extends BaseService implements SizeService {
             sizeResponse.setMaterials(materials);
         }
         return sizeResponse;
-    }
-
-
-    public int deleteByPrimaryKey(Long id) {
-        return sizeMapper.deleteByPrimaryKey(id);
-    }
-
-    
-    public int insert(Size record) {
-        return sizeMapper.insert(record);
-    }
-
-    
-    public int insertSelective(Size record) {
-        return sizeMapper.insertSelective(record);
-    }
-
-    
-    public Size selectByPrimaryKey(Long id) {
-        return sizeMapper.selectByPrimaryKey(id);
-    }
-
-    
-    public int updateByPrimaryKeySelective(Size record) {
-        return sizeMapper.updateByPrimaryKeySelective(record);
-    }
-
-    
-    public int updateByPrimaryKey(Size record) {
-        return sizeMapper.updateByPrimaryKey(record);
     }
 
 }

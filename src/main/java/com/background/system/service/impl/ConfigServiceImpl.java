@@ -4,7 +4,6 @@ import com.background.system.cache.ConfigCache;
 import com.background.system.entity.Config;
 import com.background.system.mapper.ConfigMapper;
 import com.background.system.request.ConfigRequest;
-import com.background.system.service.BaseService;
 import com.background.system.service.ConfigService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

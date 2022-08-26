@@ -5,7 +5,6 @@ import com.background.system.entity.Picture;
 import com.background.system.entity.token.Token;
 import com.background.system.mapper.CouponMapper;
 import com.background.system.response.CouponResponse;
-import com.background.system.service.BaseService;
 import com.background.system.service.CouponService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

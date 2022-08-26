@@ -75,8 +75,8 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
             JWT jwt = JWTUtil.parseToken(authorization);
             String openId = jwt.getPayload(Constant.WX_TOKEN_KEY).toString();
             // todo去数据库查是否有该openId
-            Boolean exist = wechatUserService.selectByOpenId(openId);
-            if (!exist) {
+//            Boolean exist = wechatUserService.selectByOpenId(openId);
+            if (StringUtils.isEmpty(openId)) {
                 throw VerifyException.builder().code(200).exceptionMsg("token无效请重新登录").build();
             }
             return true;

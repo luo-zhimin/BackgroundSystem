@@ -20,7 +20,7 @@ public interface OrderService {
 
     OrderResponse info(String orderId);
 
-    Page<Order> getOrderList(Integer page, Integer size);
+    Page<OrderResponse> getOrderList(Integer page, Integer size);
 
     Boolean updateOrder(Order order);
 }

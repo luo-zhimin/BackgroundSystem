@@ -13,9 +13,9 @@ import com.background.system.mapper.CouponMapper;
 import com.background.system.mapper.OrderMapper;
 import com.background.system.mapper.SizeMapper;
 import com.background.system.response.OrderResponse;
-import com.background.system.service.BaseService;
 import com.background.system.service.OrderService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,13 +162,25 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     }
 
     @Override
-    public Page<Order> getOrderList(Integer page, Integer size) {
-        Page<Order> orderPage = initPage(page, size);
+    public Page<OrderResponse> getOrderList(Integer page, Integer size) {
+        List<OrderResponse> orderResponses = Lists.newArrayList();
+        Page<OrderResponse> orderPage = initPage(page, size);
         Token currentUser = getWeChatCurrentUser();
         List<Order> orderList = orderMapper.getOrderList(page, size, currentUser.getUsername());
+        //商品
+        if (CollectionUtils.isNotEmpty(orderList)){
+            orderList.forEach(order -> {
+                OrderResponse orderResponse = new OrderResponse();
+                BeanUtils.copyProperties(order,orderResponse);
+                if (order.getSizeId() != null) {
+                    orderResponse.setSize(sizeService.getSizeDetail(order.getSizeId()+""));
+                }
+                orderResponses.add(orderResponse);
+            });
+        }
         int orderCount = orderMapper.getCurrentOrderCount(currentUser.getUsername());
         orderPage.setTotal(orderCount);
-        orderPage.setRecords(orderList);
+        orderPage.setRecords(orderResponses);
         return orderPage;
     }
 

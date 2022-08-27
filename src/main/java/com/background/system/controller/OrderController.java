@@ -2,15 +2,12 @@ package com.background.system.controller;
 
 import com.background.system.entity.Order;
 import com.background.system.entity.vo.OrderVo;
-import com.background.system.mapper.OrderMapper;
 import com.background.system.service.OrderService;
 import com.background.system.util.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
 
 /**
  * @Description:
@@ -22,12 +19,8 @@ import javax.annotation.Resource;
 @RequestMapping("/order")
 public class OrderController {
 
-
     @Autowired
     OrderService orderService;
-
-    @Resource
-    private OrderMapper orderMapper;
 
     /**
      * 返回订单号

@@ -17,8 +17,8 @@
         <result column="coupon_id" jdbcType="BIGINT" property="couponId"/>
         <result column="status" jdbcType="CHAR" property="status"/>
         <result column="address_id" jdbcType="BIGINT" property="addressId"/>
-        <result column="num" jdbcType="INTEGER" property="num"/>
-        <result column="picture_id" jdbcType="VARCHAR" property="pictureId"/>
+<!--        <result column="num" jdbcType="INTEGER" property="num"/>-->
+<!--        <result column="picture_id" jdbcType="VARCHAR" property="pictureId"/>-->
         <result column="caizhi_id" jdbcType="VARCHAR" property="caizhiId"/>
         <result column="size_id" jdbcType="VARCHAR" property="sizeId"/>
         <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
@@ -38,8 +38,8 @@
         coupon_id,
         `status`,
         address_id,
-        num,
-        picture_id,
+<!--        num,-->
+<!--        picture_id,-->
         size_id,
         caizhi_id,
         create_user
@@ -100,12 +100,12 @@
             <if test="addressId != null">
                 address_id,
             </if>
-            <if test="num != null">
-                num,
-            </if>
-            <if test="pictureId != null and pictureId != ''">
-                picture_id,
-            </if>
+<!--            <if test="num != null">-->
+<!--                num,-->
+<!--            </if>-->
+<!--            <if test="pictureId != null and pictureId != ''">-->
+<!--                picture_id,-->
+<!--            </if>-->
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -147,12 +147,12 @@
             <if test="addressId != null">
                 #{addressId,jdbcType=BIGINT},
             </if>
-            <if test="num != null">
-                #{num,jdbcType=INTEGER},
-            </if>
-            <if test="pictureId != null and pictureId != ''">
-                #{pictureId,jdbcType=VARCHAR},
-            </if>
+<!--            <if test="num != null">-->
+<!--                #{num,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="pictureId != null and pictureId != ''">-->
+<!--                #{pictureId,jdbcType=VARCHAR},-->
+<!--            </if>-->
         </trim>
     </insert>
 
@@ -195,12 +195,12 @@
             <if test="addressId != null">
                 address_id = #{addressId,jdbcType=BIGINT},
             </if>
-            <if test="num != null">
-                num = #{num,jdbcType=INTEGER},
-            </if>
-            <if test="pictureId != null and pictureId != ''">
-                picture_id = #{pictureId,jdbcType=VARCHAR},
-            </if>
+<!--            <if test="num != null">-->
+<!--                num = #{num,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="pictureId != null and pictureId != ''">-->
+<!--                picture_id = #{pictureId,jdbcType=VARCHAR},-->
+<!--            </if>-->
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -218,21 +218,19 @@
         total       = #{total,jdbcType=DECIMAL},
         coupon_id   = #{couponId,jdbcType=BIGINT},
         `status`    = #{status,jdbcType=CHAR},
-        address_id  = #{addressId,jdbcType=BIGINT},
-        num         = #{num,jdbcType=INTEGER},
-        picture_id  = #{pictureId,jdbcType=VARCHAR}
+        address_id  = #{addressId,jdbcType=BIGINT}
         where id = #{id,jdbcType=BIGINT}
     </update>
 
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Order" useGeneratedKeys="true">
         insert into `order` (remark, port_price, total,
         coupon_id, `status`, address_id,
-        num, picture_id, caizhi_id,
+        caizhi_id,
         size_id, create_user,
         create_time)
         values (#{remark,jdbcType=VARCHAR}, #{portPrice,jdbcType=DECIMAL}, #{total,jdbcType=DECIMAL},
         #{couponId,jdbcType=BIGINT}, #{status,jdbcType=CHAR}, #{addressId,jdbcType=BIGINT},
-        #{num,jdbcType=INTEGER}, #{pictureId,jdbcType=LONGVARCHAR}, #{caizhiId,jdbcType=BIGINT},
+         #{caizhiId,jdbcType=BIGINT},
         #{sizeId,jdbcType=BIGINT}, #{createUser,jdbcType=VARCHAR},
         #{createTime,jdbcType=TIMESTAMP})
     </insert>

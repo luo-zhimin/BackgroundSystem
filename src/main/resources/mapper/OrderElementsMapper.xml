@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.background.system.mapper.OrderElementsMapper">
+
+    <resultMap id="BaseResultMap" type="com.background.system.entity.OrderElement">
+        <!--@Table order_element-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="order_id" jdbcType="BIGINT" property="orderId"/>
+        <result column="number" jdbcType="INTEGER" property="number"/>
+        <result column="picture_id" jdbcType="LONGVARCHAR" property="pictureId"/>
+        <result column="is_del" jdbcType="CHAR" property="isDel"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        order_id,
+        `number`,
+        picture_id,
+        is_del,
+        create_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from order_element
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from order_element
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.OrderElement"
+            useGeneratedKeys="true">
+        insert into order_element (order_id, `number`, picture_id,
+                                   is_del, create_time)
+        values (#{orderId,jdbcType=BIGINT}, #{number,jdbcType=INTEGER}, #{picuterId,jdbcType=LONGVARCHAR},
+                #{isDel,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <insert id="insertSelective" keyColumn="id" keyProperty="id"
+            parameterType="com.background.system.entity.OrderElement" useGeneratedKeys="true">
+        insert into order_element
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">
+                order_id,
+            </if>
+            <if test="number != null">
+                `number`,
+            </if>
+            <if test="picuterId != null and picuterId != ''">
+                picture_id,
+            </if>
+            <if test="isDel != null and isDel != ''">
+                is_del,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">
+                #{orderId,jdbcType=BIGINT},
+            </if>
+            <if test="number != null">
+                #{number,jdbcType=INTEGER},
+            </if>
+            <if test="picuterId != null and picuterId != ''">
+                #{picuterId,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="isDel != null and isDel != ''">
+                #{isDel,jdbcType=CHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.OrderElement">
+        update order_element
+        <set>
+            <if test="orderId != null">
+                order_id = #{orderId,jdbcType=BIGINT},
+            </if>
+            <if test="number != null">
+                `number` = #{number,jdbcType=INTEGER},
+            </if>
+            <if test="picuterId != null and picuterId != ''">
+                picture_id = #{picuterId,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="isDel != null and isDel != ''">
+                is_del = #{isDel,jdbcType=CHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.background.system.entity.OrderElement">
+        update order_element
+        set order_id    = #{orderId,jdbcType=BIGINT},
+            `number`    = #{number,jdbcType=INTEGER},
+            picture_id  = #{picuterId,jdbcType=LONGVARCHAR},
+            is_del      = #{isDel,jdbcType=CHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateBatchSelective" parameterType="java.util.List">
+        update order_element
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="order_id = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.orderId != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.orderId,jdbcType=BIGINT}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="`number` = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.number != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.number,jdbcType=INTEGER}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="picture_id = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.picuterId != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.picuterId,jdbcType=LONGVARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="is_del = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.isDel != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.isDel,jdbcType=CHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="create_time = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.createTime != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.createTime,jdbcType=TIMESTAMP}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach close=")" collection="list" item="item" open="(" separator=", ">
+            #{item.id,jdbcType=BIGINT}
+        </foreach>
+    </update>
+
+    <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
+        insert into order_element
+            (order_id, `number`, picture_id, is_del, create_time)
+        values
+        <foreach collection="elements" item="item" separator=",">
+            (#{item.orderId,jdbcType=BIGINT}, #{item.number,jdbcType=INTEGER}, #{item.pictureId,jdbcType=LONGVARCHAR},
+             #{item.isDel,jdbcType=CHAR}, #{item.createTime,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+
+    <select id="getOrderElementsByOrderId" resultMap="BaseResultMap">
+        select  <include refid="Base_Column_List"/>
+        from order_element
+        where order_id=#{orderId} and is_del=0
+    </select>
+</mapper>

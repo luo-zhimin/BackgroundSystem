@@ -1,6 +1,7 @@
 package com.background.system.response;
 
 import com.background.system.entity.*;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,7 +19,7 @@ import java.util.List;
 @Builder
 public class OrderResponse extends Order {
 
-    private List<Picture> pictures;
+    private List<OrderElementResponse> elements;
 
     private Address address;
 
@@ -27,6 +28,9 @@ public class OrderResponse extends Order {
     private Caizhi caizhi;
 
     private Size size;
+
+    @ApiModelProperty(value="购买数量")
+    private Integer num;
 
     @Tolerate
     public OrderResponse(){}

@@ -1,8 +1,11 @@
 package com.background.system.entity.vo;
 
 
+import com.background.system.entity.OrderElement;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 
 @Data
@@ -30,4 +33,7 @@ public class OrderVo {
 
     @ApiModelProperty(value="材质ID")
     private Long caizhiId;
+
+    @ApiModelProperty(value="详细")
+    private List<OrderElement> orderElements;
 }

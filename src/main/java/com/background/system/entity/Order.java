@@ -64,9 +64,6 @@ public class Order {
     @ApiModelProperty(value="收货地址id")
     private Long addressId;
 
-    @ApiModelProperty(value="下单图片id，逗号分割")
-    private String pictureId;
-
     @ApiModelProperty(value="尺寸ID")
     private Long sizeId;
 

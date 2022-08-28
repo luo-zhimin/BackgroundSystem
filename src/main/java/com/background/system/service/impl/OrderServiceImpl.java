@@ -78,6 +78,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         }
         //尺寸价格
         BigDecimal uPrice = size.getUPrice();
+        if (uPrice == null) {
+            uPrice = size.getPrice();
+        }
         //材质价格
         BigDecimal price = caizhi.getPrice();
         //（材质+尺寸）
@@ -88,11 +91,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         //一共买了多少
         int totalNumber = orderElements.stream().mapToInt(OrderElement::getNumber).sum();
         total = total.multiply(BigDecimal.valueOf(totalNumber));
-
-//        if (faces.equals("单面")) {
-//        } else if (faces.equals("双面")) {
-//            total = total.multiply(BigDecimal.valueOf((order.getPictureIds().size() / 2)));
-//        }
 
         //运费
         BigDecimal portPrice = order.getPortPrice();

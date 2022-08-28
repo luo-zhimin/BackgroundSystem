@@ -6,7 +6,6 @@ import com.background.system.annotation.IgnoreLogin;
 import com.background.system.constant.Constant;
 import com.background.system.entity.vo.AdminUserVO;
 import com.background.system.exception.VerifyException;
-import com.background.system.service.WechatUserService;
 import com.background.system.service.admin.IAdminUseService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -32,8 +31,6 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
 
     @Autowired
     private IAdminUseService adminUseService;
-    @Autowired
-    private WechatUserService wechatUserService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)

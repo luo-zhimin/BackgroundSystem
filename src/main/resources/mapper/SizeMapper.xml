@@ -30,7 +30,7 @@
         select
         <include refid="Base_Column_List"/>
         from `size`
-        where id = #{id,jdbcType=VARCHAR}
+        where id = #{id}
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -38,73 +38,6 @@
         from `size`
         where id = #{id,jdbcType=VARCHAR}
     </delete>
-
-
-    <insert id="insertSelective" parameterType="com.background.system.entity.Size">
-        insert into `size`
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                id,
-            </if>
-            <if test="name != null and name != ''">
-                `name`,
-            </if>
-            <if test="pic != null and pic != ''">
-                pic,
-            </if>
-            <if test="price != null">
-                price,
-            </if>
-            <if test="uPrice != null">
-                u_price,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=VARCHAR},
-            </if>
-            <if test="name != null and name != ''">
-                #{name,jdbcType=VARCHAR},
-            </if>
-            <if test="pic != null and pic != ''">
-                #{pic,jdbcType=VARCHAR},
-            </if>
-            <if test="price != null">
-                #{price,jdbcType=DECIMAL},
-            </if>
-            <if test="uPrice != null">
-                #{uPrice,jdbcType=DECIMAL},
-            </if>
-        </trim>
-    </insert>
-
-    <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.Size">
-        update `size`
-        <set>
-            <if test="name != null and name != ''">
-                `name` = #{name,jdbcType=VARCHAR},
-            </if>
-            <if test="pic != null and pic != ''">
-                pic = #{pic,jdbcType=VARCHAR},
-            </if>
-            <if test="price != null">
-                price = #{price,jdbcType=DECIMAL},
-            </if>
-            <if test="uPrice != null">
-                u_price = #{uPrice,jdbcType=DECIMAL},
-            </if>
-        </set>
-        where id = #{id,jdbcType=VARCHAR}
-    </update>
-
-    <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Size">
-        update `size`
-        set `name`  = #{name,jdbcType=VARCHAR},
-            pic     = #{pic,jdbcType=VARCHAR},
-            price   = #{price,jdbcType=DECIMAL},
-            u_price = #{uPrice,jdbcType=DECIMAL}
-        where id = #{id,jdbcType=VARCHAR}
-    </update>
 
     <select id="getSizeList" resultMap="BaseResultMap">
         select
@@ -118,4 +51,114 @@
     <select id="getSizeCount" resultType="int">
         select count(*) from size
     </select>
+
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Size" useGeneratedKeys="true">
+        insert into `size` (title, `name`, pic,
+        price, u_price, material_id,
+        `size`, faces)
+        values (#{title,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR},
+        #{price,jdbcType=DECIMAL}, #{uPrice,jdbcType=DECIMAL}, #{materialId,jdbcType=VARCHAR},
+        #{size,jdbcType=VARCHAR}, #{faces,jdbcType=VARCHAR})
+    </insert>
+
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Size" useGeneratedKeys="true">
+        insert into `size`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">
+                title,
+            </if>
+            <if test="name != null and name != ''">
+                `name`,
+            </if>
+            <if test="pic != null and pic != ''">
+                pic,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="uPrice != null">
+                u_price,
+            </if>
+            <if test="materialId != null and materialId != ''">
+                material_id,
+            </if>
+            <if test="size != null and size != ''">
+                `size`,
+            </if>
+            <if test="faces != null and faces != ''">
+                faces,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null and name != ''">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="pic != null and pic != ''">
+                #{pic,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="uPrice != null">
+                #{uPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="materialId != null and materialId != ''">
+                #{materialId,jdbcType=VARCHAR},
+            </if>
+            <if test="size != null and size != ''">
+                #{size,jdbcType=VARCHAR},
+            </if>
+            <if test="faces != null and faces != ''">
+                #{faces,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.Size">
+        update `size`
+        <set>
+            <if test="title != null and title != ''">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null and name != ''">
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="pic != null and pic != ''">
+                pic = #{pic,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="uPrice != null">
+                u_price = #{uPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="materialId != null and materialId != ''">
+                material_id = #{materialId,jdbcType=VARCHAR},
+            </if>
+            <if test="size != null and size != ''">
+                `size` = #{size,jdbcType=VARCHAR},
+            </if>
+            <if test="faces != null and faces != ''">
+                faces = #{faces,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Size">
+        update `size`
+        set title = #{title,jdbcType=VARCHAR},
+        `name` = #{name,jdbcType=VARCHAR},
+        pic = #{pic,jdbcType=VARCHAR},
+        price = #{price,jdbcType=DECIMAL},
+        u_price = #{uPrice,jdbcType=DECIMAL},
+        material_id = #{materialId,jdbcType=VARCHAR},
+        `size` = #{size,jdbcType=VARCHAR},
+        faces = #{faces,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
 </mapper>

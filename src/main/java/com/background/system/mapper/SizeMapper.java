@@ -16,7 +16,7 @@ public interface SizeMapper extends BaseMapper<Size> {
 
     int insertSelective(Size record);
 
-    Size selectByPrimaryKey(Long id);
+    Size selectByPrimaryKey(String  id);
 
     int updateByPrimaryKeySelective(Size record);
 

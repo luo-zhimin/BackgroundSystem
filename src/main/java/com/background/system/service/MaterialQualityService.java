@@ -13,4 +13,8 @@ public interface MaterialQualityService {
     Page<Caizhi> getMaterialQualityList(Integer page, Integer size);
 
     Caizhi getMaterialQualityDetail(Long id);
+
+    Boolean materialQualityInsert(Caizhi caizhi);
+
+    Boolean materialQualityUpdate(Caizhi caizhi);
 }

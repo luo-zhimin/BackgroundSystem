@@ -6,6 +6,7 @@ import com.background.system.service.OrderService;
 import com.background.system.util.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -100,7 +101,7 @@ public class OrderController {
     @ApiOperation("后台-订单列表")
     public Result<?> getAdminOrderList(@RequestParam(value = "page",defaultValue = "1")Integer page,
                                        @RequestParam(value = "size",defaultValue = "10")Integer size,
-                                       @RequestParam(value = "type",name = "订单状态 待付款，待发货，售后订单，交易关闭 ...",defaultValue = "0")String type)
+                                       @ApiParam(name = "待付款，待发货，售后订单，交易关闭 ...",value = "type",defaultValue = "0",readOnly = true) @RequestParam String type)
     {
         return Result.success(orderService.getAdminOrderList(page,size,type));
     }

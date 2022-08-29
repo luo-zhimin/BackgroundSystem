@@ -27,4 +27,6 @@ public interface CaizhiMapper extends BaseMapper<Caizhi> {
     List<Caizhi> getMaterialQualitiesList(@Param("page")Integer page,@Param("size")Integer size);
 
     int countMaterialQualities();
+
+    List<Caizhi> getMaterialListByIds(@Param("ids") List<String> ids);
 }

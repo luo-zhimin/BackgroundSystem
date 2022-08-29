@@ -15,6 +15,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public class SizeServiceImpl extends BaseService implements SizeService {
             throw new ServiceException(1000,"id不可以为空");
         }
         SizeResponse sizeResponse = new SizeResponse();
-        Size size = sizeMapper.selectByPrimaryKey(Long.parseLong(id));
+        Size size = sizeMapper.selectByPrimaryKey(id);
         if(size!=null){
             BeanUtils.copyProperties(size,sizeResponse);
             List<Picture> pictures = pictureService.getPicturesByIds(size.getPictureIds());
@@ -99,4 +100,25 @@ public class SizeServiceImpl extends BaseService implements SizeService {
         return sizeResponse;
     }
 
+    @Override
+    @Transactional
+    public Boolean sizeInsert(Size size) {
+        log.info("size insert [{}]",size);
+        return sizeMapper.insertSelective(size)>0;
+    }
+
+    @Override
+    @Transactional
+    public Boolean sizeUpdate(Size size) {
+        log.info("size update [{}]",size);
+        if (size.getId()==null){
+            throw new ServiceException(1003,"id不可以为空");
+        }
+        Size live = sizeMapper.selectByPrimaryKey(size.getId());
+        if (live==null){
+            throw new ServiceException(1004,"该尺寸不存在，请确认后重新操作");
+        }
+
+        return sizeMapper.updateByPrimaryKey(size)>0;
+    }
 }

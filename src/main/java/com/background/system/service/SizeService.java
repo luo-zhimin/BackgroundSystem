@@ -1,5 +1,6 @@
 package com.background.system.service;
 
+import com.background.system.entity.Size;
 import com.background.system.response.SizeResponse;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
@@ -14,4 +15,8 @@ public interface SizeService {
     Page<SizeResponse> getSizeList(Integer page, Integer size);
 
     SizeResponse getSizeDetail(String id);
+
+    Boolean sizeInsert(Size size);
+
+    Boolean sizeUpdate(Size size);
 }

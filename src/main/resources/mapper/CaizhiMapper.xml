@@ -78,4 +78,12 @@
     <select id="countMaterialQualities" resultType="int">
         select count(*) from caizhi
     </select>
+
+    <select id="getMaterialListByIds" resultMap="BaseResultMap">
+        select  <include refid="Base_Column_List"/>
+        from caizhi where id in
+        <foreach collection="ids" item="key" index="index" open="(" close=")" separator=",">
+            #{key,jdbcType=VARCHAR}
+        </foreach>
+    </select>
 </mapper>

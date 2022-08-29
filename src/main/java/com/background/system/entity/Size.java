@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ import java.util.List;
 */
 @ApiModel(value="尺寸")
 @Data
+@ToString
 public class Size {
     @ApiModelProperty(value="主键id")
     private String id;

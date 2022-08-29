@@ -215,8 +215,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     @Override
     @Transactional
     public Boolean cancelOrder(String id) {
+        logger.info("cancelOrder [{}]",id);
         Token currentUser = getWeChatCurrentUser();
-        Order order = orderMapper.selectById(id);
+        Order order = orderMapper.selectByPrimaryKey(id);
         if (!order.getCreateUser().equals(currentUser.getUsername())){
             throw new ServiceException(1002,"请修改属于你自己的订单");
         }

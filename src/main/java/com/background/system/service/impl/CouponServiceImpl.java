@@ -8,7 +8,6 @@ import com.background.system.mapper.CouponMapper;
 import com.background.system.request.BaseRequest;
 import com.background.system.response.CouponResponse;
 import com.background.system.service.CouponService;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -39,12 +39,22 @@ public class CouponServiceImpl extends BaseService implements CouponService {
     private PictureServiceImpl pictureService;
 
     @Override
-    public Page<CouponResponse> getCouponList(Integer page, Integer size) {
+    public Page<CouponResponse> getCouponList(Integer page, Integer size,String type) {
         Page<CouponResponse> couponPage = initPage(page, size);
-        Token weChatCurrentUser = getWeChatCurrentUser();
+        Token weChatCurrentUser = null;
+        switch (type){
+            case "wechat":
+                weChatCurrentUser = getWeChatCurrentUser();
+                break;
+            case "admin":
+                //逻辑待处理
+                break;
+            default:
+                break;
+        }
         List<CouponResponse> responses = Lists.newArrayList();
         List<Coupon> coupons = couponMapper.getCouponsList((page - 1) * size, size,
-                weChatCurrentUser.getUsername());
+                weChatCurrentUser!=null ? weChatCurrentUser.getUsername() : "");
         if (CollectionUtils.isEmpty(coupons)) {
             return couponPage;
         }
@@ -57,9 +67,7 @@ public class CouponServiceImpl extends BaseService implements CouponService {
                     coupon.getPictureId().equals(picture.getId())).findFirst().orElse(new Picture()));
             responses.add(response);
         });
-        Long qualities = couponMapper.selectCount(
-                new QueryWrapper<Coupon>()
-                        .eq("open_id", weChatCurrentUser.getUsername()));
+        int qualities = couponMapper.selectCountByOpenId(weChatCurrentUser!=null ? weChatCurrentUser.getUsername() : "");
         couponPage.setTotal(qualities);
         couponPage.setRecords(responses);
         return couponPage;
@@ -83,5 +91,29 @@ public class CouponServiceImpl extends BaseService implements CouponService {
         }
         Token currentUser = getWeChatCurrentUser();
         return couponMapper.updateCouponUserById(currentUser.getUsername(), request.getCouponId())>0;
+    }
+
+    @Override
+    @Transactional
+    public Boolean insert(Coupon coupon) {
+        log.info("coupon insert coupon[{}]",coupon);
+        //随机生成优惠卷兑换码
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        coupon.setCouponId(uuid);
+        return couponMapper.insertSelective(coupon)>0;
+    }
+
+    @Override
+    @Transactional
+    public Boolean update(Coupon coupon) {
+        log.info("coupon update coupon[{}]",coupon);
+        if (coupon.getId()==null){
+            throw new ServiceException(1004,"id不可以为空");
+        }
+        Coupon liveCoupon = couponMapper.selectByPrimaryKey(coupon.getId());
+        if (liveCoupon==null){
+            throw new ServiceException(1005,"该优惠卷不存在");
+        }
+        return couponMapper.updateByPrimaryKeySelective(coupon)>0;
     }
 }

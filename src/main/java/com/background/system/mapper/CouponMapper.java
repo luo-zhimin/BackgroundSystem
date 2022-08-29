@@ -21,4 +21,12 @@ public interface CouponMapper extends BaseMapper<Coupon> {
     Boolean getCouponByCouponId(@Param("couponId")String couponId);
 
     int updateCouponUserById(@Param("openId")String openId,@Param("id")String id);
+
+    int insertSelective(Coupon coupon);
+
+    Coupon selectByPrimaryKey(@Param("id")Long id);
+
+    int updateByPrimaryKeySelective(Coupon coupon);
+
+    int selectCountByOpenId(@Param("openId")String openId);
 }

@@ -29,7 +29,7 @@
         select
         <include refid="Base_Column_List"/>
         from coupon
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id}
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -66,6 +66,9 @@
             <if test="openId != null">
                 open_id,
             </if>
+            <if test="pictureId != null and pictureId !='' ">
+                picture_id,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -86,6 +89,9 @@
             <if test="openId != null">
                 #{openId,jdbcType=VARCHAR},
             </if>
+            <if test="pictureId != null and pictureId !='' ">
+                #{pictureId}
+            </if>
         </trim>
     </insert>
 
@@ -104,8 +110,11 @@
             <if test="useLimit != null">
                 use_limit = #{useLimit,jdbcType=INTEGER},
             </if>
-            <if test="openId != null">
+            <if test="openId != null and openId != ''">
                 open_id = #{openId,jdbcType=VARCHAR},
+            </if>
+            <if test="pictureId != null and pictureId != ''">
+                picture_id = #{pictureId,jdbcType=VARCHAR},
             </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
@@ -145,4 +154,11 @@
     <update id="updateCouponUserById">
         update coupon set open_id=#{openId} where coupon_id=#{id}
     </update>
+
+    <select id="selectCountByOpenId" resultType="int">
+        select count(*) from coupon
+        <if test="openId != null and openId != ''">
+            where open_id=#{openId}
+        </if>
+    </select>
 </mapper>

@@ -128,7 +128,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         }
 
         // 更新订单
-        Order order = orderMapper.selectById(orderId);
+        Order order = orderMapper.selectByPrimaryKey(orderId);
         order.setStatus("1");
         order.setIsPay(true);
         order.setCouponId(couponId);
@@ -147,7 +147,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     @Override
     @Transactional
     public Boolean changeAddress(String orderId, Long addressId) {
-        Order order = orderMapper.selectById(orderId);
+        Order order = orderMapper.selectByPrimaryKey(orderId);
         order.setAddressId(addressId);
         return orderMapper.updateById(order)>0;
     }

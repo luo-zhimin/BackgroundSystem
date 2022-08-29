@@ -88,4 +88,12 @@ public class OrderController {
         return Result.success(orderService.getOrderList(page,size));
     }
 
+
+    @DeleteMapping("/cancel")
+    @ApiOperation("取消订单-取消自己的")
+    public Result<?> cancelOrder(@RequestParam(value = "id")String id)
+    {
+        return Result.success(orderService.cancelOrder(id));
+    }
+
 }

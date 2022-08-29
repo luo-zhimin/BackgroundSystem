@@ -1,9 +1,7 @@
 package com.background.system.entity.vo;
 
-
 import com.background.system.entity.OrderElement;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.models.auth.In;
 import lombok.Data;
 
 import java.util.List;
@@ -22,12 +20,6 @@ public class OrderVo {
 
     @ApiModelProperty(value="收货地址id")
     private Long addressId;
-
-    @ApiModelProperty(value="购买数量")
-    private Integer num;
-
-    @ApiModelProperty(value="下单图片id，逗号分割")
-    private String pictureId;
 
     @ApiModelProperty(value="尺寸ID")
     private Long sizeId;

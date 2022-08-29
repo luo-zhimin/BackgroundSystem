@@ -1,5 +1,6 @@
 package com.background.system.request;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
 
@@ -13,4 +14,7 @@ import lombok.ToString;
 public class BaseRequest {
 
     private Long id;
+
+    @ApiModelProperty(value = "兑换码")
+    private String couponId;
 }

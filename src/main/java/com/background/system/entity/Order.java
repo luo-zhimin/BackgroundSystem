@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 * @Author : 志敏.罗
 * @create 2022/8/20 14:53
 */
-@ApiModel(value="`order`")
+@ApiModel(description="`order`")
 @Data
 public class Order {
     @ApiModelProperty(value="主键Id")

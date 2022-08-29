@@ -3,7 +3,9 @@ package com.background.system.service.impl;
 import com.background.system.entity.Coupon;
 import com.background.system.entity.Picture;
 import com.background.system.entity.token.Token;
+import com.background.system.exception.ServiceException;
 import com.background.system.mapper.CouponMapper;
+import com.background.system.request.BaseRequest;
 import com.background.system.response.CouponResponse;
 import com.background.system.service.CouponService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -11,9 +13,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,5 +68,20 @@ public class CouponServiceImpl extends BaseService implements CouponService {
     @Override
     public Coupon getCouponDetail(Long id) {
         return couponMapper.selectById(id);
+    }
+
+    @Override
+    @Transactional
+    public Boolean covertCoupon(BaseRequest request) {
+        log.info("coverCoupon request[{}]",request);
+        if (StringUtils.isEmpty(request.getCouponId())){
+            throw new ServiceException(1003,"兑换码不可以为空");
+        }
+        Boolean live = couponMapper.getCouponByCouponId(request.getCouponId());
+        if (!live){
+            throw new ServiceException(1004,"该兑换码已经使用，请确认后在操作");
+        }
+        Token currentUser = getWeChatCurrentUser();
+        return couponMapper.updateCouponUserById(currentUser.getUsername(), request.getCouponId())>0;
     }
 }

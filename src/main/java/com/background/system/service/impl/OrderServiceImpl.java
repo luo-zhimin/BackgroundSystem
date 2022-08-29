@@ -211,4 +211,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     public Boolean updateOrder(Order order) {
         return orderMapper.updateByPrimaryKeySelective(order) > 0;
     }
+
+    @Override
+    @Transactional
+    public Boolean cancelOrder(String id) {
+        Token currentUser = getWeChatCurrentUser();
+        Order order = orderMapper.selectById(id);
+        if (!order.getCreateUser().equals(currentUser.getUsername())){
+            throw new ServiceException(1002,"请修改属于你自己的订单");
+        }
+
+        return orderMapper.deleteOrderById(id)>0;
+    }
 }

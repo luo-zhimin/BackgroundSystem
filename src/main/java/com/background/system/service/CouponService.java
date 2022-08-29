@@ -1,6 +1,7 @@
 package com.background.system.service;
 
 import com.background.system.entity.Coupon;
+import com.background.system.request.BaseRequest;
 import com.background.system.response.CouponResponse;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
@@ -14,4 +15,6 @@ public interface CouponService {
     Page<CouponResponse> getCouponList(Integer page, Integer size);
 
     Coupon getCouponDetail(Long id);
+
+    Boolean covertCoupon(BaseRequest request);
 }

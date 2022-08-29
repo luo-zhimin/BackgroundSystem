@@ -28,4 +28,6 @@ public interface OrderMapper extends BaseMapper<Order> {
     List<Order> getOrderList(@Param("page") Integer page,
                              @Param("size") Integer size,
                              @Param("openId")String openId);
+
+    int deleteOrderById(@Param("id")String orderId);
 }

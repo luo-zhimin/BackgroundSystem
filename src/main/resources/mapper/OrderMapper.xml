@@ -248,4 +248,7 @@
         </if>
     </select>
 
+    <delete id="deleteOrderById">
+        update `order` set is_del = 1 where id=#{id};
+    </delete>
 </mapper>

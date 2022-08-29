@@ -138,4 +138,11 @@
         update coupon set is_used = 1 where coupon_id=#{couponId}
     </update>
 
+    <select id="getCouponByCouponId" resultType="java.lang.Boolean">
+        select count(*) from coupon where coupon_id=#{couponId} and is_used=0 and open_id is null
+    </select>
+
+    <update id="updateCouponUserById">
+        update coupon set open_id=#{openId} where coupon_id=#{id}
+    </update>
 </mapper>

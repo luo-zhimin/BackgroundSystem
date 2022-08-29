@@ -96,4 +96,19 @@ public class OrderController {
         return Result.success(orderService.cancelOrder(id));
     }
 
+    @GetMapping("/admin/list")
+    @ApiOperation("后台-订单列表")
+    public Result<?> getAdminOrderList(@RequestParam(value = "page",defaultValue = "1")Integer page,
+                                       @RequestParam(value = "size",defaultValue = "10")Integer size,
+                                       @RequestParam(value = "type",name = "订单状态 待付款，待发货，售后订单，交易关闭 ...",defaultValue = "0")String type)
+    {
+        return Result.success(orderService.getAdminOrderList(page,size,type));
+    }
+
+    @GetMapping("/admin/count")
+    @ApiOperation("后台-订单列表-数量统计")
+    public Result<?> getAdminOrderCount()
+    {
+        return Result.success(orderService.getAdminOrderCount());
+    }
 }

@@ -5,6 +5,8 @@ import com.background.system.entity.vo.OrderVo;
 import com.background.system.response.OrderResponse;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import java.util.Map;
+
 /**
  * Created by IntelliJ IDEA.
  * @Author : 镜像
@@ -25,4 +27,8 @@ public interface OrderService {
     Boolean updateOrder(Order order);
 
     Boolean cancelOrder(String id);
+
+    Page<OrderResponse> getAdminOrderList(Integer page, Integer size,String type);
+
+    Map<String,Integer> getAdminOrderCount();
 }

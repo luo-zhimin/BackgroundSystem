@@ -22,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
 * Created by IntelliJ IDEA.
@@ -223,5 +225,24 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         }
 
         return orderMapper.deleteOrderById(id)>0;
+    }
+
+    @Override
+    public Page<OrderResponse> getAdminOrderList(Integer page, Integer size,String type) {
+        //todo 思路俩个接口 一个数量 一个列表 防止数量过大加载慢
+        Page<OrderResponse> orderPage = initPage(page, size);
+        switch (type){
+            case "0":
+                break;
+            //.....
+        }
+        return orderPage;
+    }
+
+    @Override
+    public Map<String, Integer> getAdminOrderCount() {
+        HashMap<String, Integer> countMap = new HashMap<>();
+        //分组统计 最好设置 state 默认 为 0
+        return countMap;
     }
 }

@@ -67,6 +67,10 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
         } else {
             String openId = jwt.getPayload(Constant.WX_TOKEN_KEY).toString();
             verify = JWTUtil.verify(authorization,openId.getBytes(StandardCharsets.UTF_8));
+            //小程序token 过期 需要续期
+            if (verify){
+                jwt.setPayload("expire_time",Constant.EXPIRE_TIME);
+            }
         }
 
         if (!verify) {

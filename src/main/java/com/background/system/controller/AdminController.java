@@ -2,6 +2,7 @@ package com.background.system.controller;
 
 import cn.hutool.jwt.JWTUtil;
 import com.background.system.annotation.IgnoreLogin;
+import com.background.system.constant.Constant;
 import com.background.system.entity.Caizhi;
 import com.background.system.entity.Coupon;
 import com.background.system.entity.Size;
@@ -73,21 +74,20 @@ public class AdminController {
 
     private Token createToken(String userName, String password) {
         String tokenKey = userName + password;
-        long expireTime = System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 15;
         Map<String, Object> params = new HashMap<String, Object>(3) {
             private static final long serialVersionUID = 1L;
 
             {
                 put("user_name", userName);
                 put("password", password);
-                put("expire_time", expireTime);
+                put("expire_time", Constant.EXPIRE_TIME);
             }
         };
         String tokenValue = JWTUtil.createToken(params, tokenKey.getBytes());
 
         return Token.builder()
             .token(tokenValue)
-            .expireTime(expireTime)
+            .expireTime(Constant.EXPIRE_TIME)
             .username(userName)
             .password(password)
             .build();

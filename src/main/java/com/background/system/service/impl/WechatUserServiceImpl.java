@@ -4,6 +4,7 @@ import cn.hutool.jwt.JWTUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.background.system.cache.ConfigCache;
+import com.background.system.constant.Constant;
 import com.background.system.entity.WechatUser;
 import com.background.system.entity.token.Token;
 import com.background.system.mapper.WechatUserMapper;
@@ -84,13 +85,12 @@ public class WechatUserServiceImpl extends BaseService implements WechatUserServ
                 return result;
             }
             HashMap<String, Object> result = new HashMap<>(1);
-            long expireTime = System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 15;
             Map<String, Object> params = new HashMap<String, Object>(2) {
                 private static final long serialVersionUID = 1L;
 
                 {
                     put("open_id", openId);
-                    put("expire_time", expireTime);
+                    put("expire_time", Constant.EXPIRE_TIME);
                 }
             };
             result.put("token", JWTUtil.createToken(params, openId.getBytes()));

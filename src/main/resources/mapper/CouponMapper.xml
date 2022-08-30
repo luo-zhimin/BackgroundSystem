@@ -133,7 +133,10 @@
     <select id="getCouponsList"  resultType="com.background.system.entity.Coupon">
         select
         <include refid="Base_Column_List"/>
-        from coupon where open_id=#{openId}
+        from coupon
+        <if test="openId != null and openId != ''">
+            where open_id=#{openId}
+        </if>
         <if test="page != null and size != null">
             limit #{page},#{size}
         </if>

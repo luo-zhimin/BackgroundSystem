@@ -1,6 +1,5 @@
 package com.background.system.controller;
 
-import com.background.system.entity.Coupon;
 import com.background.system.request.BaseRequest;
 import com.background.system.service.CouponService;
 import com.background.system.util.Result;
@@ -41,25 +40,5 @@ public class CouponController {
     @ApiOperation(value = "兑换优惠卷")
     public Result<?> covertCoupon(@RequestBody BaseRequest request){
         return Result.success(couponService.covertCoupon(request));
-    }
-
-    @PostMapping("/insert")
-    @ApiOperation(value = "新增")
-    public Result<?> insert(@RequestBody Coupon coupon){
-        return Result.success(couponService.insert(coupon));
-    }
-
-    @PostMapping("/update")
-    @ApiOperation(value = "修改")
-    public Result<?> update(@RequestBody Coupon coupon){
-        return Result.success(couponService.update(coupon));
-    }
-
-    @GetMapping("/admin/list")
-    @ApiOperation("后台获取消费卷列表")
-    public Result<?> getCoupons(@RequestParam(value = "page",defaultValue = "1")Integer page,
-                                @RequestParam(value = "size",defaultValue = "10")Integer size)
-    {
-        return Result.success(couponService.getCouponList(page,size,"admin"));
     }
 }

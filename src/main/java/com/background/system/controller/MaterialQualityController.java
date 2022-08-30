@@ -1,13 +1,14 @@
 package com.background.system.controller;
 
-import com.background.system.annotation.IgnoreLogin;
-import com.background.system.entity.Caizhi;
 import com.background.system.service.MaterialQualityService;
 import com.background.system.util.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,21 +37,5 @@ public class MaterialQualityController {
     public Result<?> getMaterialQualityDetail(@RequestParam(value = "id")Long id)
     {
         return Result.success(qualityService.getMaterialQualityDetail(id));
-    }
-
-    @PostMapping("/insert")
-    @ApiOperation("新增")
-    @IgnoreLogin
-    public Result<?> materialQualityInsert(@RequestBody Caizhi caizhi)
-    {
-        return Result.success(qualityService.materialQualityInsert(caizhi));
-    }
-
-    @PostMapping("/update")
-    @ApiOperation("修改")
-    @IgnoreLogin
-    public Result<?> materialQualityUpdate(@RequestBody Caizhi caizhi)
-    {
-        return Result.success(qualityService.materialQualityUpdate(caizhi));
     }
 }

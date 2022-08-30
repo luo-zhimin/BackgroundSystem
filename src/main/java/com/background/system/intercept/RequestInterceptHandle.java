@@ -4,18 +4,16 @@ import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTUtil;
 import com.background.system.annotation.IgnoreLogin;
 import com.background.system.constant.Constant;
-import com.background.system.entity.vo.AdminUserVO;
 import com.background.system.exception.VerifyException;
-import com.background.system.service.admin.IAdminUseService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 import static com.background.system.constant.Constant.SWAGGER_TYPE;
@@ -28,9 +26,6 @@ import static com.background.system.constant.Constant.SWAGGER_TYPE;
 @Slf4j
 @Component
 public class RequestInterceptHandle extends HandlerInterceptorAdapter {
-
-    @Autowired
-    private IAdminUseService adminUseService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -58,25 +53,20 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
 
         // 校验token
         boolean verify = false;
-
+        JWT jwt = JWTUtil.parseToken(authorization);
         // 管理后台请求token校验
         if (url.contains(Constant.ADMIN_REQUEST_TYPE)) {
             try {
-                AdminUserVO admin = adminUseService.getAdminInfo();
-                String tokenKey = admin.getUserName() + admin.getPassword();
+                String userName = jwt.getPayload(Constant.USER_NAME).toString();
+                String password = jwt.getPayload(Constant.PASSWORD).toString();
+                String tokenKey = userName + password;
                 verify = JWTUtil.verify(authorization, tokenKey.getBytes());
             } catch (Exception e) {
                 throw VerifyException.builder().code(200).exceptionMsg("token无效请重新登录").build();
             }
         } else {
-            JWT jwt = JWTUtil.parseToken(authorization);
             String openId = jwt.getPayload(Constant.WX_TOKEN_KEY).toString();
-            // todo去数据库查是否有该openId
-//            Boolean exist = wechatUserService.selectByOpenId(openId);
-            if (StringUtils.isEmpty(openId)) {
-                throw VerifyException.builder().code(200).exceptionMsg("token无效请重新登录").build();
-            }
-            return true;
+            verify = JWTUtil.verify(authorization,openId.getBytes(StandardCharsets.UTF_8));
         }
 
         if (!verify) {

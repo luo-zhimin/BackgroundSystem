@@ -2,18 +2,24 @@ package com.background.system.controller;
 
 import cn.hutool.jwt.JWTUtil;
 import com.background.system.annotation.IgnoreLogin;
+import com.background.system.entity.Caizhi;
+import com.background.system.entity.Coupon;
+import com.background.system.entity.Size;
 import com.background.system.entity.token.Token;
 import com.background.system.entity.vo.AdminLoginVo;
+import com.background.system.service.CouponService;
+import com.background.system.service.MaterialQualityService;
+import com.background.system.service.OrderService;
+import com.background.system.service.SizeService;
 import com.background.system.service.admin.IAdminUseService;
 import com.background.system.util.Result;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,9 +36,21 @@ public class AdminController {
     @Autowired
     private IAdminUseService adminUseService;
 
+    @Autowired
+    private CouponService couponService;
+
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private SizeService sizeService;
+
+    @Autowired
+    private MaterialQualityService qualityService;
+
+
     /**
      * 登录请求
-     *
      * @param loginVo
      * @return
      */
@@ -73,5 +91,74 @@ public class AdminController {
             .username(userName)
             .password(password)
             .build();
+    }
+
+    @GetMapping("/coupon/list")
+    @ApiOperation("后台获取消费卷列表")
+    public Result<?> getCoupons(@RequestParam(value = "page",defaultValue = "1")Integer page,
+                                @RequestParam(value = "size",defaultValue = "10")Integer size)
+    {
+        return Result.success(couponService.getCouponList(page,size,"admin"));
+    }
+
+    @PostMapping("/coupon/insert")
+    @ApiOperation(value = "优惠卷新增")
+    public Result<?> couponInsert(@RequestBody Coupon coupon){
+        return Result.success(couponService.insert(coupon));
+    }
+
+    @PostMapping("/coupon/update")
+    @ApiOperation(value = "优惠卷修改")
+    public Result<?> couponUpdate(@RequestBody Coupon coupon){
+        return Result.success(couponService.update(coupon));
+    }
+
+
+    @GetMapping("/order/list")
+    @ApiOperation("后台-订单列表")
+    public Result<?> getAdminOrderList(@RequestParam(value = "page",defaultValue = "1")Integer page,
+                                       @RequestParam(value = "size",defaultValue = "10")Integer size,
+                                       @ApiParam(name = "待付款，待发货，售后订单，交易关闭 ...",value = "type",defaultValue = "0",readOnly = true) @RequestParam String type)
+    {
+        return Result.success(orderService.getAdminOrderList(page,size,type));
+    }
+
+    @GetMapping("/order/count")
+    @ApiOperation("后台-订单列表-数量统计")
+    public Result<?> getAdminOrderCount()
+    {
+        return Result.success(orderService.getAdminOrderCount());
+    }
+
+    @PostMapping("/size/insert")
+    @ApiOperation("尺寸新增")
+    @IgnoreLogin
+    public Result<?> sizeInsert(@RequestBody Size size)
+    {
+        return Result.success(sizeService.sizeInsert(size));
+    }
+
+    @PostMapping("/size/update")
+    @ApiOperation("尺寸修改")
+    @IgnoreLogin
+    public Result<?> sizeUpdate(@RequestBody Size size)
+    {
+        return Result.success(sizeService.sizeUpdate(size));
+    }
+
+    @PostMapping("/material/insert")
+    @ApiOperation("材质新增")
+    @IgnoreLogin
+    public Result<?> materialQualityInsert(@RequestBody Caizhi caizhi)
+    {
+        return Result.success(qualityService.materialQualityInsert(caizhi));
+    }
+
+    @PostMapping("/material/update")
+    @ApiOperation("材质修改")
+    @IgnoreLogin
+    public Result<?> materialQualityUpdate(@RequestBody Caizhi caizhi)
+    {
+        return Result.success(qualityService.materialQualityUpdate(caizhi));
     }
 }

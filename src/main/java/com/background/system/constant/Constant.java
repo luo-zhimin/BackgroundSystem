@@ -19,4 +19,6 @@ public class Constant {
     public static final String WX_TOKEN_KEY = "open_id";
 
     public static final String USER_NAME = "user_name";
+
+    public static final String PASSWORD = "password";
 }

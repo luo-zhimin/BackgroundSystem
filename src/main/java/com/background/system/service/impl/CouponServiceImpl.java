@@ -63,8 +63,8 @@ public class CouponServiceImpl extends BaseService implements CouponService {
         coupons.forEach(coupon -> {
             CouponResponse response = new CouponResponse();
             BeanUtils.copyProperties(coupon,response);
-            response.setPicture(pictures.stream().filter(picture ->
-                    coupon.getPictureId().equals(picture.getId())).findFirst().orElse(new Picture()));
+            response.setPicture(CollectionUtils.isNotEmpty(pictures)? pictures.stream().filter(picture ->
+                    coupon.getPictureId().equals(picture.getId())).findFirst().orElse(new Picture()) : new Picture());
             responses.add(response);
         });
         int qualities = couponMapper.selectCountByOpenId(weChatCurrentUser!=null ? weChatCurrentUser.getUsername() : "");

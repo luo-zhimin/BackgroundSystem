@@ -63,7 +63,7 @@ public class CouponServiceImpl extends BaseService implements CouponService {
         coupons.forEach(coupon -> {
             CouponResponse response = new CouponResponse();
             BeanUtils.copyProperties(coupon,response);
-            response.setPicture(CollectionUtils.isNotEmpty(pictures)? pictures.stream().filter(picture ->
+            response.setPicture(StringUtils.isNotEmpty(coupon.getPictureId())? pictures.stream().filter(picture ->
                     coupon.getPictureId().equals(picture.getId())).findFirst().orElse(new Picture()) : new Picture());
             responses.add(response);
         });
@@ -100,6 +100,9 @@ public class CouponServiceImpl extends BaseService implements CouponService {
         //随机生成优惠卷兑换码
         String uuid = UUID.randomUUID().toString().replace("-", "");
         coupon.setCouponId(uuid);
+        if (coupon.getPrice()==null || coupon.getUseLimit()==null){
+            throw new ServiceException(1006,"价格或者消费限制不可以为空");
+        }
         return couponMapper.insertSelective(coupon)>0;
     }
 

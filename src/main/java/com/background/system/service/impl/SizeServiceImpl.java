@@ -104,6 +104,9 @@ public class SizeServiceImpl extends BaseService implements SizeService {
     @Transactional
     public Boolean sizeInsert(Size size) {
         log.info("size insert [{}]",size);
+        if (CollectionUtils.isEmpty(size.getMaterialIds()) && (size.getFaces()==null || size.getSize()==null)){
+            throw new ServiceException(1029,"请确认后在操作");
+        }
         return sizeMapper.insertSelective(size)>0;
     }
 

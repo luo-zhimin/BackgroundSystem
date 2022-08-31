@@ -52,7 +52,7 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
         }
 
         // 校验token
-        boolean verify = false;
+        boolean verify;
         JWT jwt = JWTUtil.parseToken(authorization);
         // 管理后台请求token校验
         if (url.contains(Constant.ADMIN_REQUEST_TYPE)) {

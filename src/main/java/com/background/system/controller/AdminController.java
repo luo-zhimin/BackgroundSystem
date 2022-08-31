@@ -161,4 +161,12 @@ public class AdminController {
     {
         return Result.success(qualityService.materialQualityUpdate(caizhi));
     }
+
+    @GetMapping("/material/list")
+    @ApiOperation("材质列表")
+    @IgnoreLogin
+    public Result<?> materialQualityList()
+    {
+        return Result.success(qualityService.getMaterialQualityList());
+    }
 }

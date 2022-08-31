@@ -5,12 +5,10 @@
         <!--@Table caizhi-->
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
-        <result column="price" jdbcType="DECIMAL" property="price"/>
     </resultMap>
     <sql id="Base_Column_List">
         id,
         `name`,
-        price
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
@@ -25,8 +23,8 @@
     </delete>
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Caizhi"
             useGeneratedKeys="true">
-        insert into caizhi (`name`, price)
-        values (#{name,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL})
+        insert into caizhi (`name`)
+        values (#{name,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Caizhi"
             useGeneratedKeys="true">
@@ -35,16 +33,11 @@
             <if test="name != null and name != ''">
                 `name`,
             </if>
-            <if test="price != null">
-                price,
-            </if>
+
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="name != null and name != ''">
                 #{name,jdbcType=VARCHAR},
-            </if>
-            <if test="price != null">
-                #{price,jdbcType=DECIMAL},
             </if>
         </trim>
     </insert>
@@ -54,16 +47,12 @@
             <if test="name != null and name != ''">
                 `name` = #{name,jdbcType=VARCHAR},
             </if>
-            <if test="price != null">
-                price = #{price,jdbcType=DECIMAL},
-            </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Caizhi">
         update caizhi
-        set `name` = #{name,jdbcType=VARCHAR},
-            price  = #{price,jdbcType=DECIMAL}
+        set `name` = #{name,jdbcType=VARCHAR}
         where id = #{id,jdbcType=BIGINT}
     </update>
 

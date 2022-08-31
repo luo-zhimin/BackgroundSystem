@@ -84,9 +84,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             uPrice = size.getPrice();
         }
         //材质价格
-        BigDecimal price = caizhi.getPrice();
+//        BigDecimal price = caizhi.getPrice();
         //（材质+尺寸）
-        BigDecimal total = uPrice.add(price);
+        BigDecimal total = uPrice;
 
         //价格计算 单 or 双 * 组  数量 *（材质+尺寸）
 //        String faces = size.getFaces();

@@ -3,6 +3,7 @@ package com.background.system.service.impl;
 import com.background.system.entity.Picture;
 import com.background.system.exception.ServiceException;
 import com.background.system.mapper.PictureMapper;
+import com.background.system.response.PictureResponse;
 import com.background.system.service.PictureService;
 import com.background.system.util.AliUploadUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -28,9 +29,9 @@ public class PictureServiceImpl implements PictureService {
 
     @Override
     @Transactional
-    public String getPicture(MultipartFile file) {
-        if (file==null){
-            throw new ServiceException(1000,"请至少选择一张图片！");
+    public PictureResponse getPicture(MultipartFile file) {
+        if (file == null) {
+            throw new ServiceException(1000, "请至少选择一张图片！");
         }
 
 //        List<String> pictureIds = Lists.newArrayList();
@@ -44,7 +45,10 @@ public class PictureServiceImpl implements PictureService {
         pictureMapper.insert(picture);
 //        pictureIds.add(picture.getId());
 //        return StringUtils.join(pictureIds,",");
-        return picture.getId();
+        return PictureResponse.builder()
+                .id(picture.getId())
+                .url(picture.getUrl())
+                .build();
     }
 
     public List<Picture> getPicturesByIds(List<String> ids){

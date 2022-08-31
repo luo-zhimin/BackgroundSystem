@@ -38,6 +38,11 @@ public class MaterialQualityServiceImpl extends BaseService implements MaterialQ
         return materialPage;
     }
 
+    @Override
+    public List<Caizhi> getMaterialQualityList() {
+        return caizhiMapper.getMaterialQualitiesList(null,null);
+    }
+
     public List<Caizhi> getMaterialListByIds(List<String> ids){
         return caizhiMapper.getMaterialListByIds(ids);
     }
@@ -50,8 +55,8 @@ public class MaterialQualityServiceImpl extends BaseService implements MaterialQ
     @Override
     public Boolean materialQualityInsert(Caizhi caizhi) {
         log.info("materialQuality insert [{}]",caizhi);
-        if (caizhi.getName()==null || caizhi.getPrice()==null){
-            throw new ServiceException(1008,"材质名字或者价格不可以为空");
+        if (caizhi.getName()==null){
+            throw new ServiceException(1008,"材质名字不可以为空");
         }
         return caizhiMapper.insertSelective(caizhi)>0;
     }

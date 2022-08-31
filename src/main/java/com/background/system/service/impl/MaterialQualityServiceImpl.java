@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -64,17 +65,29 @@ public class MaterialQualityServiceImpl extends BaseService implements MaterialQ
     @Override
     public Boolean materialQualityUpdate(Caizhi caizhi) {
         log.info("materialQuality update [{}]",caizhi);
-        if (caizhi.getId()==null){
-            throw new ServiceException(1003,"id不可以为空");
-        }
-        Caizhi live = caizhiMapper.selectByPrimaryKey(caizhi.getId());
-        if (live==null){
-            throw new ServiceException(1004,"该材质不存在，请确认后重新操作");
-        }
+        check(caizhi.getId());
         return caizhiMapper.updateByPrimaryKey(caizhi)>0;
+    }
+
+    @Override
+    @Transactional
+    public Boolean deleteMaterialQuality(Long id) {
+        check(id);
+        return caizhiMapper.deleteByPrimaryKey(id)>0;
     }
 
     public Caizhi selectByPrimaryKey(Long id) {
         return caizhiMapper.selectByPrimaryKey(id);
+    }
+
+
+    private void check(Long id){
+        if (id==null){
+            throw new ServiceException(1003,"id不可以为空");
+        }
+        Caizhi live = caizhiMapper.selectByPrimaryKey(id);
+        if (live==null){
+            throw new ServiceException(1004,"该材质不存在，请确认后重新操作");
+        }
     }
 }

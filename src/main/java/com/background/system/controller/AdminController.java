@@ -132,15 +132,20 @@ public class AdminController {
 
     @PostMapping("/size/insert")
     @ApiOperation("尺寸新增")
-    @IgnoreLogin
     public Result<?> sizeInsert(@RequestBody Size size)
     {
         return Result.success(sizeService.sizeInsert(size));
     }
 
+    @DeleteMapping("/size/delete")
+    @ApiOperation("尺寸删除")
+    public Result<?> sizeDelete(@RequestParam String id)
+    {
+        return Result.success(sizeService.sizeDelete(id));
+    }
+
     @PostMapping("/size/update")
     @ApiOperation("尺寸修改")
-    @IgnoreLogin
     public Result<?> sizeUpdate(@RequestBody Size size)
     {
         return Result.success(sizeService.sizeUpdate(size));
@@ -170,12 +175,11 @@ public class AdminController {
         return Result.success(qualityService.getMaterialQualityList());
     }
 
-
-    @GetMapping("/listAll")
-    @ApiOperation("所有订单记录")
-    public Result<?> getOrderAllList(@RequestParam(value = "page",defaultValue = "1")Integer page,
-                                     @RequestParam(value = "size",defaultValue = "10")Integer size)
+    @DeleteMapping("/material/delete")
+    @ApiOperation("删除材质")
+    @IgnoreLogin
+    public Result<?> deleteMaterialQuality(@RequestParam Long id)
     {
-        return Result.success(orderService.getOrderAllList(page,size));
+        return Result.success(qualityService.deleteMaterialQuality(id));
     }
 }

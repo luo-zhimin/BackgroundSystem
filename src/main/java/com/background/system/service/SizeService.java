@@ -19,4 +19,6 @@ public interface SizeService {
     Boolean sizeInsert(Size size);
 
     Boolean sizeUpdate(Size size);
+
+    Boolean sizeDelete(String id);
 }

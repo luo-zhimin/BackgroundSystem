@@ -169,6 +169,7 @@ public class PayServiceImpl extends BaseService implements PayService {
     @Override
     @Transactional
     public Boolean payOk(String orderId) {
+        log.info("payOk [{}]",orderId);
         Order order = orderMapper.selectByPrimaryKey(orderId);
         order.setIsPay(true);
         return orderMapper.updateByPrimaryKey(order)>0;

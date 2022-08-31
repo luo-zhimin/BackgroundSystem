@@ -118,9 +118,24 @@ public class AdminController {
     @ApiOperation("后台-订单列表")
     public Result<?> getAdminOrderList(@RequestParam(value = "page",defaultValue = "1")Integer page,
                                        @RequestParam(value = "size",defaultValue = "10")Integer size,
-                                       @ApiParam(name = "待付款，待发货，售后订单，交易关闭 ...",value = "type",defaultValue = "0",readOnly = true) @RequestParam String type)
+                                       @ApiParam(name = "0-待付款  1-待发货 2-配送中 3-已完成 4-已取消",value = "type",defaultValue = "0",readOnly = true) @RequestParam Integer type)
     {
         return Result.success(orderService.getAdminOrderList(page,size,type));
+    }
+
+    @PostMapping("/order/close")
+    @ApiOperation("后台-订单确认完成")
+    public Result<?> orderClose(@RequestParam String id)
+    {
+        return Result.success(orderService.orderClose(id));
+    }
+
+    @PostMapping("/order/update")
+    @ApiOperation("后台-修改快递单号")
+    public Result<?> updateKdNo(@RequestParam String  id,
+                                @RequestParam String orderNo)
+    {
+        return Result.success(orderService.updateKdNo(id,orderNo));
     }
 
     @GetMapping("/order/count")

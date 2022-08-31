@@ -6,13 +6,14 @@ import com.background.system.entity.token.Token;
 import com.background.system.entity.vo.OrderVo;
 import com.background.system.exception.ServiceException;
 import com.background.system.mapper.*;
+import com.background.system.response.OrderCountResponse;
 import com.background.system.response.OrderElementResponse;
 import com.background.system.response.OrderResponse;
 import com.background.system.service.OrderService;
-import com.background.system.util.Result;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -26,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
 * Created by IntelliJ IDEA.
@@ -189,21 +191,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Override
     public Page<OrderResponse> getOrderList(Integer page, Integer size) {
-        List<OrderResponse> orderResponses = Lists.newArrayList();
         Page<OrderResponse> orderPage = initPage(page, size);
         Token currentUser = getWeChatCurrentUser();
+        page = (page - 1) * size;
         List<Order> orderList = orderMapper.getOrderList(page, size, currentUser.getUsername());
         //商品
-        if (CollectionUtils.isNotEmpty(orderList)){
-            orderList.forEach(order -> {
-                OrderResponse orderResponse = new OrderResponse();
-                BeanUtils.copyProperties(order,orderResponse);
-                if (order.getSizeId() != null) {
-                    orderResponse.setSize(sizeService.getSizeDetail(order.getSizeId()+""));
-                }
-                orderResponses.add(orderResponse);
-            });
-        }
+        List<OrderResponse> orderResponses =  transformOrderResponse(orderList);
         int orderCount = orderMapper.getCurrentOrderCount(currentUser.getUsername());
         orderPage.setTotal(orderCount);
         orderPage.setRecords(orderResponses);
@@ -229,30 +222,109 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     }
 
     @Override
-    public Page<OrderResponse> getAdminOrderList(Integer page, Integer size,String type) {
+    @SuppressWarnings({"all"})
+    public Page<OrderResponse> getAdminOrderList(Integer page, Integer size,Integer type) {
         //todo 思路俩个接口 一个数量 一个列表 防止数量过大加载慢
         Page<OrderResponse> orderPage = initPage(page, size);
-        switch (type){
-            case "0":
-                break;
-            //.....
+        if (type>=5){
+            throw new ServiceException(1000,"类型暂无处理");
         }
+        page = (page - 1) * size;
+        //0-待付款  1-待发货 2-配送中 3-已完成 4-已取消
+        int count = orderMapper.getOrderCountByType(type);
+        List<Order>  orders = orderMapper.getOrderByType(page, size, type);
+        List<OrderResponse> orderResponses =  transformOrderResponse(orders);
+        orderPage.setTotal(count);
+        orderPage.setRecords(orderResponses);
         return orderPage;
     }
 
     @Override
     public Map<String, Integer> getAdminOrderCount() {
-        HashMap<String, Integer> countMap = new HashMap<>();
+        Map<String, Integer> countMap = initCountMap();
+        //isPay 1 付款 待发货 有 kdNo 就是配送
+        //待付款 待发货 配送中 已取消 已完成 支付金额
         //分组统计 最好设置 state 默认 为 0
+        List<OrderCountResponse> orderCount = orderMapper.getOrderCount();
+        //配送
+        int orderNoCount = orderMapper.getHasKdNoCount();
+        countMap.put("配送中",orderNoCount);
+        int closeCount = orderMapper.getCloseCount();
+        countMap.put("已完成",closeCount);
+        if (CollectionUtils.isNotEmpty(orderCount)){
+            List<OrderCountResponse> deleteResponse = orderCount.stream()
+                    .filter(OrderCountResponse::getIsDel).collect(Collectors.toList());
+
+            List<OrderCountResponse> noPay = orderCount.stream()
+                    .filter(o -> !o.getIsPay()).collect(Collectors.toList());
+
+            List<OrderCountResponse> pay = orderCount.stream()
+                    .filter(o->o.getIsPay() && !o.getIsDel()).collect(Collectors.toList());
+
+            orderCount.removeAll(deleteResponse);
+
+            countMap.put("待付款",noPay.stream().mapToInt(OrderCountResponse::getPayCount).sum());
+            countMap.put("待发货",pay.stream().mapToInt(OrderCountResponse::getPayCount).sum());
+            countMap.put("已取消",deleteResponse.stream().mapToInt(OrderCountResponse::getDelCount).sum());
+
+            countMap.put("支付金额",pay.stream().mapToInt(OrderCountResponse::getTotalCount).sum());
+        }
         return countMap;
     }
 
     @Override
-    public Page<OrderResponse> getOrderAllList(Integer page, Integer size) {
+    @Transactional
+    public Boolean updateKdNo(String  id, String orderNo) {
+        logger.info("updateKdNo [{}] -- [{}]",id,orderNo);
+        checkOrder(id);
+        Token currentUser = getCurrentUser();
+        return orderMapper.updateKdNo(id,orderNo,currentUser.getUsername())>0;
+    }
+
+    @Override
+    @Transactional
+    public Boolean orderClose(String  id) {
+        logger.info("orderClose [{}]",id);
+        checkOrder(id);
+        Token currentUser = getCurrentUser();
+        return orderMapper.closeOrder(id,currentUser.getUsername())>0;
+    }
+
+//    @Override
+//    public Page<OrderResponse> getOrderAllList(Integer page, Integer size) {
+//        List<OrderResponse> orderResponses = Lists.newArrayList();
+//        Page<OrderResponse> orderPage = initPage(page, size);
+//        List<Order> orderList = orderMapper.getOrderAllList(page, size);
+//        //商品
+//        if (CollectionUtils.isNotEmpty(orderList)){
+//            orderList.forEach(order -> {
+//                OrderResponse orderResponse = new OrderResponse();
+//                BeanUtils.copyProperties(order,orderResponse);
+//                if (order.getSizeId() != null) {
+//                    orderResponse.setSize(sizeService.getSizeDetail(order.getSizeId()+""));
+//                }
+//                orderResponses.add(orderResponse);
+//            });
+//        }
+//        int orderCount = orderList.size();
+//        orderPage.setTotal(orderCount);
+//        orderPage.setRecords(orderResponses);
+//        return orderPage;
+//    }
+
+    private Map<String,Integer> initCountMap(){
+        Map<String,Integer> countMap = new HashMap<>();
+        countMap.put("待付款",0);
+        countMap.put("待发货",0);
+        countMap.put("配送中",0);
+        countMap.put("已取消",0);
+        countMap.put("已完成",0);
+        countMap.put("支付金额",0);
+        return countMap;
+    }
+
+    private List<OrderResponse> transformOrderResponse(List<Order> orderList){
         List<OrderResponse> orderResponses = Lists.newArrayList();
-        Page<OrderResponse> orderPage = initPage(page, size);
-        List<Order> orderList = orderMapper.getOrderAllList(page, size);
-        //商品
         if (CollectionUtils.isNotEmpty(orderList)){
             orderList.forEach(order -> {
                 OrderResponse orderResponse = new OrderResponse();
@@ -263,9 +335,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                 orderResponses.add(orderResponse);
             });
         }
-        int orderCount = orderList.size();
-        orderPage.setTotal(orderCount);
-        orderPage.setRecords(orderResponses);
-        return orderPage;
+        return orderResponses;
+    }
+
+    private void checkOrder(String id){
+        if (StringUtils.isEmpty(id)){
+            throw new ServiceException(1003,"id不可以为空");
+        }
+        Order live = orderMapper.selectByPrimaryKey(id);
+        if (live==null){
+            throw new ServiceException(1004,"该订单不存在，请确认后重新操作");
+        }
     }
 }

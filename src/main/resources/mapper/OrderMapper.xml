@@ -22,6 +22,7 @@
         <result column="caizhi_id" jdbcType="VARCHAR" property="caizhiId"/>
         <result column="size_id" jdbcType="VARCHAR" property="sizeId"/>
         <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -42,7 +43,8 @@
 <!--        picture_id,-->
         size_id,
         caizhi_id,
-        create_user
+        create_user,
+        update_user
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -260,4 +262,94 @@
             limit #{page},#{size}
         </if>
     </select>
+
+    <select id="getOrderCount" resultType="com.background.system.response.OrderCountResponse">
+        select any_value(sum(total)) totalCount, any_value(count(is_pay)) payCount, is_pay, any_value(count(is_del)) delCount, is_del from `order` group by is_del
+    </select>
+
+    <select id="getHasKdNoCount" resultType="int">
+        select count(*) from `order` where kd_no is not null
+    </select>
+
+    <select id="getCloseCount" resultType="int">
+        select count(*) from `order` where `status` = 4
+    </select>
+
+    <!-- 0-待付款  1-待发货 2-配送中 3-已完成 4-已取消   -->
+    <select id="getOrderByType" resultMap="BaseResultMap">
+        <!--  待付款      -->
+        <if test="type == 0">
+            select *
+            from `order`
+            where is_pay = 0
+        </if>
+        <!--   待发货  -->
+        <if test="type == 1">
+            select *
+            from `order`
+            where is_pay = 1
+        </if>
+        <!--  配送中  -->
+        <if test="type == 2">
+            select *
+            from `order`
+            where kd_no is not null
+        </if>
+        <!-- 已完成 -->
+        <if test="type == 3">
+            select *
+            from `order`
+            where `status` = 4
+        </if>
+        <!--  已取消 -->
+        <if test="type == 4">
+            select *
+            from `order`
+            where is_del = 1
+        </if>
+        <if test="page != null and size != null">
+            limit #{page},#{size}
+        </if>
+    </select>
+
+    <select id="getOrderCountByType" resultType="int">
+        <!--  待付款      -->
+        <if test="type == 0">
+            select count(*)
+            from `order`
+            where is_pay = 0
+        </if>
+        <!--   待发货  -->
+        <if test="type == 1">
+            select count(*)
+            from `order`
+            where is_pay = 1
+        </if>
+        <!--  配送中  -->
+        <if test="type == 2">
+            select count(*)
+            from `order`
+            where kd_no is not null
+        </if>
+        <!-- 已完成 -->
+        <if test="type == 3">
+            select count(*)
+            from `order`
+            where `status` = 4
+        </if>
+        <!--  已取消 -->
+        <if test="type == 4">
+            select count(*)
+            from `order`
+            where is_del = 1
+        </if>
+    </select>
+
+    <update id="updateKdNo">
+        update `order` set kd_no =#{kdNo},update_user=#{updateUser} where id=#{id}
+    </update>
+
+    <update id="closeOrder">
+        update `order` set status = 4,update_user=#{updateUser} where id=#{id}
+    </update>
 </mapper>

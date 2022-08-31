@@ -1,9 +1,8 @@
 package com.background.system.mapper;
 
 import com.background.system.entity.Order;
-import com.background.system.response.OrderResponse;
+import com.background.system.response.OrderCountResponse;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -32,7 +31,23 @@ public interface OrderMapper extends BaseMapper<Order> {
                              @Param("openId")String openId);
 
     List<Order> getOrderAllList(@Param("page") Integer page,
-                                        @Param("size") Integer size);
+                                @Param("size") Integer size);
 
     int deleteOrderById(@Param("id")String orderId);
+
+    List<OrderCountResponse> getOrderCount();
+
+    int getHasKdNoCount();
+
+    int getCloseCount();
+
+    List<Order> getOrderByType(@Param("page") Integer page,
+                               @Param("size") Integer size,
+                               @Param("type") Integer type);
+
+    int getOrderCountByType(@Param("type")Integer type);
+
+    int updateKdNo(@Param("id")String id,@Param("kdNo")String kdNo,@Param("updateUser")String updateUser);
+
+    int closeOrder(@Param("id")String id,@Param("updateUser")String updateUser);
 }

@@ -80,7 +80,6 @@ public class MaterialQualityServiceImpl extends BaseService implements MaterialQ
         return caizhiMapper.selectByPrimaryKey(id);
     }
 
-
     private void check(Long id){
         if (id==null){
             throw new ServiceException(1003,"id不可以为空");

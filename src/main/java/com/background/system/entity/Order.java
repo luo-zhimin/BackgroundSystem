@@ -71,4 +71,6 @@ public class Order {
     private Long caizhiId;
 
     private String createUser;
+
+    private String updateUser;
 }

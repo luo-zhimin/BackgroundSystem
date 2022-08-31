@@ -21,4 +21,6 @@ public interface MaterialQualityService {
     Boolean materialQualityInsert(Caizhi caizhi);
 
     Boolean materialQualityUpdate(Caizhi caizhi);
+
+    Boolean deleteMaterialQuality(Long id);
 }

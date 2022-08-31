@@ -132,15 +132,20 @@ public class AdminController {
 
     @PostMapping("/size/insert")
     @ApiOperation("尺寸新增")
-    @IgnoreLogin
     public Result<?> sizeInsert(@RequestBody Size size)
     {
         return Result.success(sizeService.sizeInsert(size));
     }
 
+    @DeleteMapping("/size/delete")
+    @ApiOperation("尺寸删除")
+    public Result<?> sizeDelete(@RequestParam String id)
+    {
+        return Result.success(sizeService.sizeDelete(id));
+    }
+
     @PostMapping("/size/update")
     @ApiOperation("尺寸修改")
-    @IgnoreLogin
     public Result<?> sizeUpdate(@RequestBody Size size)
     {
         return Result.success(sizeService.sizeUpdate(size));
@@ -168,5 +173,13 @@ public class AdminController {
     public Result<?> materialQualityList()
     {
         return Result.success(qualityService.getMaterialQualityList());
+    }
+
+    @DeleteMapping("/material/delete")
+    @ApiOperation("删除材质")
+    @IgnoreLogin
+    public Result<?> deleteMaterialQuality(@RequestParam Long id)
+    {
+        return Result.success(qualityService.deleteMaterialQuality(id));
     }
 }

@@ -4,6 +4,7 @@ import com.background.system.entity.Caizhi;
 import com.background.system.entity.Picture;
 import com.background.system.entity.Size;
 import com.background.system.exception.ServiceException;
+import com.background.system.mapper.CaizhiMapper;
 import com.background.system.mapper.SizeMapper;
 import com.background.system.response.SizeResponse;
 import com.background.system.service.SizeService;
@@ -33,6 +34,8 @@ public class SizeServiceImpl extends BaseService implements SizeService {
 
     @Resource
     private SizeMapper sizeMapper;
+    @Resource
+    private CaizhiMapper caizhiMapper;
 
     @Autowired
     private PictureServiceImpl pictureService;
@@ -94,7 +97,12 @@ public class SizeServiceImpl extends BaseService implements SizeService {
             BeanUtils.copyProperties(size,sizeResponse);
             List<Picture> pictures = pictureService.getPicturesByIds(size.getPictureIds());
             sizeResponse.setPictures(pictures);
-            List<Caizhi> materials = materialQualityService.getMaterialListByIds(size.getMaterialIds());
+            List<String> materialIds = size.getMaterialIds();
+            List<Caizhi> materials = new ArrayList<>();
+            materialIds.forEach(res -> {
+                Caizhi caizhi = caizhiMapper.selectById(res);
+                materials.add(caizhi);
+            });
             sizeResponse.setMaterials(materials);
         }
         return sizeResponse;

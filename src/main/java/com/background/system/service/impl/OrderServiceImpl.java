@@ -9,6 +9,7 @@ import com.background.system.mapper.*;
 import com.background.system.response.OrderElementResponse;
 import com.background.system.response.OrderResponse;
 import com.background.system.service.OrderService;
+import com.background.system.util.Result;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
@@ -244,5 +245,27 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         HashMap<String, Integer> countMap = new HashMap<>();
         //分组统计 最好设置 state 默认 为 0
         return countMap;
+    }
+
+    @Override
+    public Page<OrderResponse> getOrderAllList(Integer page, Integer size) {
+        List<OrderResponse> orderResponses = Lists.newArrayList();
+        Page<OrderResponse> orderPage = initPage(page, size);
+        List<Order> orderList = orderMapper.getOrderAllList(page, size);
+        //商品
+        if (CollectionUtils.isNotEmpty(orderList)){
+            orderList.forEach(order -> {
+                OrderResponse orderResponse = new OrderResponse();
+                BeanUtils.copyProperties(order,orderResponse);
+                if (order.getSizeId() != null) {
+                    orderResponse.setSize(sizeService.getSizeDetail(order.getSizeId()+""));
+                }
+                orderResponses.add(orderResponse);
+            });
+        }
+        int orderCount = orderList.size();
+        orderPage.setTotal(orderCount);
+        orderPage.setRecords(orderResponses);
+        return orderPage;
     }
 }

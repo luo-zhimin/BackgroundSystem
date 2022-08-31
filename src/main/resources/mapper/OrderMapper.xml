@@ -251,4 +251,13 @@
     <delete id="deleteOrderById">
         update `order` set is_del = 1 where id=#{id};
     </delete>
+
+    <select id="getOrderAllList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `order` where is_del=0
+        <if test="page != null and size != null">
+            limit #{page},#{size}
+        </if>
+    </select>
 </mapper>

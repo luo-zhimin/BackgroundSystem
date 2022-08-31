@@ -169,4 +169,13 @@ public class AdminController {
     {
         return Result.success(qualityService.getMaterialQualityList());
     }
+
+
+    @GetMapping("/listAll")
+    @ApiOperation("所有订单记录")
+    public Result<?> getOrderAllList(@RequestParam(value = "page",defaultValue = "1")Integer page,
+                                     @RequestParam(value = "size",defaultValue = "10")Integer size)
+    {
+        return Result.success(orderService.getOrderAllList(page,size));
+    }
 }

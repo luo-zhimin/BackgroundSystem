@@ -3,8 +3,10 @@ package com.background.system.service;
 import com.background.system.entity.Order;
 import com.background.system.entity.vo.OrderVo;
 import com.background.system.response.OrderResponse;
+import com.background.system.util.Result;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,6 +26,7 @@ public interface OrderService {
 
     Page<OrderResponse> getOrderList(Integer page, Integer size);
 
+
     Boolean updateOrder(Order order);
 
     Boolean cancelOrder(String id);
@@ -31,4 +34,6 @@ public interface OrderService {
     Page<OrderResponse> getAdminOrderList(Integer page, Integer size,String type);
 
     Map<String,Integer> getAdminOrderCount();
+
+    Page<OrderResponse> getOrderAllList(Integer page, Integer size);
 }

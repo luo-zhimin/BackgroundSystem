@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -223,7 +224,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Override
     @SuppressWarnings({"all"})
-    public Page<OrderResponse> getAdminOrderList(Integer page, Integer size,Integer type) {
+    public Page<OrderResponse> getAdminOrderList(Integer page, Integer size,Integer type,String sizeId) {
         //todo 思路俩个接口 一个数量 一个列表 防止数量过大加载慢
         Page<OrderResponse> orderPage = initPage(page, size);
         if (type>=5){
@@ -231,8 +232,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         }
         page = (page - 1) * size;
         //0-待付款  1-待发货 2-配送中 3-已完成 4-已取消
-        int count = orderMapper.getOrderCountByType(type);
-        List<Order>  orders = orderMapper.getOrderByType(page, size, type);
+        List<String> sizeIds = Lists.newArrayList();
+        if (StringUtils.isNotEmpty(sizeId)){
+            sizeIds = Arrays.asList(sizeId.split(","));
+        }
+
+        int count = orderMapper.getOrderCountByType(type,sizeIds);
+        List<Order>  orders = orderMapper.getOrderByType(page, size, type,sizeIds);
         List<OrderResponse> orderResponses =  transformOrderResponse(orders);
         orderPage.setTotal(count);
         orderPage.setRecords(orderResponses);

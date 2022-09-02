@@ -29,7 +29,7 @@ public interface OrderService {
 
     Boolean cancelOrder(String id);
 
-    Page<OrderResponse> getAdminOrderList(Integer page, Integer size,Integer type);
+    Page<OrderResponse> getAdminOrderList(Integer page, Integer size,Integer type,String sizeId);
 
     Map<String,Integer> getAdminOrderCount();
 

@@ -43,11 +43,16 @@ public interface OrderMapper extends BaseMapper<Order> {
 
     List<Order> getOrderByType(@Param("page") Integer page,
                                @Param("size") Integer size,
-                               @Param("type") Integer type);
+                               @Param("type") Integer type,
+                               @Param("sizeIds")List<String> sizeIds);
 
-    int getOrderCountByType(@Param("type")Integer type);
+    int getOrderCountByType(@Param("type")Integer type,
+                            @Param("sizeIds")List<String> sizeIds);
 
-    int updateKdNo(@Param("id")String id,@Param("kdNo")String kdNo,@Param("updateUser")String updateUser);
+    int updateKdNo(@Param("id")String id,
+                   @Param("kdNo")String kdNo,
+                   @Param("updateUser")String updateUser);
 
-    int closeOrder(@Param("id")String id,@Param("updateUser")String updateUser);
+    int closeOrder(@Param("id")String id,
+                   @Param("updateUser")String updateUser);
 }

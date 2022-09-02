@@ -307,6 +307,12 @@
             from `order`
             where is_del = 1
         </if>
+        <if test="sizeIds != null and sizeIds.size() != 0">
+            and size_id in
+            <foreach collection="sizeIds" item="key" index="index" open="(" close=")" separator=",">
+                #{key,jdbcType=VARCHAR}
+            </foreach>
+        </if>
         <if test="page != null and size != null">
             limit #{page},#{size}
         </if>
@@ -342,6 +348,12 @@
             select count(*)
             from `order`
             where is_del = 1
+        </if>
+        <if test="sizeIds != null and sizeIds.size() != 0">
+            and size_id in
+            <foreach collection="sizeIds" item="key" index="index" open="(" close=")" separator=",">
+                #{key,jdbcType=VARCHAR}
+            </foreach>
         </if>
     </select>
 

@@ -118,9 +118,10 @@ public class AdminController {
     @ApiOperation("后台-订单列表")
     public Result<?> getAdminOrderList(@RequestParam(value = "page",defaultValue = "1")Integer page,
                                        @RequestParam(value = "size",defaultValue = "10")Integer size,
-                                       @ApiParam(name = "0-待付款  1-待发货 2-配送中 3-已完成 4-已取消",value = "type",defaultValue = "0",readOnly = true) @RequestParam Integer type)
+                                       @ApiParam(name = "0-待付款  1-待发货 2-配送中 3-已完成 4-已取消",value = "type",defaultValue = "0",readOnly = true) @RequestParam Integer type,
+                                       @ApiParam(name = "size id 集合多个 逗号 分隔 ",value = "sizeId") @RequestParam String sizeId)
     {
-        return Result.success(orderService.getAdminOrderList(page,size,type));
+        return Result.success(orderService.getAdminOrderList(page,size,type,sizeId));
     }
 
     @PostMapping("/order/close")

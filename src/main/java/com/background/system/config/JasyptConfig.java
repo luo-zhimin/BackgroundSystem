@@ -5,7 +5,6 @@ import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEByteEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,8 +18,8 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 public class JasyptConfig {
 
-    @Value("${jasypt.encryptor.password}")
-    private String password;
+//    @Value("${jasypt.encryptor.password}")
+    private String password = "5de88f71a509010ba5a0491c751b2d77";
 
     @Bean("jasyptStringEncryptor")
     public StringEncryptor jasyptStringEncryptor() {

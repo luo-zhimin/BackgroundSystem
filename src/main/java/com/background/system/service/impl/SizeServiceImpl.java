@@ -101,7 +101,7 @@ public class SizeServiceImpl extends BaseService implements SizeService {
             List<String> materialIds = size.getMaterialIds();
             List<Caizhi> materials = new ArrayList<>();
             materialIds.forEach(res -> {
-                Caizhi caizhi = caizhiMapper.selectById(res);
+                Caizhi caizhi = caizhiMapper.selectByPrimaryKey(Long.parseLong(res));
                 materials.add(caizhi);
             });
             sizeResponse.setMaterials(materials);

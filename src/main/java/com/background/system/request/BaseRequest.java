@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 public class BaseRequest {
 
-    private Long id;
+    private String id;
 
     @ApiModelProperty(value = "兑换码")
     private String couponId;

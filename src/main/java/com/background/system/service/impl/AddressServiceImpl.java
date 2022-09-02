@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,7 +47,7 @@ public class AddressServiceImpl extends BaseService implements AddressService {
     public Boolean updateAddress(AddressRequest request) {
         log.info("updateAddress request[{}]",request);
         //校验
-        if (checkUser(Long.parseLong(request.getId()))) {
+        if (checkUser(request.getId())) {
             return updateByPrimaryKeySelective(request)>0;
         }
         return false;
@@ -54,7 +55,7 @@ public class AddressServiceImpl extends BaseService implements AddressService {
 
     @Override
     @Transactional
-    public Boolean deleteAddress(Long id) {
+    public Boolean deleteAddress(String id) {
         log.info("deleteAddress id[{}]",id);
         return addressMapper.deleteAddressById(id)>0;
     }
@@ -78,13 +79,13 @@ public class AddressServiceImpl extends BaseService implements AddressService {
     }
 
     @Override
-    public Address getAddressDetail(Long id) {
+    public Address getAddressDetail(String id) {
         return selectByPrimaryKey(id);
     }
 
     @Override
     @Transactional
-    public Boolean updateDefaultAddress(Long id) {
+    public Boolean updateDefaultAddress(String id) {
         Token weChatCurrentUser = getWeChatCurrentUser();
         if (checkUser(id)) {
             //所有的address 该用户的
@@ -114,7 +115,7 @@ public class AddressServiceImpl extends BaseService implements AddressService {
     }
 
 
-    public Address selectByPrimaryKey(Long id) {
+    public Address selectByPrimaryKey(String id) {
         return addressMapper.selectByPrimaryKey(id);
     }
 
@@ -131,8 +132,8 @@ public class AddressServiceImpl extends BaseService implements AddressService {
      * 检查是否是自己的地址
      * @return 是否
      */
-    private Boolean checkUser(Long id){
-        if (id == null) {
+    private Boolean checkUser(String id){
+        if (StringUtils.isEmpty(id)) {
             throw new ServiceException(1000,"id 不可以为空");
         }
         Token weChatCurrentUser = getWeChatCurrentUser();

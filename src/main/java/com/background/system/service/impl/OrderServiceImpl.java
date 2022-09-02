@@ -9,6 +9,7 @@ import com.background.system.mapper.*;
 import com.background.system.response.OrderCountResponse;
 import com.background.system.response.OrderElementResponse;
 import com.background.system.response.OrderResponse;
+import com.background.system.response.ReadyDownloadFIleResponse;
 import com.background.system.service.OrderService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
@@ -24,10 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -114,8 +112,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         orderMapper.insert(order);
         //下单时候 具体详情进入 element里面
         logger.info("order elements[{}]", orderElements);
-        if (CollectionUtils.isNotEmpty(orderElements)){
-            orderElements.forEach(orderElement -> orderElement.setOrderId(order.getId()));
+        if (CollectionUtils.isNotEmpty(orderElements)) {
+            orderElements.forEach(orderElement -> {
+                orderElement.setOrderId(order.getId());
+                orderElement.setCreateTime(LocalDateTime.now());
+            });
             elementsMapper.batchInsert(orderElements);
         }
         return order.getId();
@@ -150,7 +151,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Override
     @Transactional
-    public Boolean changeAddress(String orderId, Long addressId) {
+    public Boolean changeAddress(String orderId, String addressId) {
         Order order = orderMapper.selectByPrimaryKey(orderId);
         order.setAddressId(addressId);
         return orderMapper.updateById(order)>0;
@@ -174,7 +175,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             });
             orderResponse.setElements(elementResponses);
         }
-        if (order.getAddressId()!=null){
+        if (StringUtils.isNotEmpty(order.getAddressId())){
             orderResponse.setAddress(addressService.getAddressDetail(order.getAddressId()));
         }
         if (order.getSizeId()!=null){
@@ -352,5 +353,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         if (live==null){
             throw new ServiceException(1004,"该订单不存在，请确认后重新操作");
         }
+    }
+
+
+    /**
+     * 得到没有zip链接的
+     * @return 所有待处理对象
+     */
+    public List<ReadyDownloadFIleResponse> getFile(){
+        //找到支付 没有删除的订单 并且没有链接生产的
+        List<ReadyDownloadFIleResponse> orders = orderMapper.getNoZipPathOrder();
+        if (CollectionUtils.isEmpty(orders)){
+            return Collections.emptyList();
+        }
+        orders.forEach(order->{
+            order.setPictures(pictureService.getPicturesByIds(order.getPictureIds()));
+        });
+        return orders;
     }
 }

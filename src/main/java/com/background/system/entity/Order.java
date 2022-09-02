@@ -62,7 +62,7 @@ public class Order {
     private String status;
 
     @ApiModelProperty(value="收货地址id")
-    private Long addressId;
+    private String addressId;
 
     @ApiModelProperty(value="尺寸ID")
     private Long sizeId;
@@ -73,4 +73,8 @@ public class Order {
     private String createUser;
 
     private String updateUser;
+
+    private String zipPath;
+
+    private Boolean isDownload;
 }

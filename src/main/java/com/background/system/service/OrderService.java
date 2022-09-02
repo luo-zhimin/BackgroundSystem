@@ -18,7 +18,7 @@ public interface OrderService {
 
     Boolean coupon(Long couponId, String orderId);
 
-    Boolean changeAddress(String orderId, Long addressId);
+    Boolean changeAddress(String orderId, String addressId);
 
     OrderResponse info(String orderId);
 

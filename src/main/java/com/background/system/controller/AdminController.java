@@ -118,8 +118,8 @@ public class AdminController {
     @ApiOperation("后台-订单列表")
     public Result<?> getAdminOrderList(@RequestParam(value = "page",defaultValue = "1")Integer page,
                                        @RequestParam(value = "size",defaultValue = "10")Integer size,
-                                       @ApiParam(name = "0-待付款  1-待发货 2-配送中 3-已完成 4-已取消",value = "type",defaultValue = "0",readOnly = true) @RequestParam Integer type,
-                                       @ApiParam(name = "size id 集合多个 逗号 分隔 ",value = "sizeId") @RequestParam String sizeId)
+                                       @ApiParam(name = "0-待付款  1-待发货 2-配送中 3-已完成 4-已取消",value = "type",defaultValue = "0",required = true) @RequestParam Integer type,
+                                       @RequestParam(value = "sizeId",required = false) String sizeId)
     {
         return Result.success(orderService.getAdminOrderList(page,size,type,sizeId));
     }
@@ -145,6 +145,13 @@ public class AdminController {
     {
         return Result.success(orderService.getAdminOrderCount());
     }
+
+    @GetMapping("/order/info")
+    @ApiOperation("订单详情")
+    public Result<?> info (String orderId) {
+        return Result.success(orderService.info(orderId));
+    }
+
 
     @PostMapping("/size/insert")
     @ApiOperation("尺寸新增")

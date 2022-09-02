@@ -39,7 +39,7 @@ public class AddressController {
 
     @DeleteMapping("/delete")
     @ApiOperation("删除地址")
-    public Result<?> deleteAddress(@RequestParam(value = "id")Long id)
+    public Result<?> deleteAddress(@RequestParam(value = "id")String id)
     {
         return Result.success(addressService.deleteAddress(id));
     }
@@ -54,7 +54,7 @@ public class AddressController {
 
     @GetMapping("/detail")
     @ApiOperation("地址详情")
-    public Result<?> getAddressDetail(@RequestParam(value = "id")Long id)
+    public Result<?> getAddressDetail(@RequestParam(value = "id")String id)
     {
         return Result.success(addressService.getAddressDetail(id));
     }

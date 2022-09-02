@@ -16,7 +16,9 @@
         <result column="total" jdbcType="DECIMAL" property="total"/>
         <result column="coupon_id" jdbcType="BIGINT" property="couponId"/>
         <result column="status" jdbcType="CHAR" property="status"/>
-        <result column="address_id" jdbcType="BIGINT" property="addressId"/>
+        <result column="address_id" jdbcType="VARCHAR" property="addressId"/>
+        <result column="zip_path" jdbcType="VARCHAR" property="zipPath"/>
+        <result column="is_download" jdbcType="CHAR" property="isDownload"/>
 <!--        <result column="num" jdbcType="INTEGER" property="num"/>-->
 <!--        <result column="picture_id" jdbcType="VARCHAR" property="pictureId"/>-->
         <result column="caizhi_id" jdbcType="VARCHAR" property="caizhiId"/>
@@ -39,6 +41,8 @@
         coupon_id,
         `status`,
         address_id,
+        zip_path,
+        is_download,
 <!--        num,-->
 <!--        picture_id,-->
         size_id,
@@ -54,10 +58,10 @@
         where id = #{id,jdbcType=VARCHAR}
     </select>
 
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete
         from `order`
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </delete>
 
     <insert id="insertSelective" parameterType="com.background.system.entity.Order">
@@ -99,7 +103,7 @@
             <if test="status != null and status != ''">
                 `status`,
             </if>
-            <if test="addressId != null">
+            <if test="addressId != null and addressId != ''">
                 address_id,
             </if>
 <!--            <if test="num != null">-->
@@ -111,7 +115,7 @@
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
-                #{id,jdbcType=BIGINT},
+                #{id,jdbcType=VARCHAR},
             </if>
             <if test="wxNo != null and wxNo != ''">
                 #{wxNo,jdbcType=VARCHAR},
@@ -146,8 +150,8 @@
             <if test="status != null and status != ''">
                 #{status,jdbcType=CHAR},
             </if>
-            <if test="addressId != null">
-                #{addressId,jdbcType=BIGINT},
+            <if test="addressId != null and addressId != ''">
+                #{addressId,jdbcType=VARCHAR},
             </if>
 <!--            <if test="num != null">-->
 <!--                #{num,jdbcType=INTEGER},-->
@@ -194,8 +198,8 @@
             <if test="status != null and status != ''">
                 `status` = #{status,jdbcType=CHAR},
             </if>
-            <if test="addressId != null">
-                address_id = #{addressId,jdbcType=BIGINT},
+            <if test="addressId != null and addressId != ''">
+                address_id = #{addressId,jdbcType=VARCHAR},
             </if>
 <!--            <if test="num != null">-->
 <!--                num = #{num,jdbcType=INTEGER},-->
@@ -204,7 +208,7 @@
 <!--                picture_id = #{pictureId,jdbcType=VARCHAR},-->
 <!--            </if>-->
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </update>
 
     <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Order">
@@ -220,8 +224,8 @@
         total       = #{total,jdbcType=DECIMAL},
         coupon_id   = #{couponId,jdbcType=BIGINT},
         `status`    = #{status,jdbcType=CHAR},
-        address_id  = #{addressId,jdbcType=BIGINT}
-        where id = #{id,jdbcType=BIGINT}
+        address_id  = #{addressId,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=VARCHAR}
     </update>
 
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Order" useGeneratedKeys="true">
@@ -231,7 +235,7 @@
         size_id, create_user,
         create_time)
         values (#{remark,jdbcType=VARCHAR}, #{portPrice,jdbcType=DECIMAL}, #{total,jdbcType=DECIMAL},
-        #{couponId,jdbcType=BIGINT}, #{status,jdbcType=CHAR}, #{addressId,jdbcType=BIGINT},
+        #{couponId,jdbcType=BIGINT}, #{status,jdbcType=CHAR}, #{addressId,jdbcType=VARCHAR},
          #{caizhiId,jdbcType=BIGINT},
         #{sizeId,jdbcType=BIGINT}, #{createUser,jdbcType=VARCHAR},
         #{createTime,jdbcType=TIMESTAMP})
@@ -364,4 +368,16 @@
     <update id="closeOrder">
         update `order` set status = 4,update_user=#{updateUser} where id=#{id}
     </update>
+
+    <select id="getNoZipPathOrder" resultType="com.background.system.response.ReadyDownloadFIleResponse">
+        select o.id, s.name sizeName, o.order_no wxNo, GROUP_CONCAT(oe.picture_id) pictureId,sum(oe.number) number
+        from `order` o
+                 inner join size s on o.size_id = s.id
+                 inner join order_element oe on o.id = oe.order_id
+        where o.is_del = 0
+          and o.zip_path is null
+          and o.order_no is not null
+        group by o.id
+    </select>
+
 </mapper>

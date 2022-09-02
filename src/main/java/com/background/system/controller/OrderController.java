@@ -76,7 +76,7 @@ public class OrderController {
      */
     @GetMapping("changeAddress")
     @ApiOperation("修改地址-选择列表已有的")
-    public Result<?> changeAddress(String orderId, Long addressId) {
+    public Result<?> changeAddress(String orderId, String addressId) {
         return Result.success(orderService.changeAddress(orderId,addressId));
     }
 

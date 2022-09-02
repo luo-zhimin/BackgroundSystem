@@ -16,11 +16,11 @@ public interface AddressService {
 
     Boolean updateAddress(AddressRequest request);
 
-    Boolean deleteAddress(Long id);
+    Boolean deleteAddress(String id);
 
     Page<Address> getAddressList(Integer page, Integer size);
 
-    Address getAddressDetail(Long id);
+    Address getAddressDetail(String id);
 
-    Boolean updateDefaultAddress(Long id);
+    Boolean updateDefaultAddress(String id);
 }

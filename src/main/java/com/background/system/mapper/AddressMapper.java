@@ -17,14 +17,14 @@ public interface AddressMapper extends BaseMapper<Address> {
 
     int insertSelective(Address record);
 
-    Address selectByPrimaryKey(Long id);
+    Address selectByPrimaryKey(String id);
 
     int updateByPrimaryKeySelective(Address record);
 
     int updateByPrimaryKey(Address record);
 
 
-    int deleteAddressById(@Param("id")Long id);
+    int deleteAddressById(@Param("id")String id);
 
     List<Address> getAddressList(@Param("page")Integer page,
                                  @Param("size")Integer size,
@@ -32,7 +32,7 @@ public interface AddressMapper extends BaseMapper<Address> {
 
     List<Address> selectAddressesByOpenId(@Param("openId")String openId);
 
-    int updateDefaultAddressById(@Param("id")Long id);
+    int updateDefaultAddressById(@Param("id")String id);
 
     int updateNoDefaultAddressByIds(@Param("ids")List<String> ids);
 }

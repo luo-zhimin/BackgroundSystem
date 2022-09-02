@@ -34,7 +34,6 @@ public class JasyptConfig {
         config.setIvGeneratorClassName("org.jasypt.iv.RandomIvGenerator");
         config.setStringOutputType("base64");
         encryptor.setConfig(config);
-//        XNXxnx520
         log.info("jasypt load ~~~~");
         return encryptor;
     }

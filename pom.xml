@@ -161,6 +161,28 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <!-- https://gitee.com/roseboy/classfinal -->
+                <groupId>net.roseboy</groupId>
+                <artifactId>classfinal-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <configuration>
+                    <password>backgroundSystem</password><!--加密打包之后pom.xml会被删除，不用担心在jar包里找到此密码-->
+                    <packages>com.*</packages>
+                    <cfgfiles>application.yml,./mapper/*.xml</cfgfiles>
+                    <excludes>org.spring</excludes>
+                    <!-- 要加密的jar包 -->
+                    <libjars>a.jar,b.jar</libjars>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>classFinal</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

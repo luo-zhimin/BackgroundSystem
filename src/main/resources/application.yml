@@ -2,12 +2,14 @@ server:
   port: 8100
 spring:
   datasource:
-    url: jdbc:mysql://rm-7xvkbcfxrhi0ht10cto.mysql.rds.aliyuncs.com/backgroundSystem?rewriteBatchedStatements=true&useSSL=false&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-    username: root
-    password: XNXxnx520@
+    url: ENC(LFVDQuWIH1d/Ds47BLyulObssq2sq8V8JuFroQ6CVY/GqKPUQBznrhOsQTfISOIbGodegEdS75v2Eoo6LZNagPs9O4nvPaUJAWQ97JRkcqOnL+XJ1gITlA0R9jlrs3qfmzpctBsRFZDMxDXN4M1fRjGKyDjhuOyau8lo2uLOZs3opVcV+1cD+i8730emzeIGeOocnSXxPpG22kXIMgIRbOdDqO1LUibyWrjsBaJpIG0Y2NJHgowoDYmWV11uwsn5CImX2VqSE5fw067TXkT2af0QhksLjWcI))
+    username: ENC(QTiY5V4X87ARB6MFvaRGKbnXrQ8KZiYg)
+    password: ENC(V2ibsUozOsMCeu1xMTkasP/mU98yDqMXbTVLYDY29uo=)
     driverClassName: com.mysql.cj.jdbc.Driver
+
   application:
     name: backgroundSystem
+
 logging:
   level:
     sql: debug
@@ -15,6 +17,14 @@ logging:
 
 swagger:
   enable: true
+
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml,classpath:mapper/*/*.xml
 
+# 加密配置
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+
+# 加入配置vm
+#-Djasypt.encryptor.password=xx

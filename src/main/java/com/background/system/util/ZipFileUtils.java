@@ -11,9 +11,12 @@ import com.background.system.service.impl.PictureServiceImpl;
 import com.google.common.collect.Lists;
 import lombok.SneakyThrows;
 import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.URL;
@@ -33,11 +36,13 @@ import java.util.zip.ZipOutputStream;
  * @Author : 镜像
  * @create 2022/9/3 01:10
  */
-@SpringBootTest
+@Service
 public class ZipFileUtils {
 
-//    @Value("${zip.file}")
-    private String acceptFilePath="/Users/luozhimin/Desktop/File/daily/backgroundSystem";
+    private final Logger logger = LoggerFactory.getLogger(ZipFileUtils.class);
+
+    @Value("${zip.file}")
+    private String acceptFilePath;//="/Users/luozhimin/Desktop/File/daily/backgroundSystem";
 
     @Autowired
     private OrderServiceImpl orderService;
@@ -51,7 +56,7 @@ public class ZipFileUtils {
     /**
      * 准备删除的文件
      */
-    private List<File> deleteFile = Lists.newArrayList();
+    public List<File> deleteFile = Lists.newArrayList();
 
     public List<ReadyUploadFile> readyUploadFiles = Lists.newArrayList();
 
@@ -66,13 +71,13 @@ public class ZipFileUtils {
 
         List<ReadyDownloadFileResponse> readyDownloadFIleResponses = orderService.getFile();
         if (CollectionUtils.isEmpty(readyDownloadFIleResponses)){
-            System.out.println("无待处理文件");
+            logger.info("无待处理文件");
             return;
         }
 
         for (ReadyDownloadFileResponse response : readyDownloadFIleResponses) {
             if (CollectionUtils.isEmpty(response.getPictures())) {
-                System.out.println("该订单没有照片--" + response.getId());
+                logger.info("该订单没有照片--" + response.getId());
                 continue;
             }
             //一个订单里面所有的照片
@@ -86,10 +91,10 @@ public class ZipFileUtils {
             //创建目录 压缩zip 删除 目录 保留zip
             //订单号+成品名称+数量  日期+支付订单号+size(name)+数量
             String sendName = DateTimeFormatter.ofPattern("yyyyMMddhhmmss").format(LocalDateTime.now()) + "-" + response.getWxNo() + "-" + response.getSizeName() + "-" + response.getNumber();
-            System.out.println("sendName = " + sendName);
+            logger.info("sendName = " + sendName);
 
             String saveName = acceptFilePath + File.separator + sendName;
-            System.out.println("saveName = " + saveName);
+//            logger.info("saveName = " + saveName);
 
             //1.创建临时文件
             judgeFileExists(Lists.newArrayList(saveName));
@@ -113,9 +118,8 @@ public class ZipFileUtils {
             readyUploadFiles.add(new ReadyUploadFile(sendName+".zip", response.getId(),saveName+".zip"));
         }
 
-        System.out.println("readyUploadFiles = "+readyUploadFiles);
-        System.out.println();
-        System.out.println("deleteFile = "+deleteFile);
+//        System.out.println("readyUploadFiles = "+readyUploadFiles);
+//        System.out.println("deleteFile = "+deleteFile);
         //删除原始目录
         deleteFile();
     }
@@ -125,24 +129,25 @@ public class ZipFileUtils {
     public void uploadZip(){
         if (CollectionUtils.isNotEmpty(readyUploadFiles)){
             List<BaseResponse> baseResponses = Lists.newArrayList();
-            System.out.println("开始上传zip包");
+            logger.info("开始上传zip包");
             for (ReadyUploadFile readyUploadFile : readyUploadFiles) {
-                File file = new File(readyUploadFile.getUrl());
                 //file - > MultipartFile
                 byte[] bytes = Files.readAllBytes(Paths.get(readyUploadFile.getUrl()));
-                System.out.println(readyUploadFile.getName()+" "+bytes.length);
+//                System.out.println(readyUploadFile.getName()+" "+bytes.length);
                 MockMultipartFile mockMultipartFile = new MockMultipartFile("file",readyUploadFile.getName(),"text/plain",bytes);
                 PictureResponse picture = pictureService.getPicture(mockMultipartFile);
                 baseResponses.add(new BaseResponse(readyUploadFile.getOrderId(),picture.getUrl()));
                 deleteFile.add(new File(readyUploadFile.getUrl()));
             }
-            System.out.println("上传完毕开始删除数据");
+            logger.info("上传完毕开始删除数据");
             //上传完毕删除数据
             deleteFile();
 
             //处理准备进入数据库
-            System.out.println(baseResponses);
+//            System.out.println(baseResponses);
             orderMapper.updateZipPathById(baseResponses);
+            //数据清空
+            baseResponses.clear();
         }
     }
 
@@ -166,7 +171,7 @@ public class ZipFileUtils {
                 file.delete();
             }
             boolean delete = file.getAbsoluteFile().delete();
-            System.out.println("delete " + file.getName() + " status " + delete);
+            logger.info("delete " + file.getName() + " status " + delete);
         }
     }
 
@@ -176,7 +181,7 @@ public class ZipFileUtils {
             File file = new File(fileName);
             if (!file.exists()) {
                 boolean mkdirs = file.mkdirs();
-                System.out.println(file.getName()+" 第一次创建成功 "+mkdirs);
+                logger.info(file.getName()+" 第一次创建成功 "+mkdirs);
             }
         });
     }
@@ -214,10 +219,10 @@ public class ZipFileUtils {
         }
     }
 
-    public static byte[] readInputStream(InputStream inStream) throws Exception {
+    private byte[] readInputStream(InputStream inStream) throws Exception {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         //创建一个Buffer字符串
-        byte[] buffer = new byte[6024];
+        byte[] buffer = new byte[1024*1024];//10m
         //每次读取的字符串长度，如果为-1，代表全部读取完毕
         int len;
         //使用一个输入流从buffer里把数据读取出来

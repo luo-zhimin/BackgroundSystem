@@ -1,6 +1,5 @@
 package com.background.system;
 
-import com.background.system.response.file.ReadyUploadFile;
 import com.background.system.util.ZipFileUtils;
 import lombok.SneakyThrows;
 import org.apache.http.HttpEntity;
@@ -18,8 +17,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import static com.background.system.util.ZipFileUtils.readInputStream;
-
 /**
  * Created by IntelliJ IDEA.
  *
@@ -31,7 +28,6 @@ public class FileTest {
 
     @Resource
     private ZipFileUtils zipFileUtils;
-
 
     @SneakyThrows
     void createNetworkFile(){
@@ -80,8 +76,11 @@ public class FileTest {
     @Test
     void testUpload(){
         //准备文件
-        zipFileUtils.readyUploadFiles.add(new ReadyUploadFile("20220903033552-2322a393d1054c0ca8a2b52572a8e9ed-小卡（专属圆角版）-10.zip",
-                "15","/Users/luozhimin/Desktop/File/daily/backgroundSystem/20220903033552-2322a393d1054c0ca8a2b52572a8e9ed-小卡（专属圆角版）-10.zip"));
+        zipFileUtils.deleteFile.clear();
+        zipFileUtils.readyUploadFiles.clear();
+
+        zipFileUtils.cratePictureZip();
         zipFileUtils.uploadZip();
+        System.out.println("successful");
     }
 }

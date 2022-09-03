@@ -1,5 +1,7 @@
 package com.background.system;
 
+import com.background.system.response.file.ReadyUploadFile;
+import com.background.system.util.ZipFileUtils;
 import lombok.SneakyThrows;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -7,14 +9,16 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import static com.background.system.util.ZipFIleUtils.readInputStream;
+import static com.background.system.util.ZipFileUtils.readInputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,8 +26,11 @@ import static com.background.system.util.ZipFIleUtils.readInputStream;
  * @Author : 镜像
  * @create 2022/9/3 02:44
  */
+@SpringBootTest
 public class FileTest {
 
+    @Resource
+    private ZipFileUtils zipFileUtils;
 
     @Test
     @SneakyThrows
@@ -62,5 +69,19 @@ public class FileTest {
         InputStream inputStream = urlConnection.getInputStream();
         byte[] bytes = readInputStream(inputStream);
         System.out.println(bytes.length);
+    }
+
+
+    @Test
+    void testCreatZipOnly(){
+        zipFileUtils.cratePictureZip();
+    }
+
+    @Test
+    void testUpload(){
+        //准备文件
+        zipFileUtils.readyUploadFiles.add(new ReadyUploadFile("20220903033552-2322a393d1054c0ca8a2b52572a8e9ed-小卡（专属圆角版）-10.zip",
+                "15","/Users/luozhimin/Desktop/File/daily/backgroundSystem/20220903033552-2322a393d1054c0ca8a2b52572a8e9ed-小卡（专属圆角版）-10.zip"));
+        zipFileUtils.uploadZip();
     }
 }

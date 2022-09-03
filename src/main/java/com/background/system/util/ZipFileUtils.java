@@ -11,7 +11,6 @@ import com.background.system.service.impl.PictureServiceImpl;
 import com.google.common.collect.Lists;
 import lombok.SneakyThrows;
 import org.apache.commons.collections4.CollectionUtils;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
@@ -35,7 +34,7 @@ import java.util.zip.ZipOutputStream;
  * @create 2022/9/3 01:10
  */
 @SpringBootTest
-public class ZipFIleUtils {
+public class ZipFileUtils {
 
 //    @Value("${zip.file}")
     private String acceptFilePath="/Users/luozhimin/Desktop/File/daily/backgroundSystem";
@@ -54,7 +53,7 @@ public class ZipFIleUtils {
      */
     private List<File> deleteFile = Lists.newArrayList();
 
-    private List<ReadyUploadFile> readyUploadFiles = Lists.newArrayList();
+    public List<ReadyUploadFile> readyUploadFiles = Lists.newArrayList();
 
     /**
      * 订单图片处理 压缩zip 上传服务器
@@ -123,7 +122,7 @@ public class ZipFIleUtils {
 
 
     @SneakyThrows
-    private void uploadZip(){
+    public void uploadZip(){
         if (CollectionUtils.isNotEmpty(readyUploadFiles)){
             List<BaseResponse> baseResponses = Lists.newArrayList();
             System.out.println("开始上传zip包");
@@ -231,18 +230,4 @@ public class ZipFIleUtils {
         //把outStream里的数据写入内存
         return outStream.toByteArray();
     }
-
-    @Test
-    void testCreatZipOnly(){
-        cratePictureZip();
-    }
-
-    @Test
-    void testUpload(){
-        //准备文件
-        readyUploadFiles.add(new ReadyUploadFile("20220903033552-2322a393d1054c0ca8a2b52572a8e9ed-小卡（专属圆角版）-10.zip",
-                "15","/Users/luozhimin/Desktop/File/daily/backgroundSystem/20220903033552-2322a393d1054c0ca8a2b52572a8e9ed-小卡（专属圆角版）-10.zip"));
-        uploadZip();
-    }
-
 }

@@ -1,4 +1,4 @@
-package com.background.system.response;
+package com.background.system.response.file;
 
 import com.background.system.entity.Picture;
 import com.google.common.collect.Lists;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Data
 @Builder
-public class ReadyDownloadFIleResponse {
+public class ReadyDownloadFileResponse {
 
     @ApiModelProperty(value = "order id")
     private String id;
@@ -34,7 +34,7 @@ public class ReadyDownloadFIleResponse {
     private Integer number;
 
     @Tolerate
-    public ReadyDownloadFIleResponse(){}
+    public ReadyDownloadFileResponse(){}
 
     public List<String> getPictureIds() {
         if (StringUtils.isNotBlank(this.pictureId)) {

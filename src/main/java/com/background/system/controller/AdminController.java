@@ -131,6 +131,14 @@ public class AdminController {
         return Result.success(orderService.orderClose(id));
     }
 
+    @PostMapping("/order/download")
+    @ApiOperation("后台-zip下载完回调")
+    public Result<?> orderDownload(@RequestParam String id)
+    {
+        return Result.success(orderService.orderDownload(id));
+    }
+
+
     @PostMapping("/order/update")
     @ApiOperation("后台-修改快递单号")
     public Result<?> updateKdNo(@RequestParam String  id,

@@ -37,5 +37,7 @@ public interface OrderService {
 
     Boolean orderClose(String  id);
 
+    Boolean orderDownload(String id);
+
 //    Page<OrderResponse> getOrderAllList(Integer page, Integer size);
 }

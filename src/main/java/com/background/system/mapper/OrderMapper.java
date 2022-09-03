@@ -1,8 +1,9 @@
 package com.background.system.mapper;
 
 import com.background.system.entity.Order;
+import com.background.system.response.BaseResponse;
 import com.background.system.response.OrderCountResponse;
-import com.background.system.response.ReadyDownloadFIleResponse;
+import com.background.system.response.file.ReadyDownloadFileResponse;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -57,6 +58,9 @@ public interface OrderMapper extends BaseMapper<Order> {
     int closeOrder(@Param("id")String id,
                    @Param("updateUser")String updateUser);
 
-    List<ReadyDownloadFIleResponse> getNoZipPathOrder();
+    List<ReadyDownloadFileResponse> getNoZipPathOrder();
 
+    void updateZipPathById(@Param("baseResponse") List<BaseResponse> responses);
+
+    int orderDownload(@Param("id")String id);
 }

@@ -9,7 +9,7 @@ import com.background.system.mapper.*;
 import com.background.system.response.OrderCountResponse;
 import com.background.system.response.OrderElementResponse;
 import com.background.system.response.OrderResponse;
-import com.background.system.response.ReadyDownloadFIleResponse;
+import com.background.system.response.file.ReadyDownloadFileResponse;
 import com.background.system.service.OrderService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
@@ -297,6 +297,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         return orderMapper.closeOrder(id,currentUser.getUsername())>0;
     }
 
+    @Override
+    public Boolean orderDownload(String id) {
+        logger.info("orderDownload[{}]",id);
+        return orderMapper.orderDownload(id)>0;
+    }
+
 //    @Override
 //    public Page<OrderResponse> getOrderAllList(Integer page, Integer size) {
 //        List<OrderResponse> orderResponses = Lists.newArrayList();
@@ -360,9 +366,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
      * 得到没有zip链接的
      * @return 所有待处理对象
      */
-    public List<ReadyDownloadFIleResponse> getFile(){
+    public List<ReadyDownloadFileResponse> getFile(){
         //找到支付 没有删除的订单 并且没有链接生产的
-        List<ReadyDownloadFIleResponse> orders = orderMapper.getNoZipPathOrder();
+        List<ReadyDownloadFileResponse> orders = orderMapper.getNoZipPathOrder();
         if (CollectionUtils.isEmpty(orders)){
             return Collections.emptyList();
         }

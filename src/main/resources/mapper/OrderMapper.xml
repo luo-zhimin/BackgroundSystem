@@ -369,7 +369,7 @@
         update `order` set status = 4,update_user=#{updateUser} where id=#{id}
     </update>
 
-    <select id="getNoZipPathOrder" resultType="com.background.system.response.ReadyDownloadFIleResponse">
+    <select id="getNoZipPathOrder" resultType="com.background.system.response.file.ReadyDownloadFileResponse">
         select o.id, s.name sizeName, o.order_no wxNo, GROUP_CONCAT(oe.picture_id) pictureId,sum(oe.number) number
         from `order` o
                  inner join size s on o.size_id = s.id
@@ -379,5 +379,24 @@
           and o.order_no is not null
         group by o.id
     </select>
+
+    <update id="updateZipPathById" parameterType="com.background.system.response.BaseResponse">
+        update `order`
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="`zip_path` = case" suffix="end,">
+                <foreach collection="baseResponse" index="index" item="item">
+                    when id = #{item.id} then #{item.name}
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach close=")" collection="baseResponse" item="item" open="(" separator=", ">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <delete id="orderDownload">
+        update `order` set is_download = 1 where id=#{id}
+    </delete>
 
 </mapper>

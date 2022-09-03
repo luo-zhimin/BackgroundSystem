@@ -1,16 +1,20 @@
 package com.background.system.util;
 
-import com.background.system.response.ReadyDownloadFIleResponse;
+import com.background.system.mapper.OrderMapper;
+import com.background.system.response.BaseResponse;
+import com.background.system.response.PictureResponse;
+import com.background.system.response.file.HandleFile;
+import com.background.system.response.file.ReadyDownloadFileResponse;
+import com.background.system.response.file.ReadyUploadFile;
 import com.background.system.service.impl.OrderServiceImpl;
+import com.background.system.service.impl.PictureServiceImpl;
 import com.google.common.collect.Lists;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.SneakyThrows;
-import lombok.ToString;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.*;
 import java.net.URL;
@@ -39,12 +43,18 @@ public class ZipFIleUtils {
     @Autowired
     private OrderServiceImpl orderService;
 
+    @Autowired
+    private PictureServiceImpl pictureService;
+
+    @Autowired
+    private OrderMapper orderMapper;
+
     /**
      * 准备删除的文件
      */
     private List<File> deleteFile = Lists.newArrayList();
 
-    private List<readyUploadFile> readyUploadFiles = Lists.newArrayList();
+    private List<ReadyUploadFile> readyUploadFiles = Lists.newArrayList();
 
     /**
      * 订单图片处理 压缩zip 上传服务器
@@ -55,13 +65,13 @@ public class ZipFIleUtils {
         //扫描前创建扫描目录
         judgeFileExists(Lists.newArrayList(acceptFilePath));
 
-        List<ReadyDownloadFIleResponse> readyDownloadFIleResponses = orderService.getFile();
+        List<ReadyDownloadFileResponse> readyDownloadFIleResponses = orderService.getFile();
         if (CollectionUtils.isEmpty(readyDownloadFIleResponses)){
             System.out.println("无待处理文件");
             return;
         }
 
-        for (ReadyDownloadFIleResponse response : readyDownloadFIleResponses) {
+        for (ReadyDownloadFileResponse response : readyDownloadFIleResponses) {
             if (CollectionUtils.isEmpty(response.getPictures())) {
                 System.out.println("该订单没有照片--" + response.getId());
                 continue;
@@ -92,7 +102,6 @@ public class ZipFIleUtils {
                 URLConnection urlConnection = url.openConnection();
                 InputStream inputStream = urlConnection.getInputStream();
                 byte[] bytes = readInputStream(inputStream);
-//                System.out.println(handleFile.getName() + "    " + bytes.length);
                 inputStream.close();
                 os.write(bytes);
                 os.close();
@@ -102,7 +111,7 @@ public class ZipFIleUtils {
             //第一次打包 原始包
             zip(saveName, saveName + ".zip");
 
-            readyUploadFiles.add(new readyUploadFile(saveName, response.getId(),saveName+".zip"));
+            readyUploadFiles.add(new ReadyUploadFile(sendName+".zip", response.getId(),saveName+".zip"));
         }
 
         System.out.println("readyUploadFiles = "+readyUploadFiles);
@@ -113,11 +122,35 @@ public class ZipFIleUtils {
     }
 
 
+    @SneakyThrows
+    private void uploadZip(){
+        if (CollectionUtils.isNotEmpty(readyUploadFiles)){
+            List<BaseResponse> baseResponses = Lists.newArrayList();
+            System.out.println("开始上传zip包");
+            for (ReadyUploadFile readyUploadFile : readyUploadFiles) {
+                File file = new File(readyUploadFile.getUrl());
+                //file - > MultipartFile
+                byte[] bytes = Files.readAllBytes(Paths.get(readyUploadFile.getUrl()));
+                System.out.println(readyUploadFile.getName()+" "+bytes.length);
+                MockMultipartFile mockMultipartFile = new MockMultipartFile("file",readyUploadFile.getName(),"text/plain",bytes);
+                PictureResponse picture = pictureService.getPicture(mockMultipartFile);
+                baseResponses.add(new BaseResponse(readyUploadFile.getOrderId(),picture.getUrl()));
+                deleteFile.add(new File(readyUploadFile.getUrl()));
+            }
+            System.out.println("上传完毕开始删除数据");
+            //上传完毕删除数据
+            deleteFile();
+
+            //处理准备进入数据库
+            System.out.println(baseResponses);
+            orderMapper.updateZipPathById(baseResponses);
+        }
+    }
+
 
     private void deleteFile() {
         deleteFile.forEach(this::deleteFile);
     }
-
 
     private void deleteFile(File file) {
         if (file.exists()) {
@@ -182,13 +215,6 @@ public class ZipFIleUtils {
         }
     }
 
-
-    @Test
-    void testCreatZipOnly(){
-        cratePictureZip();
-    }
-
-
     public static byte[] readInputStream(InputStream inStream) throws Exception {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         //创建一个Buffer字符串
@@ -206,25 +232,17 @@ public class ZipFIleUtils {
         return outStream.toByteArray();
     }
 
-}
-@Data
-@ToString
-@AllArgsConstructor
-class HandleFile{
+    @Test
+    void testCreatZipOnly(){
+        cratePictureZip();
+    }
 
-    private String name;
+    @Test
+    void testUpload(){
+        //准备文件
+        readyUploadFiles.add(new ReadyUploadFile("20220903033552-2322a393d1054c0ca8a2b52572a8e9ed-小卡（专属圆角版）-10.zip",
+                "15","/Users/luozhimin/Desktop/File/daily/backgroundSystem/20220903033552-2322a393d1054c0ca8a2b52572a8e9ed-小卡（专属圆角版）-10.zip"));
+        uploadZip();
+    }
 
-    private String url;
-}
-
-@Data
-@ToString
-@AllArgsConstructor
-class readyUploadFile{
-
-    private String name;
-
-    private String orderId;
-
-    private String url;
 }

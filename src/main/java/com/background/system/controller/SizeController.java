@@ -28,7 +28,7 @@ public class SizeController {
     @ApiOperation("尺寸列表")
     @IgnoreLogin
     public Result<?> getSizeList(@RequestParam(value = "page",defaultValue = "1")Integer page,
-                                  @RequestParam(value = "size",defaultValue = "10")Integer size)
+                                 @RequestParam(value = "size",defaultValue = "10")Integer size)
     {
         return Result.success(sizeService.getSizeList(page,size));
     }

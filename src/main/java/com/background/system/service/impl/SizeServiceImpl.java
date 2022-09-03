@@ -46,7 +46,7 @@ public class SizeServiceImpl extends BaseService implements SizeService {
 
     @Override
     public Page<SizeResponse> getSizeList(Integer page, Integer size) {
-        log.info("getGoodsList page[{}],size[{}]", page, size);
+        log.info("getSizeList page[{}],size[{}]", page, size);
         //todo 商品-> 尺寸 下单(图片+尺寸+材质)
         List<SizeResponse> goodsResponses = new ArrayList<>();
         Page<SizeResponse> sizePage = initPage(page, size);

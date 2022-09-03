@@ -37,7 +37,7 @@ public class AliUploadUtils {
         OSS ossClient = new OSSClientBuilder().build(ENDPOINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET);
         String type =
             Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf("."));
-        String title = UUID.randomUUID().toString();
+        String title = file.getOriginalFilename();
         String path = father + "/" + title + type;
         try {
             PutObjectRequest request =
@@ -61,7 +61,6 @@ public class AliUploadUtils {
      * @return
      */
     public static String uploadPdf(File file, String path) {
-        path = path + "_" + System.currentTimeMillis() + "_" + UUID.randomUUID();
         OSS ossClient = new OSSClientBuilder().build(ENDPOINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET);
         try {
 

@@ -43,16 +43,7 @@ public class PdfUtil {
     private static String mergedPdfName;
 
 
-    public static void main(String[] args) {
-        List<String> r = new ArrayList<>();
-        r.add("/Users/sugar/Desktop/BackgroundSystem/upload/671aa1f2-b94a-4bde-a226-649fa4249070.jpg");
-        try {
-            String s = imageToMergePdf(r);
-            log.info(s);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 
     /**
      * 多图片转pdf并且进行pdf合并
@@ -61,7 +52,7 @@ public class PdfUtil {
      * @return
      * @throws Exception
      */
-    public static String imageToMergePdf(List<String> sourcePaths) throws Exception {
+    public static String imageToMergePdf(List<String> sourcePaths, String name) throws Exception {
         File uploadDirectory = new File(FILE_PATH);
         if (!uploadDirectory.exists()) {
             uploadDirectory.mkdirs();
@@ -98,7 +89,7 @@ public class PdfUtil {
             throw new ServiceException(500, "合并生成的pdf文件不存在，可能被人为删除，请再次重试");
         }
         String ossKey = mergedPdfName.substring(0, mergedPdfName.lastIndexOf("."));
-        String url = AliUploadUtils.uploadPdf(pdf, ossKey);
+        String url = AliUploadUtils.uploadPdf(pdf, name);
         pdf.delete();
         return url;
     }

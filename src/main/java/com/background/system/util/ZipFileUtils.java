@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
@@ -41,8 +42,7 @@ public class ZipFileUtils {
 
     private final Logger logger = LoggerFactory.getLogger(ZipFileUtils.class);
 
-    @Value("${zip.file}")
-    private String acceptFilePath;//="/Users/luozhimin/Desktop/File/daily/backgroundSystem";
+    private String acceptFilePath = "/Users/sugar/Desktop/BackgroundSystem/upload";
 
     @Autowired
     private OrderServiceImpl orderService;
@@ -58,6 +58,7 @@ public class ZipFileUtils {
      */
     public List<File> deleteFile = Lists.newArrayList();
 
+    public List<String> picList = new ArrayList<>();
     public List<ReadyUploadFile> readyUploadFiles = Lists.newArrayList();
 
     /**
@@ -65,6 +66,9 @@ public class ZipFileUtils {
      */
     @SneakyThrows
     public void cratePictureZip(){
+
+        // init
+        picList.clear();
 
         //扫描前创建扫描目录
         judgeFileExists(Lists.newArrayList(acceptFilePath));
@@ -86,15 +90,35 @@ public class ZipFileUtils {
                 handleFiles.add(new HandleFile(picture.getName(), picture.getUrl()));
             });
 
-            System.out.println("handleFiles = " + handleFiles);
+            // 下载图片
+            for (HandleFile handleFile : handleFiles) {
+                String picPath = "/Users/sugar/Desktop/BackgroundSystem/upload/" + handleFile.getName() + ".jpg";
+                picList.add(picPath);
+                FileOutputStream outputStream = new FileOutputStream(picPath, true);
+                URL url = new URL(handleFile.getUrl());
+                URLConnection urlConnection = url.openConnection();
+                InputStream inputStream = urlConnection.getInputStream();
+                byte[] bytes = readInputStream(inputStream);
+                inputStream.close();
+                outputStream.write(bytes);
+                outputStream.close();
+            }
+
 
             //创建目录 压缩zip 删除 目录 保留zip
             //订单号+成品名称+数量  日期+支付订单号+size(name)+数量
             String sendName = DateTimeFormatter.ofPattern("yyyyMMddhhmmss").format(LocalDateTime.now()) + "-" + response.getWxNo() + "-" + response.getSizeName() + "-" + response.getNumber();
-            logger.info("sendName = " + sendName);
+
+            // 获取PDF路径
+            String pdfUrl = PdfUtil.imageToMergePdf(picList, sendName);
+            handleFiles.add(new HandleFile(sendName + ".pdf", pdfUrl));
 
             String saveName = acceptFilePath + File.separator + sendName;
-//            logger.info("saveName = " + saveName);
+
+
+
+            System.out.println("handleFiles = " + handleFiles);
+
 
             //1.创建临时文件
             judgeFileExists(Lists.newArrayList(saveName));
@@ -112,14 +136,14 @@ public class ZipFileUtils {
             }
 
             deleteFile.add(new File(saveName));
+            deleteFile.add(new File(pdfUrl));
             //第一次打包 原始包
             zip(saveName, saveName + ".zip");
 
             readyUploadFiles.add(new ReadyUploadFile(sendName+".zip", response.getId(),saveName+".zip"));
         }
 
-//        System.out.println("readyUploadFiles = "+readyUploadFiles);
-//        System.out.println("deleteFile = "+deleteFile);
+
         //删除原始目录
         deleteFile();
     }

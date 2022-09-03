@@ -22,7 +22,7 @@ import java.util.List;
 @SpringBootTest
 public class JasyptTest {
 
-    private static final String key = " ";
+    private static final String key = "5de88f71a509010ba5a0491c751b2d77";
 
     @Autowired
     @Qualifier(value = "jasyptStringEncryptor")
@@ -44,10 +44,11 @@ public class JasyptTest {
         System.out.println(result);
     }
 
-//    @Test
+    @Test
      void decry(){
-        List<String> values = Lists.newArrayList("ENC(E3yurGED2kuLaz98OObtew==)","ENC(tSN8uRTBnSD/8kjHx0ONd0qAfcReh444)",
-                "ENC(iqf1X4Sgdfh25Cbi1HnhNtSuw8tH17HWMb7PRh7BivimhEiCmP0Au169Kp8MtLEXVZGBHfknH/Wv9il0wVlINKME3I/FjFrIh2XJtWFzTJo62CEfS6Z4KmVkclanMKUFlAm1Dx9FuBl2Tnt51bHKVj4KUc+/NGJqus5Kso2LXGLmpDdOwi0K3HgkyyvTASp9rmTzAGGm8OzBT2JlRCCIHf3Xb9EK2fY3NFbBwfRLyJl9nNPYxnCBoQ==)");
+        //QTiY5V4X87ARB6MFvaRGKbnXrQ8KZiYg
+        List<String> values = Lists.newArrayList("ENC(yYyhCiJrQK/rhL69R4y1vqJp2Y7JlTkG)","ENC(p7tzRJgmD2r+2cfBc55DfEY2i8VHtpnTMreGrTEQHGM=)",
+                "ENC(ZSYUag+xsz7GgoYU08vMUH+tHqiYW+H1stPbtVWpyzH+kI4st9pc20BTPtN80W0WMMHe0ODi2yajsf9MNNSwpHipNt7h2VKJ+LpDtX3a2OnQA4bSlT1oHc82jxSuRMSOxtY2ounon3pO9z5kyelAodlqzlAoBONjn4W+z75Basb7l+tJPEQYYC2eoKfb/+iOM2jhN0UV6V0MQAxn69diDGLWK7YLmnP1i+Ab9drzH/VLBLAf7OSl0IWnniKcrAAdhtKJzW1x9bYGOXjrwrAp36cRG0uTSC5YyqsxAp6ljDg=)");
         PooledPBEStringEncryptor pooledPBEStringEncryptor = new PooledPBEStringEncryptor();
         pooledPBEStringEncryptor.setConfig(cryptOr());
         values.forEach(v->{
@@ -73,10 +74,10 @@ public class JasyptTest {
         SimpleStringPBEConfig config = new SimpleStringPBEConfig();
         config.setPassword(key);
         config.setAlgorithm(StandardPBEByteEncryptor.DEFAULT_ALGORITHM);
-        config.setKeyObtentionIterations("1000");
+        config.setKeyObtentionIterations(StandardPBEByteEncryptor.DEFAULT_KEY_OBTENTION_ITERATIONS);
         config.setPoolSize("1");
-        config.setProviderName(null);
         config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
+        config.setIvGeneratorClassName("org.jasypt.iv.RandomIvGenerator");
         config.setStringOutputType("base64");
         return config;
     }

@@ -75,8 +75,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         BeanUtil.copyProperties(orderVo, order);
         List<OrderElement> orderElements = orderVo.getOrderElements();
         // 计算价格
-        Size size = sizeMapper.selectById(order.getSizeId());
-        Caizhi caizhi = caizhiMapper.selectById(order.getCaizhiId());
+        Size size = sizeMapper.selectByPrimaryKey(order.getSizeId()+"");
+        Caizhi caizhi = caizhiMapper.selectByPrimaryKey(order.getCaizhiId());
         if (size==null || caizhi==null){
             throw new ServiceException(1000,"请选择材质或者尺寸！");
         }
@@ -293,7 +293,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     public Boolean orderClose(String  id) {
         logger.info("orderClose [{}]",id);
         checkOrder(id);
-        Token currentUser = getCurrentUser();
+        Token currentUser = getWeChatCurrentUser();
         return orderMapper.closeOrder(id,currentUser.getUsername())>0;
     }
 

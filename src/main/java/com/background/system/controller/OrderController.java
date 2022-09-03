@@ -95,4 +95,11 @@ public class OrderController {
     {
         return Result.success(orderService.cancelOrder(id));
     }
+
+    @PostMapping("/close")
+    @ApiOperation("后台-订单确认完成")
+    public Result<?> orderClose(@RequestParam String id)
+    {
+        return Result.success(orderService.orderClose(id));
+    }
 }

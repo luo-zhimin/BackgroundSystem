@@ -160,11 +160,11 @@
 
     <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
         insert into order_element
-            (order_id, `number`, picture_id, is_del, create_time)
+            (order_id, `number`, picture_id, create_time)
         values
         <foreach collection="elements" item="item" separator=",">
             (#{item.orderId,jdbcType=BIGINT}, #{item.number,jdbcType=INTEGER}, #{item.pictureId,jdbcType=LONGVARCHAR},
-             #{item.isDel,jdbcType=CHAR}, #{item.createTime,jdbcType=TIMESTAMP})
+             #{item.createTime,jdbcType=TIMESTAMP})
         </foreach>
     </insert>
 

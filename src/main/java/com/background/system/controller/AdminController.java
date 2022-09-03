@@ -124,12 +124,6 @@ public class AdminController {
         return Result.success(orderService.getAdminOrderList(page,size,type,sizeId));
     }
 
-    @PostMapping("/order/close")
-    @ApiOperation("后台-订单确认完成")
-    public Result<?> orderClose(@RequestParam String id)
-    {
-        return Result.success(orderService.orderClose(id));
-    }
 
     @PostMapping("/order/download")
     @ApiOperation("后台-zip下载完回调")

@@ -29,6 +29,10 @@ public class ReadyDownloadFileResponse {
 
     private String pictureId;
 
+    //todo 图片 尺寸 转换 zip 待定
+//    @ApiModelProperty(value = "尺寸 第一个width 第二个height")
+//    private String size;//mm*mm
+
     private List<Picture> pictures;
 
     private Integer number;

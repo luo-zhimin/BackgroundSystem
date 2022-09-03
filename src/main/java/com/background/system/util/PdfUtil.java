@@ -7,6 +7,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfWriter;
+
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.collections4.CollectionUtils;
@@ -18,8 +19,11 @@ import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +39,13 @@ public class PdfUtil {
     private static List<String> tempPdfPath = new ArrayList<>();
     private static List<String> tempImagePath = new ArrayList<>();
     private static final String DATE_FORMAT = "yyyy-MM-dd_HH:mm:ss";
-    private static final String FILE_PATH = "/opt/files/upload";
+    private static final String FILE_PATH = "/Users/sugar/Desktop/BackgroundSystem/upload";
     private static String mergedPdfName;
 
 
     public static void main(String[] args) {
         List<String> r = new ArrayList<>();
-        r.add("https://img1.baidu.com/it/u=1966616150,2146512490&fm=253&fmt=auto&app=138&f=JPEG?w=751&h=500");
+        r.add("/Users/sugar/Desktop/BackgroundSystem/upload/671aa1f2-b94a-4bde-a226-649fa4249070.jpg");
         try {
             String s = imageToMergePdf(r);
             log.info(s);
@@ -110,10 +114,11 @@ public class PdfUtil {
         //todo 调整的尺寸后续需要根据不同产品设置不同值，目前 92 * 60 对应的是 261 * 170
         String[] split = sourcePath.split("\\.");
         String targetPath = FILE_PATH + "/" + System.currentTimeMillis() + "target." + split[1];
-        Thumbnails.of(sourcePath)
-            .size(170, 261)
-            .keepAspectRatio(false)
-            .toFile(targetPath);
+
+        BufferedImage image = ImageIO.read(Files.newInputStream(Paths.get(sourcePath)));
+        FileOutputStream out = new FileOutputStream(targetPath);
+        Thumbnails.of(image).size(170,261).outputQuality(1).outputFormat(split[1]).toOutputStream(out);
+
         tempImagePath.add(targetPath);
         return targetPath;
     }

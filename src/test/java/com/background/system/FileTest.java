@@ -32,7 +32,7 @@ public class FileTest {
     @Resource
     private ZipFileUtils zipFileUtils;
 
-    @Test
+
     @SneakyThrows
     void createNetworkFile(){
         String name ="https://asugar.oss-cn-hangzhou.aliyuncs.com/default/2d6e5ff5-e57e-48bf-a40a-1512acb25395.gif";
@@ -45,13 +45,13 @@ public class FileTest {
 
         //通过输入流获取图片数据
         //得到图片的二进制数据，以二进制封装得到数据，具有通用性
-        byte[] data = readInputStream(inputStream);
+       // byte[] data = readInputStream(inputStream);
         //创建一个文件对象用来保存图片，默认保存当前工程根目录，起名叫Copy.jpg
         File imageFile = new File("Copy.gif");
         //创建输出流
         FileOutputStream outStream = new FileOutputStream(imageFile);
         //写入数据
-        outStream.write(data);
+        //outStream.write(data);
         //关闭输出流，释放资源
         outStream.close();
 
@@ -67,8 +67,8 @@ public class FileTest {
         URL url = new URL(name);
         URLConnection urlConnection = url.openConnection();
         InputStream inputStream = urlConnection.getInputStream();
-        byte[] bytes = readInputStream(inputStream);
-        System.out.println(bytes.length);
+        //byte[] bytes = readInputStream(inputStream);
+        //System.out.println(bytes.length);
     }
 
 

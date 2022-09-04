@@ -67,8 +67,11 @@ public class PayServiceImpl extends BaseService implements PayService {
         // 获取订单金额
         Orderd orderd = orderMapper.selectByPrimaryKey(orderId);
         BigDecimal total = orderd.getTotal();
-        // 加运费
-        total = total.add(orderd.getPortPrice());
+
+        if (total.compareTo(new BigDecimal("30.00")) < 0 ) {
+            // 加运费
+            total = total.add(orderd.getPortPrice());
+        }
 
         // 获取订单信息
         Size size = sizeMapper.selectById(orderd.getSizeId());

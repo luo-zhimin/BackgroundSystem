@@ -92,9 +92,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         total = total.multiply(BigDecimal.valueOf(totalNumber));
 
         //运费
-        BigDecimal portPrice = order.getPortPrice();
-        if (portPrice!=null){
-            total = total.add(portPrice);
+        if (total.compareTo(new BigDecimal("30.00")) < 0) {
+            BigDecimal portPrice = order.getPortPrice();
+            if (portPrice!=null){
+                total = total.add(portPrice);
+            }
         }
         order.setTotal(total);
         order.setIsPay(false);

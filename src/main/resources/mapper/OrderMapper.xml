@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.background.system.mapper.OrderMapper">
 
-    <resultMap id="BaseResultMap" type="com.background.system.entity.Order">
-        <!--@Table `order`-->
+    <resultMap id="BaseResultMap" type="com.background.system.entity.Orderd">
+        <!--@Table `orderd`-->
         <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="order_no" jdbcType="VARCHAR" property="wxNo"/>
         <result column="kd_no" jdbcType="VARCHAR" property="kdNo"/>
@@ -54,18 +54,18 @@
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from `order`
+        from `orderd`
         where id = #{id,jdbcType=VARCHAR}
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete
-        from `order`
+        from `orderd`
         where id = #{id,jdbcType=VARCHAR}
     </delete>
 
-    <insert id="insertSelective" parameterType="com.background.system.entity.Order">
-        insert into `order`
+    <insert id="insertSelective" parameterType="com.background.system.entity.Orderd">
+        insert into `orderd`
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -162,8 +162,8 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.Order">
-        update `order`
+    <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.Orderd">
+        update `orderd`
         <set>
             <if test="wxNo != null and wxNo != ''">
                 order_no = #{wxNo,jdbcType=VARCHAR},
@@ -211,8 +211,8 @@
         where id = #{id,jdbcType=VARCHAR}
     </update>
 
-    <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Order">
-        update `order`
+    <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Orderd">
+        update `orderd`
         set order_no    = #{wxNo,jdbcType=VARCHAR},
         kd_no       = #{kdNo,jdbcType=VARCHAR},
         is_pay      = #{isPay,jdbcType=CHAR},
@@ -228,8 +228,8 @@
         where id = #{id,jdbcType=VARCHAR}
     </update>
 
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Order" useGeneratedKeys="true">
-        insert into `order` (remark, port_price, total,
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Orderd" useGeneratedKeys="true">
+        insert into `orderd` (remark, port_price, total,
         coupon_id, `status`, address_id,
         caizhi_id,
         size_id, create_user,
@@ -242,41 +242,41 @@
     </insert>
 
     <select id="getCurrentOrderCount" resultType="int">
-        select count(*) from `order` where is_del=0 and create_user=#{openId}
+        select count(*) from `orderd` where is_del=0 and create_user=#{openId}
     </select>
 
     <select id="getOrderList" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from `order` where is_del=0 and  create_user=#{openId}
+        from `orderd` where is_del=0 and  create_user=#{openId}
         <if test="page != null and size != null">
             limit #{page},#{size}
         </if>
     </select>
 
     <delete id="deleteOrderById">
-        update `order` set is_del = 1 where id=#{id};
+        update `orderd` set is_del = 1 where id=#{id};
     </delete>
 
     <select id="getOrderAllList" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from `order` where is_del=0
+        from `orderd` where is_del=0
         <if test="page != null and size != null">
             limit #{page},#{size}
         </if>
     </select>
 
     <select id="getOrderCount" resultType="com.background.system.response.OrderCountResponse">
-        select any_value(sum(total)) totalCount, any_value(count(is_pay)) payCount, is_pay, any_value(count(is_del)) delCount, is_del from `order` group by is_del
+        select any_value(sum(total)) totalCount, any_value(count(is_pay)) payCount, is_pay, any_value(count(is_del)) delCount, is_del from `orderd` group by is_del
     </select>
 
     <select id="getHasKdNoCount" resultType="int">
-        select count(*) from `order` where kd_no is not null
+        select count(*) from `orderd` where kd_no is not null
     </select>
 
     <select id="getCloseCount" resultType="int">
-        select count(*) from `order` where `status` = 4
+        select count(*) from `orderd` where `status` = 4
     </select>
 
     <!-- 0-待付款  1-待发货 2-配送中 3-已完成 4-已取消   -->
@@ -284,31 +284,31 @@
         <!--  待付款      -->
         <if test="type == 0">
             select *
-            from `order`
+            from `orderd`
             where is_pay = 0
         </if>
         <!--   待发货  -->
         <if test="type == 1">
             select *
-            from `order`
+            from `orderd`
             where is_pay = 1
         </if>
         <!--  配送中  -->
         <if test="type == 2">
             select *
-            from `order`
+            from `orderd`
             where kd_no is not null
         </if>
         <!-- 已完成 -->
         <if test="type == 3">
             select *
-            from `order`
+            from `orderd`
             where `status` = 4
         </if>
         <!--  已取消 -->
         <if test="type == 4">
             select *
-            from `order`
+            from `orderd`
             where is_del = 1
         </if>
         <if test="sizeIds != null and sizeIds.size() != 0">
@@ -326,31 +326,31 @@
         <!--  待付款      -->
         <if test="type == 0">
             select count(*)
-            from `order`
+            from `orderd`
             where is_pay = 0
         </if>
         <!--   待发货  -->
         <if test="type == 1">
             select count(*)
-            from `order`
+            from `orderd`
             where is_pay = 1
         </if>
         <!--  配送中  -->
         <if test="type == 2">
             select count(*)
-            from `order`
+            from `orderd`
             where kd_no is not null
         </if>
         <!-- 已完成 -->
         <if test="type == 3">
             select count(*)
-            from `order`
+            from `orderd`
             where `status` = 4
         </if>
         <!--  已取消 -->
         <if test="type == 4">
             select count(*)
-            from `order`
+            from `orderd`
             where is_del = 1
         </if>
         <if test="sizeIds != null and sizeIds.size() != 0">
@@ -362,16 +362,16 @@
     </select>
 
     <update id="updateKdNo">
-        update `order` set kd_no =#{kdNo},update_user=#{updateUser} where id=#{id}
+        update `orderd` set kd_no =#{kdNo},update_user=#{updateUser} where id=#{id}
     </update>
 
     <update id="closeOrder">
-        update `order` set status = 4,update_user=#{updateUser} where id=#{id}
+        update `orderd` set status = 4,update_user=#{updateUser} where id=#{id}
     </update>
 
     <select id="getNoZipPathOrder" resultType="com.background.system.response.file.ReadyDownloadFileResponse">
         select o.id, s.name sizeName, o.order_no wxNo, GROUP_CONCAT(oe.picture_id) pictureId,sum(oe.number) number
-        from `order` o
+        from `orderd` o
                  inner join size s on o.size_id = s.id
                  inner join order_element oe on o.id = oe.order_id
         where o.is_del = 0
@@ -381,7 +381,7 @@
     </select>
 
     <update id="updateZipPathById" parameterType="com.background.system.response.BaseResponse">
-        update `order`
+        update `orderd`
         <trim prefix="set" suffixOverrides=",">
             <trim prefix="`zip_path` = case" suffix="end,">
                 <foreach collection="baseResponse" index="index" item="item">
@@ -396,7 +396,7 @@
     </update>
 
     <delete id="orderDownload">
-        update `order` set is_download = 1 where id=#{id}
+        update `orderd` set is_download = 1 where id=#{id}
     </delete>
 
 </mapper>

@@ -1,13 +1,25 @@
 package com.background.system.controller;
 
-import com.background.system.entity.Order;
+import cn.hutool.core.convert.Convert;
+import com.background.system.annotation.IgnoreLogin;
+import com.background.system.entity.Orderd;
 import com.background.system.entity.vo.OrderVo;
+import com.background.system.mapper.OrderMapper;
 import com.background.system.service.OrderService;
 import com.background.system.util.Result;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @Description:
@@ -21,6 +33,9 @@ public class OrderController {
 
     @Autowired
     OrderService orderService;
+
+    @Autowired
+    OrderMapper orderMapper;
 
     /**
      * 返回订单号
@@ -46,13 +61,13 @@ public class OrderController {
 
     /**
      * 更新订单的地址和优惠券
-     * @param order
+     * @param orderd
      * @return
      */
     @PostMapping("update")
     @ApiOperation("更新订单-地址和优惠券和运费")
-    public Result<?> update(@RequestBody Order order) {
-        return Result.success(orderService.updateOrder(order));
+    public Result<?> update(@RequestBody Orderd orderd) {
+        return Result.success(orderService.updateOrder(orderd));
     }
 
 
@@ -102,4 +117,71 @@ public class OrderController {
     {
         return Result.success(orderService.orderClose(id));
     }
+
+    @GetMapping("todayOrderOrPrice")
+    @ApiOperation("今日订单数-金额数")
+    @IgnoreLogin
+    public Result<?> todayOrder(String type) {
+        // 当天订单信息
+        QueryWrapper<Orderd> wrapper = new QueryWrapper<>();
+        wrapper.apply(true, "TO_DAYS(NOW())-TO_DAYS(create_time) = 0");
+        List<Orderd> orders = orderMapper.selectList(wrapper);
+
+        // init
+        int []timeCount = new int[25];
+        double []priceCount = new double[25];
+
+        // deal
+        for (Orderd order : orders) {
+            // 订单
+            LocalDateTime createTime = order.getCreateTime();
+            int hour = createTime.getHour();
+            // 价格
+            double total = order.getTotal().doubleValue();
+            if (hour >= 6) {
+                timeCount[hour]++;
+                priceCount[hour] += total;
+            }
+        }
+        // 通用返回
+        ArrayList<Object> integers = new ArrayList<>(24);
+        // 筛选
+        switch (type) {
+            case "0":
+                for (int i = 6 ; i <= 24 ; i++) integers.add(timeCount[i]);
+                break;
+            case "1":
+                for (int i = 6 ; i <= 24 ; i++) integers.add(priceCount[i]);
+        }
+        return Result.success(integers);
+    }
+
+    @GetMapping("weekOrder")
+    @ApiOperation("每周订单数")
+    @IgnoreLogin
+    public Result<?> todayOrder() {
+        // 每周订单信息
+        QueryWrapper<Orderd> wrapper = new QueryWrapper<>();
+        wrapper.apply(true, "TO_DAYS(NOW())-TO_DAYS(create_time) <= 7");
+        List<Orderd> orders = orderMapper.selectList(wrapper);
+
+        // init
+        int []timeCount = new int[25];
+
+        // deal
+        for (Orderd order : orders) {
+            LocalDateTime createTime = order.getCreateTime();
+            int value = createTime.getDayOfWeek().getValue();
+            timeCount[value]++;
+        }
+
+        // 通用返回
+        ArrayList<Object> integers = new ArrayList<>(7);
+
+        for (int i = 1 ; i <= 7 ; i++) integers.add(timeCount[i]);
+
+        return Result.success(integers);
+    }
+
+
 }

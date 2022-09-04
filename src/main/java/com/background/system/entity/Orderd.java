@@ -16,12 +16,12 @@ import java.time.LocalDateTime;
 */
 @ApiModel(description="`order`")
 @Data
-public class Order {
+public class Orderd {
     @ApiModelProperty(value="主键Id")
     private Long id;
 
     @ApiModelProperty(value="微信支付订单号")
-    private String wxNo;
+    private String orderNo;
 
     @ApiModelProperty(value="快递单号")
     private String kdNo;

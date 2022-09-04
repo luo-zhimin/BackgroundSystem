@@ -1,8 +1,8 @@
 package com.background.system.service;
 
-import com.background.system.entity.Order;
+import com.background.system.entity.Orderd;
 import com.background.system.entity.vo.OrderVo;
-import com.background.system.response.OrderResponse;
+import com.background.system.response.OrderdResponse;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.util.Map;
@@ -20,16 +20,16 @@ public interface OrderService {
 
     Boolean changeAddress(String orderId, String addressId);
 
-    OrderResponse info(String orderId);
+    OrderdResponse info(String orderId);
 
-    Page<OrderResponse> getOrderList(Integer page, Integer size);
+    Page<OrderdResponse> getOrderList(Integer page, Integer size);
 
 
-    Boolean updateOrder(Order order);
+    Boolean updateOrder(Orderd orderd);
 
     Boolean cancelOrder(String id);
 
-    Page<OrderResponse> getAdminOrderList(Integer page, Integer size,Integer type,String sizeId);
+    Page<OrderdResponse> getAdminOrderList(Integer page, Integer size, Integer type, String sizeId);
 
     Map<String,Integer> getAdminOrderCount();
 

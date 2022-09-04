@@ -17,7 +17,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Builder
-public class OrderResponse extends Order {
+public class OrderdResponse extends Orderd {
 
     private List<OrderElementResponse> elements;
 
@@ -33,5 +33,5 @@ public class OrderResponse extends Order {
     private Integer num;
 
     @Tolerate
-    public OrderResponse(){}
+    public OrderdResponse(){}
 }

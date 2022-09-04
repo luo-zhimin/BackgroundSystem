@@ -1,6 +1,6 @@
 package com.background.system.mapper;
 
-import com.background.system.entity.Order;
+import com.background.system.entity.Orderd;
 import com.background.system.response.BaseResponse;
 import com.background.system.response.OrderCountResponse;
 import com.background.system.response.file.ReadyDownloadFileResponse;
@@ -15,25 +15,25 @@ import java.util.List;
  * @Author : 志敏.罗
  * @create 2022/8/20 14:53
  */
-public interface OrderMapper extends BaseMapper<Order> {
+public interface OrderMapper extends BaseMapper<Orderd> {
     int deleteByPrimaryKey(Long id);
 
-    int insertSelective(Order record);
+    int insertSelective(Orderd record);
 
-    Order selectByPrimaryKey(String id);
+    Orderd selectByPrimaryKey(String id);
 
-    int updateByPrimaryKeySelective(Order record);
+    int updateByPrimaryKeySelective(Orderd record);
 
-    int updateByPrimaryKey(Order record);
+    int updateByPrimaryKey(Orderd record);
 
     int getCurrentOrderCount(@Param("openId")String openId);
 
-    List<Order> getOrderList(@Param("page") Integer page,
-                             @Param("size") Integer size,
-                             @Param("openId")String openId);
+    List<Orderd> getOrderList(@Param("page") Integer page,
+                              @Param("size") Integer size,
+                              @Param("openId")String openId);
 
-    List<Order> getOrderAllList(@Param("page") Integer page,
-                                @Param("size") Integer size);
+    List<Orderd> getOrderAllList(@Param("page") Integer page,
+                                 @Param("size") Integer size);
 
     int deleteOrderById(@Param("id")String orderId);
 
@@ -43,10 +43,10 @@ public interface OrderMapper extends BaseMapper<Order> {
 
     int getCloseCount();
 
-    List<Order> getOrderByType(@Param("page") Integer page,
-                               @Param("size") Integer size,
-                               @Param("type") Integer type,
-                               @Param("sizeIds")List<String> sizeIds);
+    List<Orderd> getOrderByType(@Param("page") Integer page,
+                                @Param("size") Integer size,
+                                @Param("type") Integer type,
+                                @Param("sizeIds")List<String> sizeIds);
 
     int getOrderCountByType(@Param("type")Integer type,
                             @Param("sizeIds")List<String> sizeIds);

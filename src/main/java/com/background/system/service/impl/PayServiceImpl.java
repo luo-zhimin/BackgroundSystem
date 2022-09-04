@@ -4,7 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONObject;
 import com.background.system.cache.ConfigCache;
-import com.background.system.entity.Order;
+import com.background.system.entity.Orderd;
 import com.background.system.entity.Size;
 import com.background.system.entity.token.Token;
 import com.background.system.mapper.OrderMapper;
@@ -65,13 +65,13 @@ public class PayServiceImpl extends BaseService implements PayService {
         String openId = user.getUsername();
 
         // 获取订单金额
-        Order order = orderMapper.selectByPrimaryKey(orderId);
-        BigDecimal total = order.getTotal();
+        Orderd orderd = orderMapper.selectByPrimaryKey(orderId);
+        BigDecimal total = orderd.getTotal();
         // 加运费
-        total = total.add(order.getPortPrice());
+        total = total.add(orderd.getPortPrice());
 
         // 获取订单信息
-        Size size = sizeMapper.selectById(order.getSizeId());
+        Size size = sizeMapper.selectById(orderd.getSizeId());
 
         // 自动获取微信证书, 第一次获取证书绕过鉴权
         CertificatesManager instance = CertificatesManager.getInstance();
@@ -118,10 +118,10 @@ public class PayServiceImpl extends BaseService implements PayService {
         objectMapper.writeValue(bos, rootNode);
 
         // 回写微信支付订单号
-        order.setWxNo(wx_no);
-        order.setIsPay(false);  // 支付状态
-        order.setStatus("0");     // 发货状态
-        orderMapper.updateByPrimaryKeySelective(order);
+        orderd.setOrderNo(wx_no);
+        orderd.setIsPay(false);  // 支付状态
+        orderd.setStatus("0");     // 发货状态
+        orderMapper.updateByPrimaryKeySelective(orderd);
 
         httpPost.setEntity(new StringEntity(bos.toString("UTF-8"), "UTF-8"));
         CloseableHttpResponse response = httpClient.execute(httpPost);
@@ -170,8 +170,8 @@ public class PayServiceImpl extends BaseService implements PayService {
     @Transactional
     public Boolean payOk(String orderId) {
         log.info("payOk [{}]",orderId);
-        Order order = orderMapper.selectByPrimaryKey(orderId);
-        order.setIsPay(true);
-        return orderMapper.updateByPrimaryKey(order)>0;
+        Orderd orderd = orderMapper.selectByPrimaryKey(orderId);
+        orderd.setIsPay(true);
+        return orderMapper.updateByPrimaryKey(orderd)>0;
     }
 }

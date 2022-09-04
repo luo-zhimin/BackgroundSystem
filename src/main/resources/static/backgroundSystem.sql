@@ -108,10 +108,10 @@ CREATE TABLE `coupon` (
 ) ENGINE=InnoDB ;
 
 -- ----------------------------
--- Table structure for order
+-- Table structure for orderd
 -- ----------------------------
-DROP TABLE IF EXISTS `order`;
-CREATE TABLE `order` (
+DROP TABLE IF EXISTS `orderd`;
+CREATE TABLE `orderd` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `order_no` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8_general_ci DEFAULT NULL COMMENT '微信支付订单号',
   `kd_no` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8_general_ci DEFAULT NULL COMMENT '快递单号',

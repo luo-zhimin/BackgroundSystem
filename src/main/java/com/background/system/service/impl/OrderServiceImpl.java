@@ -6,6 +6,7 @@ import com.background.system.entity.token.Token;
 import com.background.system.entity.vo.OrderVo;
 import com.background.system.exception.ServiceException;
 import com.background.system.mapper.*;
+import com.background.system.response.CountResponse;
 import com.background.system.response.OrderCountResponse;
 import com.background.system.response.OrderElementResponse;
 import com.background.system.response.OrderResponse;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -70,7 +72,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Override
     @Transactional
-    public Long createOrder(OrderVo orderVo) {
+    public String createOrder(OrderVo orderVo) {
         Order order = new Order();
         BeanUtil.copyProperties(orderVo, order);
         List<OrderElement> orderElements = orderVo.getOrderElements();
@@ -303,6 +305,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         return orderMapper.orderDownload(id)>0;
     }
 
+    @Override
+    public Object getOrderCurrentDay() {
+        String currentDay = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now());
+        return orderMapper.getIndexOrderCount(currentDay);
+    }
+
 //    @Override
 //    public Page<OrderResponse> getOrderAllList(Integer page, Integer size) {
 //        List<OrderResponse> orderResponses = Lists.newArrayList();
@@ -339,12 +347,21 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     private List<OrderResponse> transformOrderResponse(List<Order> orderList){
         List<OrderResponse> orderResponses = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(orderList)){
+            //数量转换
+            List<CountResponse> countResponses = elementsMapper.
+                    getOrderCountByIds(orderList.stream().map(Order::getId).collect(Collectors.toList()));
+
+            Map<String, Integer> countMap = countResponses.stream()
+                    .collect(Collectors.toMap(CountResponse::getOrderId, CountResponse::getNumber));
+
             orderList.forEach(order -> {
                 OrderResponse orderResponse = new OrderResponse();
                 BeanUtils.copyProperties(order,orderResponse);
                 if (order.getSizeId() != null) {
                     orderResponse.setSize(sizeService.getSizeDetail(order.getSizeId()+""));
                 }
+
+                orderResponse.setNum(countMap.isEmpty() ? 0 : Optional.ofNullable(countMap.get(order.getId())).orElse(0));
                 orderResponses.add(orderResponse);
             });
         }

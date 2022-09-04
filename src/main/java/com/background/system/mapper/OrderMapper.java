@@ -2,6 +2,7 @@ package com.background.system.mapper;
 
 import com.background.system.entity.Order;
 import com.background.system.response.BaseResponse;
+import com.background.system.response.IndexCountResponse;
 import com.background.system.response.OrderCountResponse;
 import com.background.system.response.file.ReadyDownloadFileResponse;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -63,4 +64,6 @@ public interface OrderMapper extends BaseMapper<Order> {
     void updateZipPathById(@Param("baseResponse") List<BaseResponse> responses);
 
     int orderDownload(@Param("id")String id);
+
+    List<IndexCountResponse> getIndexOrderCount(@Param("time")String time);
 }

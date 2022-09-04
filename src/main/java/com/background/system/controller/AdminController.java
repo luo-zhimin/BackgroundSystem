@@ -154,6 +154,13 @@ public class AdminController {
         return Result.success(orderService.info(orderId));
     }
 
+    @GetMapping("/order/currentDay")
+    @ApiOperation("当前日期的消息")
+    @IgnoreLogin
+    public Result<?> getOrderCurrentDay () {
+        return Result.success(orderService.getOrderCurrentDay());
+    }
+
 
     @PostMapping("/size/insert")
     @ApiOperation("尺寸新增")

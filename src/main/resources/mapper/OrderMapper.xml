@@ -67,7 +67,7 @@
     <insert id="insertSelective" parameterType="com.background.system.entity.Order">
         insert into `order`
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
+            <if test="id != null and id != ''">
                 id,
             </if>
             <if test="wxNo != null and wxNo != ''">
@@ -114,7 +114,7 @@
 <!--            </if>-->
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
+            <if test="id != null and id != ''">
                 #{id,jdbcType=VARCHAR},
             </if>
             <if test="wxNo != null and wxNo != ''">
@@ -399,4 +399,10 @@
         update `order` set is_download = 1 where id=#{id}
     </delete>
 
+    <select id="getIndexOrderCount" resultType="com.background.system.response.IndexCountResponse">
+        select count(1) as count ,date_format(create_time,'%h') as time
+        from `order`
+        where create_time like concat(#{time},'%')
+        group by date_format(create_time, '%h')
+    </select>
 </mapper>

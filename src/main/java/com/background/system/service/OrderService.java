@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public interface OrderService {
 
-    Long createOrder(OrderVo orderVo);
+    String createOrder(OrderVo orderVo);
 
     Boolean coupon(Long couponId, String orderId);
 
@@ -38,6 +38,8 @@ public interface OrderService {
     Boolean orderClose(String  id);
 
     Boolean orderDownload(String id);
+
+    Object getOrderCurrentDay();
 
 //    Page<OrderResponse> getOrderAllList(Integer page, Integer size);
 }

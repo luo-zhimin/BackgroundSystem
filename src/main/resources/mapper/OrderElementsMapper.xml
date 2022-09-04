@@ -5,7 +5,7 @@
     <resultMap id="BaseResultMap" type="com.background.system.entity.OrderElement">
         <!--@Table order_element-->
         <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="order_id" jdbcType="BIGINT" property="orderId"/>
+        <result column="order_id" jdbcType="VARCHAR" property="orderId"/>
         <result column="number" jdbcType="INTEGER" property="number"/>
         <result column="picture_id" jdbcType="LONGVARCHAR" property="pictureId"/>
         <result column="is_del" jdbcType="CHAR" property="isDel"/>
@@ -163,7 +163,7 @@
             (order_id, `number`, picture_id, create_time)
         values
         <foreach collection="elements" item="item" separator=",">
-            (#{item.orderId,jdbcType=BIGINT}, #{item.number,jdbcType=INTEGER}, #{item.pictureId,jdbcType=LONGVARCHAR},
+            (#{item.orderId,jdbcType=VARCHAR}, #{item.number,jdbcType=INTEGER}, #{item.pictureId,jdbcType=LONGVARCHAR},
              #{item.createTime,jdbcType=TIMESTAMP})
         </foreach>
     </insert>
@@ -172,5 +172,13 @@
         select  <include refid="Base_Column_List"/>
         from order_element
         where order_id=#{orderId} and is_del=0
+    </select>
+
+    <select id="getOrderCountByIds" resultType="com.background.system.response.CountResponse">
+        select order_id,sum(number) as number from order_element where is_del=0 and order_id in
+        <foreach collection="ids" item="key" index="index" open="(" close=")" separator=",">
+            #{key,jdbcType=VARCHAR}
+        </foreach>
+        group by order_id
     </select>
 </mapper>

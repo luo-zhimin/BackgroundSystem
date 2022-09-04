@@ -370,7 +370,7 @@
     </update>
 
     <select id="getNoZipPathOrder" resultType="com.background.system.response.file.ReadyDownloadFileResponse">
-        select o.id, s.name sizeName, o.order_no wxNo, GROUP_CONCAT(oe.picture_id) pictureId,sum(oe.number) number
+        select o.id, s.name sizeName,s.size, o.order_no wxNo, GROUP_CONCAT(oe.picture_id) pictureId,sum(oe.number) number
         from `orderd` o
                  inner join size s on o.size_id = s.id
                  inner join order_element oe on o.id = oe.order_id
@@ -401,7 +401,7 @@
 
     <select id="getIndexOrderCount" resultType="com.background.system.response.IndexCountResponse">
         select count(1) as count ,date_format(create_time,'%h') as time
-        from `order`
+        from `orderd`
         where create_time like concat(#{time},'%')
         group by date_format(create_time, '%h')
     </select>

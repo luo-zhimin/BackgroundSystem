@@ -30,8 +30,8 @@ public class ReadyDownloadFileResponse {
     private String pictureId;
 
     //todo 图片 尺寸 转换 zip 待定
-//    @ApiModelProperty(value = "尺寸 第一个width 第二个height")
-//    private String size;//mm*mm
+    @ApiModelProperty(value = "尺寸 第一个width 第二个height")
+    private String size;//mm*mm
 
     private List<Picture> pictures;
 
@@ -45,5 +45,19 @@ public class ReadyDownloadFileResponse {
             return Lists.newArrayList(this.pictureId.split(","));
         }
         return Collections.emptyList();
+    }
+
+    public int getWeight(){
+        if (StringUtils.isNotEmpty(this.size)){
+            return Integer.parseInt(size.split("\\*")[0]);
+        }
+        return 0;
+    }
+
+    public int getHeight(){
+        if (StringUtils.isNotEmpty(this.size)){
+            return Integer.parseInt(size.split("\\*")[1]);
+        }
+        return 0;
     }
 }

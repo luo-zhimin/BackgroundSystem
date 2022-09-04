@@ -1,5 +1,6 @@
 package com.background.system.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,7 +22,8 @@ public class Orderd {
     private String id;
 
     @ApiModelProperty(value="微信支付订单号")
-    private String orderNo;
+    @TableField(value = "order_no")
+    private String wxNo;
 
     @ApiModelProperty(value="快递单号")
     private String kdNo;

@@ -118,7 +118,7 @@ public class PayServiceImpl extends BaseService implements PayService {
         objectMapper.writeValue(bos, rootNode);
 
         // 回写微信支付订单号
-        orderd.setOrderNo(wx_no);
+        orderd.setWxNo(wx_no);
         orderd.setIsPay(false);  // 支付状态
         orderd.setStatus("0");     // 发货状态
         orderMapper.updateByPrimaryKeySelective(orderd);

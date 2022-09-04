@@ -7,6 +7,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfWriter;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.collections4.CollectionUtils;
@@ -42,8 +43,23 @@ public class PdfUtil {
     private static final String DATE_FORMAT = "yyyy-MM-dd_HH:mm:ss";
 
     @Value("${zip.file}")
-    private String FILE_PATH;// = "/Users/sugar/Desktop/BackgroundSystem/upload";
+    private static String FILE_PATH;
     private static String mergedPdfName;
+
+
+    public static void main(String[] args) {
+        List<String> lis = new ArrayList<>();
+        lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/1.jpg");
+        lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/2.jpg");
+        lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/3.jpg");
+        try {
+            String nidie = imageToMergePdf(lis, "NIDIE",60, 92);
+            System.out.println(nidie);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
     /**
      * 多图片转pdf并且进行pdf合并
@@ -52,7 +68,7 @@ public class PdfUtil {
      * @return
      * @throws Exception
      */
-    public String imageToMergePdf(List<String> sourcePaths, String name) throws Exception {
+    public static String imageToMergePdf(List<String> sourcePaths, String name, Integer width, Integer height) throws Exception {
         File uploadDirectory = new File(FILE_PATH);
         if (!uploadDirectory.exists()) {
             uploadDirectory.mkdirs();
@@ -66,7 +82,7 @@ public class PdfUtil {
 
                 String url;
                 try {
-                    url = adjustImageSize(file);
+                    url = adjustImageSize(file, width, height);
                 } catch (Exception e) {
                     log.error("调整图片大小失败，异常{}", e.getMessage());
                     throw new ServiceException(500, e.getMessage());
@@ -88,7 +104,6 @@ public class PdfUtil {
         if (!pdf.exists()) {
             throw new ServiceException(500, "合并生成的pdf文件不存在，可能被人为删除，请再次重试");
         }
-//        String ossKey = mergedPdfName.substring(0, mergedPdfName.lastIndexOf("."));
         String url = AliUploadUtils.uploadPdf(pdf, name);
         pdf.delete();
         return url;
@@ -101,16 +116,15 @@ public class PdfUtil {
      * @return
      * @throws Exception
      */
-    private String adjustImageSize(String sourcePath) throws Exception {
+    private static String adjustImageSize(String sourcePath, Integer width, Integer height) throws Exception {
         //todo 调整的尺寸后续需要根据不同产品设置不同值，目前 92 * 60 对应的是 261 * 170
         String[] split = sourcePath.split("\\.");
         String targetPath = FILE_PATH + "/" + System.currentTimeMillis() + "target." + split[1];
 
-        BufferedImage image = ImageIO.read(Files.newInputStream(Paths.get(sourcePath)));
-        FileOutputStream out = new FileOutputStream(targetPath);
-        //size(width,height)  原有照片进行压缩 / 扩大
-        Thumbnails.of(image).size(170,261).outputQuality(1).outputFormat(split[1]).toOutputStream(out);
-
+        Thumbnails.of(sourcePath)
+                .size((int) (width * 92 / 25.4), (int) (height * 92 / 25.4))
+                .keepAspectRatio(false)
+                .toFile(targetPath);
         tempImagePath.add(targetPath);
         return targetPath;
     }
@@ -122,7 +136,7 @@ public class PdfUtil {
      * @return
      * @throws IOException
      */
-    private String imgToPdf(String adjustImgPath) throws IOException {
+    private static String imgToPdf(String adjustImgPath) throws IOException {
         BufferedImage img = ImageIO.read(new File(adjustImgPath));
         String pdfPath = "";
         try {
@@ -193,7 +207,7 @@ public class PdfUtil {
      * @param mergeFileName 合并之后生成的文件名
      * @throws Exception
      */
-    private void mergePdf(List<String> files, String mergeFileName) throws Exception {
+    private static void mergePdf(List<String> files, String mergeFileName) throws Exception {
 
         PDFMergerUtility mergePdf = new PDFMergerUtility();
 

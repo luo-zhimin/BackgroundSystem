@@ -108,7 +108,7 @@ public class ZipFileUtils {
             String sendName = DateTimeFormatter.ofPattern("yyyyMMddhhmmss").format(LocalDateTime.now()) + "-" + response.getWxNo() + "-" + response.getSizeName() + "-" + response.getNumber();
 
             // 获取PDF路径  todo size 不同
-            String pdfUrl = pdfUtil.imageToMergePdf(picList, sendName);
+            String pdfUrl = pdfUtil.imageToMergePdf(picList, sendName, response.getWeight(), response.getHeight());
             handleFiles.add(new HandleFile(sendName + ".pdf", pdfUrl));
 
             String saveName = acceptFilePath + File.separator + sendName;

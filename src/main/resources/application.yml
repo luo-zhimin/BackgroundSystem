@@ -29,4 +29,4 @@ jasypt:
 # 加入配置vm
 #-Djasypt.encryptor.password=xx
 zip:
-  file: /User/bin
+  file: /Users/sugar/Desktop/BackgroundSystem/upload

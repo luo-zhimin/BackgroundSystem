@@ -47,6 +47,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     private SizeMapper sizeMapper;
 
     @Resource
+    private CaizhiMapper caizhiMapper;
+
+    @Resource
     private CouponMapper couponMapper;
 
     @Autowired
@@ -72,23 +75,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     public String createOrder(OrderVo orderVo) {
         Orderd order = new Orderd();
         BeanUtil.copyProperties(orderVo, order);
+        Caizhi caizhi = caizhiMapper.selectById(order.getCaizhiId());
         List<OrderElement> orderElements = orderVo.getOrderElements();
-        // 计算价格
-        Size size = sizeMapper.selectByPrimaryKey(order.getSizeId());
         //多个
         List<Caizhi> materialQualities = materialQualityService.getMaterialListByIds(order.getMaterialQualityIds());
-        if (size==null || CollectionUtils.isEmpty(materialQualities)){
-            throw new ServiceException(1000,"请选择材质或者尺寸！");
-        }
-        //尺寸价格
-        BigDecimal uPrice = size.getUPrice();
-        if (uPrice == null) {
-            uPrice = size.getPrice();
+        if (caizhi==null || CollectionUtils.isEmpty(materialQualities)){
+            throw new ServiceException(1000,"请选择材质！");
         }
         //材质价格
-//        BigDecimal price = caizhi.getPrice();
         //（材质+尺寸）
-        BigDecimal total = uPrice;
+        BigDecimal total = caizhi.getPrice();
 
         //价格计算 单 or 双 * 组  数量 *（材质+尺寸）
 //        String faces = size.getFaces();

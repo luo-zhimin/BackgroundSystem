@@ -121,7 +121,7 @@ public class OrderController {
     @GetMapping("todayOrderOrPrice")
     @ApiOperation("今日订单数-金额数")
     @IgnoreLogin
-    public Result<?> todayOrder(String type) {
+    public Result<?> todayOrderOrPrice(String type) {
         // 当天订单信息
         QueryWrapper<Orderd> wrapper = new QueryWrapper<>();
         wrapper.apply(true, "TO_DAYS(NOW())-TO_DAYS(create_time) = 0");
@@ -156,30 +156,41 @@ public class OrderController {
         return Result.success(integers);
     }
 
-    @GetMapping("weekOrder")
-    @ApiOperation("每周订单数")
+    @GetMapping("weekOrderOrPrice")
+    @ApiOperation("每周订单数-金额数")
     @IgnoreLogin
-    public Result<?> todayOrder() {
+    public Result<?> weekOrderOrPrice(String type) {
         // 每周订单信息
         QueryWrapper<Orderd> wrapper = new QueryWrapper<>();
         wrapper.apply(true, "TO_DAYS(NOW())-TO_DAYS(create_time) <= 7");
         List<Orderd> orders = orderMapper.selectList(wrapper);
 
         // init
-        int []timeCount = new int[25];
+        int []timeCount = new int[8];
+        double []priceCount = new double[8];
 
         // deal
         for (Orderd order : orders) {
+            // 订单
             LocalDateTime createTime = order.getCreateTime();
             int value = createTime.getDayOfWeek().getValue();
+            // 价格
+            double total = order.getTotal().doubleValue();
             timeCount[value]++;
+            priceCount[value] += total;
         }
 
         // 通用返回
         ArrayList<Object> integers = new ArrayList<>(7);
 
-        for (int i = 1 ; i <= 7 ; i++) integers.add(timeCount[i]);
-
+        // 筛选
+        switch (type) {
+            case "0":
+                for (int i = 1 ; i <= 7 ; i++) integers.add(timeCount[i]);
+                break;
+            case "1":
+                for (int i = 1 ; i <= 7 ; i++) integers.add(priceCount[i]);
+        }
         return Result.success(integers);
     }
 

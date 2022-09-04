@@ -88,7 +88,7 @@ public class PdfUtil {
         if (!pdf.exists()) {
             throw new ServiceException(500, "合并生成的pdf文件不存在，可能被人为删除，请再次重试");
         }
-        String ossKey = mergedPdfName.substring(0, mergedPdfName.lastIndexOf("."));
+//        String ossKey = mergedPdfName.substring(0, mergedPdfName.lastIndexOf("."));
         String url = AliUploadUtils.uploadPdf(pdf, name);
         pdf.delete();
         return url;
@@ -108,6 +108,7 @@ public class PdfUtil {
 
         BufferedImage image = ImageIO.read(Files.newInputStream(Paths.get(sourcePath)));
         FileOutputStream out = new FileOutputStream(targetPath);
+        //size(width,height)  原有照片进行压缩 / 扩大
         Thumbnails.of(image).size(170,261).outputQuality(1).outputFormat(split[1]).toOutputStream(out);
 
         tempImagePath.add(targetPath);

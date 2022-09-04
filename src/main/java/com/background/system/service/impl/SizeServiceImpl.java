@@ -102,6 +102,9 @@ public class SizeServiceImpl extends BaseService implements SizeService {
         if (CollectionUtils.isEmpty(size.getMaterialIds()) && (size.getFaces()==null || size.getSize()==null)){
             throw new ServiceException(1029,"请确认后在操作");
         }
+        if (StringUtils.isNotEmpty(size.getSize()) && !size.getSize().contains("*")) {
+            throw new ServiceException(1003, "尺寸填写错误，请按照正常格式来填写 宽*高");
+        }
         return sizeMapper.insertSelective(size)>0;
     }
 

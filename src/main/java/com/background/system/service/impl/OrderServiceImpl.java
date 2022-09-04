@@ -47,9 +47,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     private SizeMapper sizeMapper;
 
     @Resource
-    private CaizhiMapper caizhiMapper;
-
-    @Resource
     private CouponMapper couponMapper;
 
     @Autowired
@@ -77,9 +74,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         BeanUtil.copyProperties(orderVo, order);
         List<OrderElement> orderElements = orderVo.getOrderElements();
         // 计算价格
-        Size size = sizeMapper.selectByPrimaryKey(order.getSizeId()+"");
-        Caizhi caizhi = caizhiMapper.selectByPrimaryKey(order.getCaizhiId());
-        if (size==null || caizhi==null){
+        Size size = sizeMapper.selectByPrimaryKey(order.getSizeId());
+        //多个
+        List<Caizhi> materialQualities = materialQualityService.getMaterialListByIds(order.getMaterialQualityIds());
+        if (size==null || CollectionUtils.isEmpty(materialQualities)){
             throw new ServiceException(1000,"请选择材质或者尺寸！");
         }
         //尺寸价格
@@ -180,12 +178,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         if (StringUtils.isNotEmpty(order.getAddressId())){
             orderResponse.setAddress(addressService.getAddressDetail(order.getAddressId()));
         }
-        if (order.getSizeId()!=null){
-            orderResponse.setSize(sizeService.getSizeDetail(order.getSizeId()+""));
+
+        if (StringUtils.isNotEmpty(order.getSizeId())){
+            orderResponse.setSize(sizeService.getSizeDetail(order.getSizeId()));
         }
-        if (order.getCaizhiId() != null) {
-            orderResponse.setCaizhi(materialQualityService.getMaterialQualityDetail(order.getCaizhiId()));
-        }
+
+        orderResponse.setMaterialQualities(materialQualityService.getMaterialListByIds(order.getMaterialQualityIds()));
+
         if (order.getCouponId() != null) {
             orderResponse.setCoupon(couponService.getCouponDetail(order.getCouponId()));
         }
@@ -357,8 +356,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             orderList.forEach(order -> {
                 OrderdResponse orderResponse = new OrderdResponse();
                 BeanUtils.copyProperties(order,orderResponse);
-                if (order.getSizeId() != null) {
-                    orderResponse.setSize(sizeService.getSizeDetail(order.getSizeId()+""));
+                if (StringUtils.isNotEmpty(order.getSizeId())) {
+                    orderResponse.setSize(sizeService.getSizeDetail(order.getSizeId()));
                 }
 
                 orderResponse.setNum(countMap.isEmpty() ? 0 : Optional.ofNullable(countMap.get(order.getId())).orElse(0));

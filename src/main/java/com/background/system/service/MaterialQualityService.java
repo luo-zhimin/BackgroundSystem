@@ -16,11 +16,11 @@ public interface MaterialQualityService {
 
     List<Caizhi> getMaterialQualityList();
 
-    Caizhi getMaterialQualityDetail(Long id);
+    Caizhi getMaterialQualityDetail(String id);
 
     Boolean materialQualityInsert(Caizhi caizhi);
 
     Boolean materialQualityUpdate(Caizhi caizhi);
 
-    Boolean deleteMaterialQuality(Long id);
+    Boolean deleteMaterialQuality(String id);
 }

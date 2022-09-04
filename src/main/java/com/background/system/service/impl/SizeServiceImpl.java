@@ -1,6 +1,5 @@
 package com.background.system.service.impl;
 
-import com.background.system.entity.Caizhi;
 import com.background.system.entity.Picture;
 import com.background.system.entity.Size;
 import com.background.system.exception.ServiceException;
@@ -59,11 +58,9 @@ public class SizeServiceImpl extends BaseService implements SizeService {
             return sizePage;
         }
         List<String> ids = Lists.newArrayList();
-//        List<String> materialIds = Lists.newArrayList();
         //组装数据
         sizeList.forEach(goods -> {
             ids.addAll(goods.getPictureIds());
-//            materialIds.addAll(goods.getMaterialIds());
             SizeResponse sizeResponse = new SizeResponse();
             BeanUtils.copyProperties(goods, sizeResponse);
             goodsResponses.add(sizeResponse);
@@ -71,15 +68,11 @@ public class SizeServiceImpl extends BaseService implements SizeService {
 
         //避免长连接
         List<Picture> pictures = pictureService.getPicturesByIds(ids);
-//        List<Caizhi> materialLists = materialQualityService.getMaterialListByIds(materialIds);
 
         goodsResponses.forEach(response -> {
             response.setPictures(pictures.stream()
                     .filter(picture -> response.getPictureIds().contains(picture.getId() + ""))
                     .collect(Collectors.toList()));
-//            response.setMaterials(materialLists.stream()
-//                    .filter(material -> response.getMaterialIds().contains(material.getId()+""))
-//                    .collect(Collectors.toList()));
         });
 
         sizePage.setRecords(goodsResponses);
@@ -96,15 +89,8 @@ public class SizeServiceImpl extends BaseService implements SizeService {
         Size size = sizeMapper.selectByPrimaryKey(id);
         if(size!=null){
             BeanUtils.copyProperties(size,sizeResponse);
-            List<Picture> pictures = pictureService.getPicturesByIds(size.getPictureIds());
-            sizeResponse.setPictures(pictures);
-            List<String> materialIds = size.getMaterialIds();
-            List<Caizhi> materials = new ArrayList<>();
-            materialIds.forEach(res -> {
-                Caizhi caizhi = caizhiMapper.selectByPrimaryKey(Long.parseLong(res));
-                materials.add(caizhi);
-            });
-            sizeResponse.setMaterials(materials);
+            sizeResponse.setPictures(pictureService.getPicturesByIds(size.getPictureIds()));
+            sizeResponse.setMaterials(materialQualityService.getMaterialListByIds(size.getMaterialIds()));
         }
         return sizeResponse;
     }

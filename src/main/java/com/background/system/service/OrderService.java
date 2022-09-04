@@ -24,7 +24,6 @@ public interface OrderService {
 
     Page<OrderdResponse> getOrderList(Integer page, Integer size);
 
-
     Boolean updateOrder(Orderd orderd);
 
     Boolean cancelOrder(String id);

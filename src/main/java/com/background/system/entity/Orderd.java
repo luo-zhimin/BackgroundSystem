@@ -2,13 +2,17 @@ package com.background.system.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 /**
 * Created by IntelliJ IDEA.
@@ -67,10 +71,10 @@ public class Orderd {
     private String addressId;
 
     @ApiModelProperty(value="尺寸ID")
-    private Long sizeId;
+    private String sizeId;
 
     @ApiModelProperty(value="材质ID")
-    private Long caizhiId;
+    private String caizhiId;
 
     private String createUser;
 
@@ -79,4 +83,11 @@ public class Orderd {
     private String zipPath;
 
     private Boolean isDownload;
+
+    public List<String> getMaterialQualityIds(){
+        if (StringUtils.isNotEmpty(this.caizhiId)){
+            return Lists.newArrayList(caizhiId.split(","));
+        }
+        return Collections.emptyList();
+    }
 }

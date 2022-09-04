@@ -34,7 +34,7 @@ public class MaterialQualityController {
 
     @GetMapping("/detail")
     @ApiOperation("材质详情")
-    public Result<?> getMaterialQualityDetail(@RequestParam(value = "id")Long id)
+    public Result<?> getMaterialQualityDetail(@RequestParam(value = "id")String id)
     {
         return Result.success(qualityService.getMaterialQualityDetail(id));
     }

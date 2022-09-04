@@ -236,8 +236,8 @@
         create_time)
         values (#{remark,jdbcType=VARCHAR}, #{portPrice,jdbcType=DECIMAL}, #{total,jdbcType=DECIMAL},
         #{couponId,jdbcType=BIGINT}, #{status,jdbcType=CHAR}, #{addressId,jdbcType=VARCHAR},
-         #{caizhiId,jdbcType=BIGINT},
-        #{sizeId,jdbcType=BIGINT}, #{createUser,jdbcType=VARCHAR},
+         #{caizhiId,jdbcType=VARCHAR},
+        #{sizeId,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR},
         #{createTime,jdbcType=TIMESTAMP})
     </insert>
 

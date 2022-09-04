@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 public class Caizhi {
 
     @ApiModelProperty(value="主键id")
-    private Long id;
+    private String id;
 
     @ApiModelProperty(value="材质")
     private String name;

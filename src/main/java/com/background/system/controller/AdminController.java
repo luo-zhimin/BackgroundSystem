@@ -143,6 +143,7 @@ public class AdminController {
 
     @GetMapping("/order/count")
     @ApiOperation("后台-订单列表-数量统计")
+    @IgnoreLogin
     public Result<?> getAdminOrderCount()
     {
         return Result.success(orderService.getAdminOrderCount());
@@ -209,7 +210,7 @@ public class AdminController {
     @DeleteMapping("/material/delete")
     @ApiOperation("删除材质")
     @IgnoreLogin
-    public Result<?> deleteMaterialQuality(@RequestParam Long id)
+    public Result<?> deleteMaterialQuality(@RequestParam String id)
     {
         return Result.success(qualityService.deleteMaterialQuality(id));
     }

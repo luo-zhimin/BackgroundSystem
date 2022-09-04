@@ -7,10 +7,12 @@ import com.background.system.service.MaterialQualityService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,12 +46,8 @@ public class MaterialQualityServiceImpl extends BaseService implements MaterialQ
         return caizhiMapper.getMaterialQualitiesList(null,null);
     }
 
-    public List<Caizhi> getMaterialListByIds(List<String> ids){
-        return caizhiMapper.getMaterialListByIds(ids);
-    }
-
     @Override
-    public Caizhi getMaterialQualityDetail(Long id) {
+    public Caizhi getMaterialQualityDetail(String id) {
         return selectByPrimaryKey(id);
     }
 
@@ -71,22 +69,29 @@ public class MaterialQualityServiceImpl extends BaseService implements MaterialQ
 
     @Override
     @Transactional
-    public Boolean deleteMaterialQuality(Long id) {
+    public Boolean deleteMaterialQuality(String id) {
         check(id);
         return caizhiMapper.deleteByPrimaryKey(id)>0;
     }
 
-    public Caizhi selectByPrimaryKey(Long id) {
+    public Caizhi selectByPrimaryKey(String id) {
         return caizhiMapper.selectByPrimaryKey(id);
     }
 
-    private void check(Long id){
-        if (id==null){
+    private void check(String id){
+        if (StringUtils.isEmpty(id)){
             throw new ServiceException(1003,"id不可以为空");
         }
         Caizhi live = caizhiMapper.selectByPrimaryKey(id);
         if (live==null){
             throw new ServiceException(1004,"该材质不存在，请确认后重新操作");
         }
+    }
+
+    public List<Caizhi> getMaterialListByIds(List<String> ids){
+        if (CollectionUtils.isEmpty(ids)){
+            return Collections.emptyList();
+        }
+        return caizhiMapper.getMaterialListByIds(ids);
     }
 }

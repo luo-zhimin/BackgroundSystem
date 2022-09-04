@@ -3,29 +3,34 @@
 <mapper namespace="com.background.system.mapper.CaizhiMapper">
     <resultMap id="BaseResultMap" type="com.background.system.entity.Caizhi">
         <!--@Table caizhi-->
-        <id column="id" jdbcType="BIGINT" property="id"/>
+        <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
     </resultMap>
+
     <sql id="Base_Column_List">
         id,
         `name`
     </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from caizhi
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete
         from caizhi
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </delete>
+
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Caizhi"
             useGeneratedKeys="true">
         insert into caizhi (`name`)
         values (#{name,jdbcType=VARCHAR})
     </insert>
+
     <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Caizhi"
             useGeneratedKeys="true">
         insert into caizhi
@@ -33,7 +38,6 @@
             <if test="name != null and name != ''">
                 `name`,
             </if>
-
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="name != null and name != ''">
@@ -41,6 +45,7 @@
             </if>
         </trim>
     </insert>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.Caizhi">
         update caizhi
         <set>
@@ -48,16 +53,18 @@
                 `name` = #{name,jdbcType=VARCHAR},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </update>
+
     <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Caizhi">
         update caizhi
         set `name` = #{name,jdbcType=VARCHAR}
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=VARCHAR}
     </update>
 
     <select id="getMaterialQualitiesList" resultMap="BaseResultMap">
-        select  <include refid="Base_Column_List"/>
+        select
+        <include refid="Base_Column_List"/>
         from caizhi
         <if test="page != null and size != null">
             limit #{page},#{size}
@@ -65,11 +72,13 @@
     </select>
 
     <select id="countMaterialQualities" resultType="int">
-        select count(*) from caizhi
+        select count(*)
+        from caizhi
     </select>
 
     <select id="getMaterialListByIds" resultMap="BaseResultMap">
-        select  <include refid="Base_Column_List"/>
+        select
+        <include refid="Base_Column_List"/>
         from caizhi where id in
         <foreach collection="ids" item="key" index="index" open="(" close=")" separator=",">
             #{key,jdbcType=VARCHAR}

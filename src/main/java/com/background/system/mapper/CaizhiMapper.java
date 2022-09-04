@@ -12,13 +12,13 @@ import java.util.List;
 * @create 2022/8/20 14:53
 */
 public interface CaizhiMapper extends BaseMapper<Caizhi> {
-    int deleteByPrimaryKey(Long id);
+    int deleteByPrimaryKey(String id);
 
     int insert(Caizhi record);
 
     int insertSelective(Caizhi record);
 
-    Caizhi selectByPrimaryKey(Long id);
+    Caizhi selectByPrimaryKey(String id);
 
     int updateByPrimaryKeySelective(Caizhi record);
 

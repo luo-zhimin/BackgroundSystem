@@ -155,8 +155,7 @@ public class AdminController {
     }
 
     @GetMapping("/order/currentDay")
-    @ApiOperation("当前日期的消息")
-    @IgnoreLogin
+    @ApiOperation("当日订单的销售情况")
     public Result<?> getOrderCurrentDay () {
         return Result.success(orderService.getOrderCurrentDay());
     }

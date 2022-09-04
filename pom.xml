@@ -175,9 +175,10 @@
                 <artifactId>classfinal-maven-plugin</artifactId>
                 <version>1.2.1</version>
                 <configuration>
-                    <password>backgroundSystem</password><!--加密打包之后pom.xml会被删除，不用担心在jar包里找到此密码-->
+                    <!--加密打包之后pom.xml会被删除，不用担心在jar包里找到此密码-->
+                    <password>backgroundSystem</password>
                     <packages>com.*</packages>
-                    <cfgfiles>application.yml,./mapper/*.xml</cfgfiles>
+                    <cfgfiles>application.yml</cfgfiles>
                     <excludes>org.spring</excludes>
                     <!-- 要加密的jar包 -->
                     <libjars>a.jar,b.jar</libjars>

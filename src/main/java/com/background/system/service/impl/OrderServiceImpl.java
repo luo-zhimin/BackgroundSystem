@@ -87,7 +87,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         BigDecimal total = caizhi.getPrice();
 
         //价格计算 单 or 双 * 组  数量 *（材质+尺寸）
-//        String faces = size.getFaces();
         //一共买了多少
         int totalNumber = orderElements.stream().mapToInt(OrderElement::getNumber).sum();
         total = total.multiply(BigDecimal.valueOf(totalNumber));

@@ -79,7 +79,7 @@ create table if not exists coupon
     picture_id bigint           null comment '图片id'
 );
 
-create table if not exists `order`
+create table orderd
 (
     id          bigint auto_increment
         primary key,
@@ -92,14 +92,14 @@ create table if not exists `order`
     coupon_id   bigint                             null comment '优惠券id',
     status      char     default '0'               not null comment '订单状态：待付款，待发货，售后订单，交易关闭',
     address_id  bigint                             null comment '收货地址id',
-    caizhi_id   bigint                             null comment '材质id',
-    size_id     bigint                             null comment '尺寸id',
+    caizhi_id   varchar(100)                       not null comment '材质id',
+    size_id     bigint                             not null comment '尺寸id',
     zip_path    varchar(100)                       null comment '下载zip链接',
     is_download char     default '0'               not null comment '是否下载',
     create_user varchar(50)                        not null comment '创建人',
     is_del      char     default '0'               not null comment '是否删除',
-    create_time datetime                           null comment '创建时间',
-    update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    create_time datetime                           not null comment '创建时间',
+    update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '修改时间',
     update_user varchar(30)                        null comment '修改人'
 );
 

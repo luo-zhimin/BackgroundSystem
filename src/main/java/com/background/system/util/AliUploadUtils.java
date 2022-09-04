@@ -1,6 +1,5 @@
 package com.background.system.util;
 
-import cn.hutool.core.lang.UUID;
 import com.alibaba.fastjson.JSON;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
@@ -12,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 
 /**
  * @Description:
@@ -35,10 +33,12 @@ public class AliUploadUtils {
     public static String uploadImage(MultipartFile file, String father) {
         log.info("file name[{}]",file.getOriginalFilename());
         OSS ossClient = new OSSClientBuilder().build(ENDPOINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET);
-        String type =
-            Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf("."));
-        String title = file.getOriginalFilename();
-        String path = father + "/" + title + type;
+        //名字 后缀会重叠
+//        String type =
+//            Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf("."));
+        String title = file.getOriginalFilename();//zh_cn path name
+//        String path = father + "/" + title + type;
+        String path = father + "/" + title;
         try {
             PutObjectRequest request =
                 new PutObjectRequest(BUCKET_NAME, path, new ByteArrayInputStream(file.getBytes()));
@@ -50,7 +50,8 @@ public class AliUploadUtils {
         } finally {
             ossClient.shutdown();
         }
-        return RESULT_URL + "/" + father + "/" + title + type;
+//        return RESULT_URL + "/" + father + "/" + title + type;
+        return RESULT_URL + "/" + father + "/" + title ;
     }
 
     /**

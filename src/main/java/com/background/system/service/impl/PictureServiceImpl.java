@@ -34,7 +34,6 @@ public class PictureServiceImpl implements PictureService {
             throw new ServiceException(1000, "请至少选择一张图片！");
         }
 
-//        List<String> pictureIds = Lists.newArrayList();
         String aDefault = AliUploadUtils.uploadImage(file, "default");
         Picture picture = new Picture();
         picture.setUrl(aDefault);
@@ -43,8 +42,6 @@ public class PictureServiceImpl implements PictureService {
         picture.setName(file.getOriginalFilename());
         picture.setCreateTime(LocalDateTime.now());
         pictureMapper.insert(picture);
-//        pictureIds.add(picture.getId());
-//        return StringUtils.join(pictureIds,",");
         return PictureResponse.builder()
                 .id(picture.getId())
                 .url(picture.getUrl())

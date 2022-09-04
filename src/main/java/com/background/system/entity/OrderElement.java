@@ -25,7 +25,7 @@ public class OrderElement {
     private Long id;
 
     @ApiModelProperty(value = "订单号")
-    private Long orderId;
+    private String orderId;
 
     @ApiModelProperty(value = "'商品数量'")
     private Integer number;

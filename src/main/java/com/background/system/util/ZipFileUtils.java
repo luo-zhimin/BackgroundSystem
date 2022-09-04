@@ -42,7 +42,8 @@ public class ZipFileUtils {
 
     private final Logger logger = LoggerFactory.getLogger(ZipFileUtils.class);
 
-    private String acceptFilePath = "/Users/sugar/Desktop/BackgroundSystem/upload";
+    @Value("${zip.file}")
+    private String acceptFilePath;// = "/Users/sugar/Desktop/BackgroundSystem/upload";
 
     @Autowired
     private OrderServiceImpl orderService;
@@ -52,6 +53,9 @@ public class ZipFileUtils {
 
     @Autowired
     private OrderMapper orderMapper;
+
+    @Autowired
+    private PdfUtil pdfUtil;
 
     /**
      * 准备删除的文件
@@ -92,33 +96,24 @@ public class ZipFileUtils {
 
             // 下载图片
             for (HandleFile handleFile : handleFiles) {
-                String picPath = "/Users/sugar/Desktop/BackgroundSystem/upload/" + handleFile.getName() + ".jpg";
+//                String picPath = "/Users/sugar/Desktop/BackgroundSystem/upload/" + handleFile.getName() + ".jpg";
+                String picPath = acceptFilePath + handleFile.getName() + ".jpg";
                 picList.add(picPath);
                 FileOutputStream outputStream = new FileOutputStream(picPath, true);
-                URL url = new URL(handleFile.getUrl());
-                URLConnection urlConnection = url.openConnection();
-                InputStream inputStream = urlConnection.getInputStream();
-                byte[] bytes = readInputStream(inputStream);
-                inputStream.close();
-                outputStream.write(bytes);
-                outputStream.close();
+                transformHandleFile(handleFile, outputStream);
             }
-
 
             //创建目录 压缩zip 删除 目录 保留zip
             //订单号+成品名称+数量  日期+支付订单号+size(name)+数量
             String sendName = DateTimeFormatter.ofPattern("yyyyMMddhhmmss").format(LocalDateTime.now()) + "-" + response.getWxNo() + "-" + response.getSizeName() + "-" + response.getNumber();
 
-            // 获取PDF路径
-            String pdfUrl = PdfUtil.imageToMergePdf(picList, sendName);
+            // 获取PDF路径  todo size 不同
+            String pdfUrl = pdfUtil.imageToMergePdf(picList, sendName);
             handleFiles.add(new HandleFile(sendName + ".pdf", pdfUrl));
 
             String saveName = acceptFilePath + File.separator + sendName;
 
-
-
-            System.out.println("handleFiles = " + handleFiles);
-
+            logger.info("handleFiles = " + handleFiles);
 
             //1.创建临时文件
             judgeFileExists(Lists.newArrayList(saveName));
@@ -126,13 +121,7 @@ public class ZipFileUtils {
             //准备进行文件处理
             for (HandleFile handleFile : handleFiles) {
                 FileOutputStream os = new FileOutputStream(saveName + File.separator + handleFile.getName());
-                URL url = new URL(handleFile.getUrl());
-                URLConnection urlConnection = url.openConnection();
-                InputStream inputStream = urlConnection.getInputStream();
-                byte[] bytes = readInputStream(inputStream);
-                inputStream.close();
-                os.write(bytes);
-                os.close();
+                transformHandleFile(handleFile, os);
             }
 
             deleteFile.add(new File(saveName));
@@ -143,9 +132,18 @@ public class ZipFileUtils {
             readyUploadFiles.add(new ReadyUploadFile(sendName+".zip", response.getId(),saveName+".zip"));
         }
 
-
         //删除原始目录
         deleteFile();
+    }
+
+    private void transformHandleFile(HandleFile handleFile, FileOutputStream os) throws Exception {
+        URL url = new URL(handleFile.getUrl());
+        URLConnection urlConnection = url.openConnection();
+        InputStream inputStream = urlConnection.getInputStream();
+        byte[] bytes = readInputStream(inputStream);
+        inputStream.close();
+        os.write(bytes);
+        os.close();
     }
 
 
@@ -185,7 +183,7 @@ public class ZipFileUtils {
             if (file.getAbsolutePath().equals(acceptFilePath)) {
                 return;
             }
-            System.out.println(file.getAbsolutePath());
+//            System.out.println(file.getAbsolutePath());
             if (file.isDirectory()) {
                 for (File listFile : Objects.requireNonNull(file.listFiles())) {
                     deleteFile(listFile);

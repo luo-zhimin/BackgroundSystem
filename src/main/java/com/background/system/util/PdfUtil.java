@@ -7,19 +7,19 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfWriter;
-
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,16 +34,16 @@ import java.util.List;
  * @author menghui.wan
  */
 @Slf4j
+@Service
 public class PdfUtil {
 
     private static List<String> tempPdfPath = new ArrayList<>();
     private static List<String> tempImagePath = new ArrayList<>();
     private static final String DATE_FORMAT = "yyyy-MM-dd_HH:mm:ss";
-    private static final String FILE_PATH = "/Users/sugar/Desktop/BackgroundSystem/upload";
+
+    @Value("${zip.file}")
+    private String FILE_PATH;// = "/Users/sugar/Desktop/BackgroundSystem/upload";
     private static String mergedPdfName;
-
-
-
 
     /**
      * 多图片转pdf并且进行pdf合并
@@ -52,7 +52,7 @@ public class PdfUtil {
      * @return
      * @throws Exception
      */
-    public static String imageToMergePdf(List<String> sourcePaths, String name) throws Exception {
+    public String imageToMergePdf(List<String> sourcePaths, String name) throws Exception {
         File uploadDirectory = new File(FILE_PATH);
         if (!uploadDirectory.exists()) {
             uploadDirectory.mkdirs();
@@ -101,7 +101,7 @@ public class PdfUtil {
      * @return
      * @throws Exception
      */
-    private static String adjustImageSize(String sourcePath) throws Exception {
+    private String adjustImageSize(String sourcePath) throws Exception {
         //todo 调整的尺寸后续需要根据不同产品设置不同值，目前 92 * 60 对应的是 261 * 170
         String[] split = sourcePath.split("\\.");
         String targetPath = FILE_PATH + "/" + System.currentTimeMillis() + "target." + split[1];
@@ -121,13 +121,13 @@ public class PdfUtil {
      * @return
      * @throws IOException
      */
-    private static String imgToPdf(String adjustImgPath) throws IOException {
+    private String imgToPdf(String adjustImgPath) throws IOException {
         BufferedImage img = ImageIO.read(new File(adjustImgPath));
         String pdfPath = "";
         try {
             //图片操作
             Image image = null;
-            File file = new File(PdfUtil.FILE_PATH);
+            File file = new File(FILE_PATH);
 
             if (!file.exists()) {
                 file.mkdirs();
@@ -192,7 +192,7 @@ public class PdfUtil {
      * @param mergeFileName 合并之后生成的文件名
      * @throws Exception
      */
-    private static void mergePdf(List<String> files, String mergeFileName) throws Exception {
+    private void mergePdf(List<String> files, String mergeFileName) throws Exception {
 
         PDFMergerUtility mergePdf = new PDFMergerUtility();
 

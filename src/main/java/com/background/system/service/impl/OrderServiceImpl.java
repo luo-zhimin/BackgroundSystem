@@ -6,9 +6,10 @@ import com.background.system.entity.token.Token;
 import com.background.system.entity.vo.OrderVo;
 import com.background.system.exception.ServiceException;
 import com.background.system.mapper.*;
+import com.background.system.response.CountResponse;
 import com.background.system.response.OrderCountResponse;
 import com.background.system.response.OrderElementResponse;
-import com.background.system.response.OrderdResponse;
+import com.background.system.response.OrderResponse;
 import com.background.system.response.file.ReadyDownloadFileResponse;
 import com.background.system.service.OrderService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -70,13 +72,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Override
     @Transactional
-    public Long createOrder(OrderVo orderVo) {
-        Orderd orderd = new Orderd();
-        BeanUtil.copyProperties(orderVo, orderd);
+    public String createOrder(OrderVo orderVo) {
+        Order order = new Order();
+        BeanUtil.copyProperties(orderVo, order);
         List<OrderElement> orderElements = orderVo.getOrderElements();
         // 计算价格
-        Size size = sizeMapper.selectByPrimaryKey(orderd.getSizeId()+"");
-        Caizhi caizhi = caizhiMapper.selectByPrimaryKey(orderd.getCaizhiId());
+        Size size = sizeMapper.selectByPrimaryKey(order.getSizeId()+"");
+        Caizhi caizhi = caizhiMapper.selectByPrimaryKey(order.getCaizhiId());
         if (size==null || caizhi==null){
             throw new ServiceException(1000,"请选择材质或者尺寸！");
         }
@@ -97,29 +99,29 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         total = total.multiply(BigDecimal.valueOf(totalNumber));
 
         //运费
-        BigDecimal portPrice = orderd.getPortPrice();
+        BigDecimal portPrice = order.getPortPrice();
         if (portPrice!=null){
             total = total.add(portPrice);
         }
-        orderd.setTotal(total);
-        orderd.setIsPay(false);
-        orderd.setIsDel(false);
-        orderd.setCreateTime(LocalDateTime.now());
-        orderd.setUpdateTime(LocalDateTime.now());
+        order.setTotal(total);
+        order.setIsPay(false);
+        order.setIsDel(false);
+        order.setCreateTime(LocalDateTime.now());
+        order.setUpdateTime(LocalDateTime.now());
         //谁下单的
         Token currentUser = getWeChatCurrentUser();
-        orderd.setCreateUser(currentUser.getUsername());
-        orderMapper.insert(orderd);
+        order.setCreateUser(currentUser.getUsername());
+        orderMapper.insert(order);
         //下单时候 具体详情进入 element里面
         logger.info("order elements[{}]", orderElements);
         if (CollectionUtils.isNotEmpty(orderElements)) {
             orderElements.forEach(orderElement -> {
-                orderElement.setOrderId(orderd.getId());
+                orderElement.setOrderId(order.getId());
                 orderElement.setCreateTime(LocalDateTime.now());
             });
             elementsMapper.batchInsert(orderElements);
         }
-        return orderd.getId();
+        return order.getId();
     }
 
     @Override
@@ -133,11 +135,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         }
 
         // 更新订单
-        Orderd orderd = orderMapper.selectByPrimaryKey(orderId);
-        orderd.setStatus("1");
-        orderd.setIsPay(true);
-        orderd.setCouponId(couponId);
-        orderMapper.updateById(orderd);
+        Order order = orderMapper.selectByPrimaryKey(orderId);
+        order.setStatus("1");
+        order.setIsPay(true);
+        order.setCouponId(couponId);
+        orderMapper.updateById(order);
 
         // 优惠券标记使用过
         coupon.setIsUsed(true);
@@ -152,16 +154,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     @Override
     @Transactional
     public Boolean changeAddress(String orderId, String addressId) {
-        Orderd orderd = orderMapper.selectByPrimaryKey(orderId);
-        orderd.setAddressId(addressId);
-        return orderMapper.updateById(orderd)>0;
+        Order order = orderMapper.selectByPrimaryKey(orderId);
+        order.setAddressId(addressId);
+        return orderMapper.updateById(order)>0;
     }
 
     @Override
-    public OrderdResponse info(String orderId) {
-        OrderdResponse orderResponse = new OrderdResponse();
-        Orderd orderd = orderMapper.selectByPrimaryKey(orderId);
-        BeanUtils.copyProperties(orderd,orderResponse);
+    public OrderResponse info(String orderId) {
+        OrderResponse orderResponse = new OrderResponse();
+        Order order = orderMapper.selectByPrimaryKey(orderId);
+        BeanUtils.copyProperties(order,orderResponse);
         //图片 地址 尺寸 优惠卷
         //elements
         List<OrderElement> elements = elementsMapper.getOrderElementsByOrderId(orderId);
@@ -175,30 +177,30 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             });
             orderResponse.setElements(elementResponses);
         }
-        if (StringUtils.isNotEmpty(orderd.getAddressId())){
-            orderResponse.setAddress(addressService.getAddressDetail(orderd.getAddressId()));
+        if (StringUtils.isNotEmpty(order.getAddressId())){
+            orderResponse.setAddress(addressService.getAddressDetail(order.getAddressId()));
         }
-        if (orderd.getSizeId()!=null){
-            orderResponse.setSize(sizeService.getSizeDetail(orderd.getSizeId()+""));
+        if (order.getSizeId()!=null){
+            orderResponse.setSize(sizeService.getSizeDetail(order.getSizeId()+""));
         }
-        if (orderd.getCaizhiId() != null) {
-            orderResponse.setCaizhi(materialQualityService.getMaterialQualityDetail(orderd.getCaizhiId()));
+        if (order.getCaizhiId() != null) {
+            orderResponse.setCaizhi(materialQualityService.getMaterialQualityDetail(order.getCaizhiId()));
         }
-        if (orderd.getCouponId() != null) {
-            orderResponse.setCoupon(couponService.getCouponDetail(orderd.getCouponId()));
+        if (order.getCouponId() != null) {
+            orderResponse.setCoupon(couponService.getCouponDetail(order.getCouponId()));
         }
         orderResponse.setNum(elements.stream().mapToInt(OrderElement::getNumber).sum());
         return orderResponse;
     }
 
     @Override
-    public Page<OrderdResponse> getOrderList(Integer page, Integer size) {
-        Page<OrderdResponse> orderPage = initPage(page, size);
+    public Page<OrderResponse> getOrderList(Integer page, Integer size) {
+        Page<OrderResponse> orderPage = initPage(page, size);
         Token currentUser = getWeChatCurrentUser();
         page = (page - 1) * size;
-        List<Orderd> orderdList = orderMapper.getOrderList(page, size, currentUser.getUsername());
+        List<Order> orderList = orderMapper.getOrderList(page, size, currentUser.getUsername());
         //商品
-        List<OrderdResponse> orderResponses =  transformOrderResponse(orderdList);
+        List<OrderResponse> orderResponses =  transformOrderResponse(orderList);
         int orderCount = orderMapper.getCurrentOrderCount(currentUser.getUsername());
         orderPage.setTotal(orderCount);
         orderPage.setRecords(orderResponses);
@@ -206,8 +208,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     }
 
     @Override
-    public Boolean updateOrder(Orderd orderd) {
-        return orderMapper.updateByPrimaryKeySelective(orderd) > 0;
+    public Boolean updateOrder(Order order) {
+        return orderMapper.updateByPrimaryKeySelective(order) > 0;
     }
 
     @Override
@@ -215,8 +217,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     public Boolean cancelOrder(String id) {
         logger.info("cancelOrder [{}]",id);
         Token currentUser = getWeChatCurrentUser();
-        Orderd orderd = orderMapper.selectByPrimaryKey(id);
-        if (!orderd.getCreateUser().equals(currentUser.getUsername())){
+        Order order = orderMapper.selectByPrimaryKey(id);
+        if (!order.getCreateUser().equals(currentUser.getUsername())){
             throw new ServiceException(1002,"请修改属于你自己的订单");
         }
 
@@ -225,9 +227,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Override
     @SuppressWarnings({"all"})
-    public Page<OrderdResponse> getAdminOrderList(Integer page, Integer size, Integer type, String sizeId) {
+    public Page<OrderResponse> getAdminOrderList(Integer page, Integer size,Integer type,String sizeId) {
         //todo 思路俩个接口 一个数量 一个列表 防止数量过大加载慢
-        Page<OrderdResponse> orderPage = initPage(page, size);
+        Page<OrderResponse> orderPage = initPage(page, size);
         if (type>=5){
             throw new ServiceException(1000,"类型暂无处理");
         }
@@ -239,8 +241,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         }
 
         int count = orderMapper.getOrderCountByType(type,sizeIds);
-        List<Orderd> orderds = orderMapper.getOrderByType(page, size, type,sizeIds);
-        List<OrderdResponse> orderResponses =  transformOrderResponse(orderds);
+        List<Order>  orders = orderMapper.getOrderByType(page, size, type,sizeIds);
+        List<OrderResponse> orderResponses =  transformOrderResponse(orders);
         orderPage.setTotal(count);
         orderPage.setRecords(orderResponses);
         return orderPage;
@@ -303,6 +305,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         return orderMapper.orderDownload(id)>0;
     }
 
+    @Override
+    public Object getOrderCurrentDay() {
+        String currentDay = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now());
+        return orderMapper.getIndexOrderCount(currentDay);
+    }
+
 //    @Override
 //    public Page<OrderResponse> getOrderAllList(Integer page, Integer size) {
 //        List<OrderResponse> orderResponses = Lists.newArrayList();
@@ -336,15 +344,24 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         return countMap;
     }
 
-    private List<OrderdResponse> transformOrderResponse(List<Orderd> orderdList){
-        List<OrderdResponse> orderResponses = Lists.newArrayList();
-        if (CollectionUtils.isNotEmpty(orderdList)){
-            orderdList.forEach(order -> {
-                OrderdResponse orderResponse = new OrderdResponse();
+    private List<OrderResponse> transformOrderResponse(List<Order> orderList){
+        List<OrderResponse> orderResponses = Lists.newArrayList();
+        if (CollectionUtils.isNotEmpty(orderList)){
+            //数量转换
+            List<CountResponse> countResponses = elementsMapper.
+                    getOrderCountByIds(orderList.stream().map(Order::getId).collect(Collectors.toList()));
+
+            Map<String, Integer> countMap = countResponses.stream()
+                    .collect(Collectors.toMap(CountResponse::getOrderId, CountResponse::getNumber));
+
+            orderList.forEach(order -> {
+                OrderResponse orderResponse = new OrderResponse();
                 BeanUtils.copyProperties(order,orderResponse);
                 if (order.getSizeId() != null) {
                     orderResponse.setSize(sizeService.getSizeDetail(order.getSizeId()+""));
                 }
+
+                orderResponse.setNum(countMap.isEmpty() ? 0 : Optional.ofNullable(countMap.get(order.getId())).orElse(0));
                 orderResponses.add(orderResponse);
             });
         }
@@ -355,7 +372,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         if (StringUtils.isEmpty(id)){
             throw new ServiceException(1003,"id不可以为空");
         }
-        Orderd live = orderMapper.selectByPrimaryKey(id);
+        Order live = orderMapper.selectByPrimaryKey(id);
         if (live==null){
             throw new ServiceException(1004,"该订单不存在，请确认后重新操作");
         }

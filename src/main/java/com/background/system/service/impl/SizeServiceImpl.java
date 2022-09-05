@@ -3,7 +3,6 @@ package com.background.system.service.impl;
 import com.background.system.entity.Picture;
 import com.background.system.entity.Size;
 import com.background.system.exception.ServiceException;
-import com.background.system.mapper.CaizhiMapper;
 import com.background.system.mapper.SizeMapper;
 import com.background.system.response.SizeResponse;
 import com.background.system.service.SizeService;
@@ -34,8 +33,6 @@ public class SizeServiceImpl extends BaseService implements SizeService {
 
     @Resource
     private SizeMapper sizeMapper;
-    @Resource
-    private CaizhiMapper caizhiMapper;
 
     @Autowired
     private PictureServiceImpl pictureService;
@@ -47,7 +44,7 @@ public class SizeServiceImpl extends BaseService implements SizeService {
     public Page<SizeResponse> getSizeList(Integer page, Integer size) {
         log.info("getSizeList page[{}],size[{}]", page, size);
         //todo 商品-> 尺寸 下单(图片+尺寸+材质)
-        List<SizeResponse> goodsResponses = new ArrayList<>();
+        List<SizeResponse> sizeResponses = new ArrayList<>();
         Page<SizeResponse> sizePage = initPage(page, size);
 
         page = (page - 1) * size;
@@ -59,23 +56,27 @@ public class SizeServiceImpl extends BaseService implements SizeService {
         }
         List<String> ids = Lists.newArrayList();
         //组装数据
-        sizeList.forEach(goods -> {
-            ids.addAll(goods.getPictureIds());
+        sizeList.forEach(sz -> {
+            ids.addAll(sz.getPictureIds());
+            ids.addAll(sz.getDetailPictureIds());
             SizeResponse sizeResponse = new SizeResponse();
-            BeanUtils.copyProperties(goods, sizeResponse);
-            goodsResponses.add(sizeResponse);
+            BeanUtils.copyProperties(sz, sizeResponse);
+            sizeResponses.add(sizeResponse);
         });
 
         //避免长连接
         List<Picture> pictures = pictureService.getPicturesByIds(ids);
 
-        goodsResponses.forEach(response -> {
+        sizeResponses.forEach(response -> {
             response.setPictures(pictures.stream()
-                    .filter(picture -> response.getPictureIds().contains(picture.getId() + ""))
+                    .filter(picture -> response.getPictureIds().contains(picture.getId()))
+                    .collect(Collectors.toList()));
+            response.setDetailPictures(pictures.stream()
+                    .filter(picture -> response.getDetailPictureIds().contains(picture.getId()))
                     .collect(Collectors.toList()));
         });
 
-        sizePage.setRecords(goodsResponses);
+        sizePage.setRecords(sizeResponses);
         sizePage.setTotal(sizeCount);
         return sizePage;
     }
@@ -91,6 +92,7 @@ public class SizeServiceImpl extends BaseService implements SizeService {
             BeanUtils.copyProperties(size,sizeResponse);
             sizeResponse.setPictures(pictureService.getPicturesByIds(size.getPictureIds()));
             sizeResponse.setMaterials(materialQualityService.getMaterialListByIds(size.getMaterialIds()));
+            sizeResponse.setDetailPictures(pictureService.getPicturesByIds(size.getDetailPictureIds()));
         }
         return sizeResponse;
     }
@@ -113,7 +115,7 @@ public class SizeServiceImpl extends BaseService implements SizeService {
     public Boolean sizeUpdate(Size size) {
         log.info("size update [{}]",size);
         checkSize(size.getId());
-        return sizeMapper.updateByPrimaryKey(size)>0;
+        return sizeMapper.updateByPrimaryKeySelective(size)>0;
     }
 
     @Override

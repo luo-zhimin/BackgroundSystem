@@ -8,14 +8,16 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfWriter;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.imaging.ImageInfo;
+import org.apache.commons.imaging.Imaging;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.stereotype.Service;
+
 
 import javax.imageio.ImageIO;
 import java.awt.color.ColorSpace;
@@ -24,8 +26,7 @@ import java.awt.image.ColorConvertOp;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +45,8 @@ public class PdfUtil {
     private static List<String> tempImagePath = new ArrayList<>();
     private static final String DATE_FORMAT = "yyyy-MM-dd_HH:mm:ss";
 
-    @Value("${zip.file}")
-    private static String FILE_PATH;
+    //@Value("${zip.file}")
+    private static String FILE_PATH = "/Users/sugar/Desktop/BackgroundSystem/upload";
     private static String OCR_PATH = FILE_PATH + "/ocr.png";
     private static String mergedPdfName;
 
@@ -54,8 +55,8 @@ public class PdfUtil {
 
     public static void main(String[] args) {
         List<String> lis = new ArrayList<>();
-        lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/p1.png");
-        lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/p1.png");
+        lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/1.jpg");
+        lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/1.jpg");
         try {
             String nidie = imageToMergePdf(lis, UUID.randomUUID().toString() + ".pdf",60, 92);
             System.out.println(nidie);
@@ -134,7 +135,7 @@ public class PdfUtil {
         String targetPath = FILE_PATH + "/" + System.currentTimeMillis() + "target.png";
 
         Thumbnails.of(OCR_PATH)
-                .size((int) (height * 92 / 25.4), (int) (width * 92 / 25.4))
+                .size((int) (height * 72 / 25.4), (int) (width * 72 / 25.4))
                 .keepAspectRatio(false)
                 .toFile(targetPath);
         tempImagePath.add(targetPath);
@@ -145,15 +146,18 @@ public class PdfUtil {
         String[] split = sourcePath.split("\\.");
         String targetPath = FILE_PATH + "/" + System.currentTimeMillis() + "target." + split[1];
 
+        // todo 改变图片dpi 为300 即可
+
+
         if (flag) {
             Thumbnails.of(sourcePath)
-                    .size((int) (width * 92 / 25.4), (int) (height * 92 / 25.4))
+                    .size((int) (width * 72 / 25.4), (int) (height * 72 / 25.4))
                     .keepAspectRatio(false)
                     .rotate(-90)
                     .toFile(targetPath);
         }else {
             Thumbnails.of(sourcePath)
-                    .size((int) (width * 92 / 25.4), (int) (height * 92 / 25.4))
+                    .size((int) (width * 72 / 25.4), (int) (height * 72 / 25.4))
                     .keepAspectRatio(false)
                     .rotate(90)
                     .toFile(targetPath);

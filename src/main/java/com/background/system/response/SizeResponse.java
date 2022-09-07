@@ -24,6 +24,8 @@ public class SizeResponse extends Size {
     @ApiModelProperty(value = "图片集合")
     private List<Picture> pictures;
 
+    private List<Picture> detailPictures;
+
     @ApiModelProperty(value = "材质集合")
     private List<Caizhi> materials;
 }

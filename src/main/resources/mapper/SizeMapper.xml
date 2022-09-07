@@ -7,6 +7,7 @@
         <result column="title" jdbcType="VARCHAR" property="title"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="pic" jdbcType="VARCHAR" property="pic"/>
+        <result column="detail_pic" jdbcType="VARCHAR" property="detailPic"/>
         <result column="price" jdbcType="DECIMAL" property="price"/>
         <result column="u_price" jdbcType="DECIMAL" property="uPrice"/>
         <result column="material_id" jdbcType="VARCHAR" property="materialId"/>
@@ -19,6 +20,7 @@
         title,
         `name`,
         pic,
+        detail_pic,
         price,
         u_price,
         material_id,
@@ -73,6 +75,9 @@
             <if test="pic != null and pic != ''">
                 pic,
             </if>
+            <if test="detailPic != null and detailPic != ''">
+                detail_pic,
+            </if>
             <if test="price != null">
                 price,
             </if>
@@ -98,6 +103,9 @@
             </if>
             <if test="pic != null and pic != ''">
                 #{pic,jdbcType=VARCHAR},
+            </if>
+            <if test="detailPic != null and detailPic != ''">
+                #{detailPic,jdbcType=VARCHAR},
             </if>
             <if test="price != null">
                 #{price,jdbcType=DECIMAL},
@@ -128,6 +136,9 @@
             </if>
             <if test="pic != null and pic != ''">
                 pic = #{pic,jdbcType=VARCHAR},
+            </if>
+            <if test="detailPic != null and detailPic != ''">
+                detail_pic = #{detailPic,jdbcType=VARCHAR},
             </if>
             <if test="price != null">
                 price = #{price,jdbcType=DECIMAL},

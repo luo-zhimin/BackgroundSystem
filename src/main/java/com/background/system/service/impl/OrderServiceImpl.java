@@ -44,9 +44,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     private OrderMapper orderMapper;
 
     @Resource
-    private SizeMapper sizeMapper;
-
-    @Resource
     private CaizhiMapper caizhiMapper;
 
     @Resource

@@ -16,7 +16,7 @@ import java.util.List;
 * @Author : 志敏.罗
 * @create 2022/8/20 14:53
 */
-@ApiModel(value="尺寸")
+@ApiModel(value="产品")
 @Data
 @ToString
 public class Size {
@@ -29,8 +29,11 @@ public class Size {
     @ApiModelProperty(value="尺寸")
     private String name;
 
-    @ApiModelProperty(value="尺寸详情页的大图 多个逗号分隔")
+    @ApiModelProperty(value="产品详情页图 多个逗号分隔")
     private String pic;
+
+    @ApiModelProperty(value="尺寸的大图 多个逗号分隔")
+    private String detailPic;
 
     @ApiModelProperty(value="原价")
     private BigDecimal price;
@@ -57,6 +60,13 @@ public class Size {
     public List<String> getMaterialIds(){
         if (StringUtils.isNotBlank(this.materialId)) {
             return Lists.newArrayList(this.materialId.split(","));
+        }
+        return Collections.emptyList();
+    }
+
+    public List<String> getDetailPictureIds() {
+        if (StringUtils.isNotBlank(this.detailPic)) {
+            return Lists.newArrayList(this.detailPic.split(","));
         }
         return Collections.emptyList();
     }

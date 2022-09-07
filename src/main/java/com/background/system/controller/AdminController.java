@@ -162,29 +162,37 @@ public class AdminController {
     }
 
 
+    @GetMapping("/size/detail")
+    @ApiOperation("后台-尺寸详情")
+    @IgnoreLogin
+    public Result<?> getSizeDetail(@RequestParam(value = "id")String id)
+    {
+        return Result.success(sizeService.getSizeDetail(id));
+    }
+
     @PostMapping("/size/insert")
-    @ApiOperation("尺寸新增")
+    @ApiOperation("后台-尺寸新增")
     public Result<?> sizeInsert(@RequestBody Size size)
     {
         return Result.success(sizeService.sizeInsert(size));
     }
 
     @DeleteMapping("/size/delete")
-    @ApiOperation("尺寸删除")
+    @ApiOperation("后台-尺寸删除")
     public Result<?> sizeDelete(@RequestParam String id)
     {
         return Result.success(sizeService.sizeDelete(id));
     }
 
     @PostMapping("/size/update")
-    @ApiOperation("尺寸修改")
+    @ApiOperation("后台-尺寸修改")
     public Result<?> sizeUpdate(@RequestBody Size size)
     {
         return Result.success(sizeService.sizeUpdate(size));
     }
 
     @PostMapping("/material/insert")
-    @ApiOperation("材质新增")
+    @ApiOperation("后台-材质新增")
     @IgnoreLogin
     public Result<?> materialQualityInsert(@RequestBody Caizhi caizhi)
     {
@@ -192,7 +200,7 @@ public class AdminController {
     }
 
     @PostMapping("/material/update")
-    @ApiOperation("材质修改")
+    @ApiOperation("后台-材质修改")
     @IgnoreLogin
     public Result<?> materialQualityUpdate(@RequestBody Caizhi caizhi)
     {

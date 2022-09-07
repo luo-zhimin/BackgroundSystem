@@ -44,8 +44,8 @@ public class PdfUtil {
     private static List<String> tempImagePath = new ArrayList<>();
     private static final String DATE_FORMAT = "yyyy-MM-dd_HH:mm:ss";
 
-    //@Value("${zip.file}")
-    private static String FILE_PATH = "/Users/sugar/Desktop/BackgroundSystem/upload";
+    @Value("${zip.file}")
+    private static String FILE_PATH;
     private static String OCR_PATH = FILE_PATH + "/ocr.png";
     private static String mergedPdfName;
 

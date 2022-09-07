@@ -5,11 +5,13 @@
         <!--@Table caizhi-->
         <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="price" jdbcType="DECIMAL" property="price"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,
-        `name`
+        `name`,
+        price
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -27,8 +29,8 @@
 
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Caizhi"
             useGeneratedKeys="true">
-        insert into caizhi (`name`)
-        values (#{name,jdbcType=VARCHAR})
+        insert into caizhi (`name`,`price`)
+        values (#{name,jdbcType=VARCHAR},#{price,jdbcType=DECIMAL})
     </insert>
 
     <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Caizhi"
@@ -38,10 +40,16 @@
             <if test="name != null and name != ''">
                 `name`,
             </if>
+            <if test="price != null">
+                `price`,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="name != null and name != ''">
                 #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
             </if>
         </trim>
     </insert>
@@ -51,6 +59,9 @@
         <set>
             <if test="name != null and name != ''">
                 `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                `price` = #{price,jdbcType=DECIMAL},
             </if>
         </set>
         where id = #{id,jdbcType=VARCHAR}

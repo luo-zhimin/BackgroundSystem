@@ -1,6 +1,7 @@
 package com.background.system.util;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
+import cn.hutool.http.HttpUtil;
 import com.background.system.exception.ServiceException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -28,6 +29,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * pdf工具类
@@ -42,18 +44,20 @@ public class PdfUtil {
     private static List<String> tempImagePath = new ArrayList<>();
     private static final String DATE_FORMAT = "yyyy-MM-dd_HH:mm:ss";
 
-    @Value("${zip.file}")
-    private static String FILE_PATH;
+    //@Value("${zip.file}")
+    private static String FILE_PATH = "/Users/sugar/Desktop/BackgroundSystem/upload";
+    private static String OCR_PATH = FILE_PATH + "/ocr.png";
     private static String mergedPdfName;
+
+    private static boolean flag = true;
 
 
     public static void main(String[] args) {
         List<String> lis = new ArrayList<>();
-        lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/1.jpg");
-        lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/2.jpg");
-        lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/3.jpg");
+        lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/p1.png");
+        lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/p1.png");
         try {
-            String nidie = imageToMergePdf(lis, "NIDIE",60, 92);
+            String nidie = imageToMergePdf(lis, UUID.randomUUID().toString() + ".pdf",60, 92);
             System.out.println(nidie);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -69,12 +73,19 @@ public class PdfUtil {
      * @throws Exception
      */
     public static String imageToMergePdf(List<String> sourcePaths, String name, Integer width, Integer height) throws Exception {
+        // add ocr
+        sourcePaths.add(0,"https://img.asugar.cn/asugar/1.png");
+        sourcePaths.add(0,"https://img.asugar.cn/asugar/2.png");
+
         File uploadDirectory = new File(FILE_PATH);
         if (!uploadDirectory.exists()) {
             uploadDirectory.mkdirs();
         }
         LocalDateTime now = LocalDateTime.now();
         mergedPdfName = "final_merged_" + LocalDateTimeUtil.format(now, DATE_FORMAT) + ".pdf";
+
+        // 标记
+        int cnt = 0;
         for (String file : sourcePaths) {
             if (file.toLowerCase().endsWith(".png")
                 || file.toLowerCase().endsWith(".jpg")
@@ -82,7 +93,9 @@ public class PdfUtil {
 
                 String url;
                 try {
-                    url = adjustImageSize(file, width, height);
+                    cnt++;
+                    if (cnt > 2) url = adjustImageSize2(file, width, height);
+                    else url = adjustImageSize(file, width, height);
                 } catch (Exception e) {
                     log.error("调整图片大小失败，异常{}", e.getMessage());
                     throw new ServiceException(500, e.getMessage());
@@ -117,14 +130,35 @@ public class PdfUtil {
      * @throws Exception
      */
     private static String adjustImageSize(String sourcePath, Integer width, Integer height) throws Exception {
-        //todo 调整的尺寸后续需要根据不同产品设置不同值，目前 92 * 60 对应的是 261 * 170
+        HttpUtil.downloadFile(sourcePath, OCR_PATH);
+        String targetPath = FILE_PATH + "/" + System.currentTimeMillis() + "target.png";
+
+        Thumbnails.of(OCR_PATH)
+                .size((int) (height * 92 / 25.4), (int) (width * 92 / 25.4))
+                .keepAspectRatio(false)
+                .toFile(targetPath);
+        tempImagePath.add(targetPath);
+        return targetPath;
+    }
+
+    private static String adjustImageSize2(String sourcePath, Integer width, Integer height) throws Exception {
         String[] split = sourcePath.split("\\.");
         String targetPath = FILE_PATH + "/" + System.currentTimeMillis() + "target." + split[1];
 
-        Thumbnails.of(sourcePath)
-                .size((int) (width * 92 / 25.4), (int) (height * 92 / 25.4))
-                .keepAspectRatio(false)
-                .toFile(targetPath);
+        if (flag) {
+            Thumbnails.of(sourcePath)
+                    .size((int) (width * 92 / 25.4), (int) (height * 92 / 25.4))
+                    .keepAspectRatio(false)
+                    .rotate(-90)
+                    .toFile(targetPath);
+        }else {
+            Thumbnails.of(sourcePath)
+                    .size((int) (width * 92 / 25.4), (int) (height * 92 / 25.4))
+                    .keepAspectRatio(false)
+                    .rotate(90)
+                    .toFile(targetPath);
+        }
+        flag = !flag;
         tempImagePath.add(targetPath);
         return targetPath;
     }

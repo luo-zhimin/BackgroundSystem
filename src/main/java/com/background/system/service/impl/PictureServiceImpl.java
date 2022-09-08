@@ -8,6 +8,8 @@ import com.background.system.service.PictureService;
 import com.background.system.util.AliUploadUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +27,8 @@ import java.util.Optional;
 */
 @Service
 public class PictureServiceImpl implements PictureService {
+
+    private static Logger logger = LoggerFactory.getLogger(PictureServiceImpl.class);
 
     @Resource
     private PictureMapper pictureMapper;
@@ -57,10 +61,11 @@ public class PictureServiceImpl implements PictureService {
 
     @Override
     public Boolean updateIndexPicture(PictureResponse request) {
+        logger.info("logger request[{}]",request);
         if (StringUtils.isEmpty(request.getUrl())){
             throw new ServiceException(1000,"请填写要修改的图片地址");
         }
-        return pictureMapper.updateIndexPicture(request.getUrl())>0;
+        return pictureMapper.updateIndexPicture(request.getUrl(),request.getId())>0;
     }
 
     public List<Picture> getPicturesByIds(List<String> ids){

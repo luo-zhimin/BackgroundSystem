@@ -118,10 +118,10 @@
     </insert>
 
     <select id="getIndexPicture" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List"/> from picture where father='index' limit 1
+        select <include refid="Base_Column_List"/> from picture where father='index' and is_del=0 order by id desc limit 1
     </select>
 
     <update id="updateIndexPicture">
-        update picture set url=#{url} where father='index'
+        update picture set url=#{url} where father='index' and id=#{id}
     </update>
 </mapper>

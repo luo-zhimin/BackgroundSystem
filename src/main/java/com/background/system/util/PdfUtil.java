@@ -9,13 +9,11 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfWriter;
 import lombok.extern.slf4j.Slf4j;
-import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 
 import javax.imageio.ImageIO;
 import java.awt.color.ColorSpace;
@@ -24,7 +22,6 @@ import java.awt.image.ColorConvertOp;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +40,9 @@ public class PdfUtil {
     private static List<String> tempImagePath = new ArrayList<>();
     private static final String DATE_FORMAT = "yyyy-MM-dd_HH:mm:ss";
 
-    //@Value("${zip.file}")
-    private static String FILE_PATH = "/Users/sugar/Desktop/BackgroundSystem/upload";
+    @Value("${zip.file}")
+    private static String FILE_PATH;
+
     private static String OCR_PATH = FILE_PATH + "/new.png";
     private static String CUP_PATH = FILE_PATH + "/new.";
     private static String mergedPdfName;

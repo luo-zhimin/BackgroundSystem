@@ -96,7 +96,6 @@ public class ZipFileUtils {
 
             // 下载图片
             for (HandleFile handleFile : handleFiles) {
-//                String picPath = "/Users/sugar/Desktop/BackgroundSystem/upload/" + handleFile.getName() + ".jpg";
                 String picPath = acceptFilePath + handleFile.getName() + ".jpg";
                 picList.add(picPath);
                 FileOutputStream outputStream = new FileOutputStream(picPath, true);

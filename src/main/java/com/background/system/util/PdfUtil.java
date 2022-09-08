@@ -11,8 +11,6 @@ import com.itextpdf.text.pdf.PdfWriter;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.imaging.ImageInfo;
-import org.apache.commons.imaging.Imaging;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 

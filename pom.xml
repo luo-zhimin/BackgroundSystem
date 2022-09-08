@@ -134,12 +134,28 @@
             <version>0.4.8</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.python</groupId>
+            <artifactId>jython-standalone</artifactId>
+            <!--python版本是2.x还是3.x在这里指定-->
+            <version>2.7.0</version>
+        </dependency>
+
+
         <!-- https://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>
             <version>5.5.13</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.github.livesense/org.liveSense.fragment.com.sun.image.codec.jpeg -->
+        <dependency>
+            <groupId>com.github.livesense</groupId>
+            <artifactId>org.liveSense.fragment.com.sun.image.codec.jpeg</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
         <dependency>

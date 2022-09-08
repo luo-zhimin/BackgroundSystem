@@ -100,8 +100,11 @@ public class CouponServiceImpl extends BaseService implements CouponService {
         //随机生成优惠卷兑换码
         String uuid = UUID.randomUUID().toString().replace("-", "");
         coupon.setCouponId(uuid);
-        if (coupon.getPrice()==null || coupon.getUseLimit()==null){
-            throw new ServiceException(1006,"价格或者消费限制不可以为空");
+        if (coupon.getPrice()==null && coupon.getUseLimit()==null){
+            throw new ServiceException(1006,"价格和消费限制不可以为空");
+        }
+        if(coupon.getUseLimit()<=0){
+            throw new ServiceException(1007,"优惠卷消费限制必须大于0");
         }
         return couponMapper.insertSelective(coupon)>0;
     }
@@ -116,6 +119,9 @@ public class CouponServiceImpl extends BaseService implements CouponService {
         Coupon liveCoupon = couponMapper.selectByPrimaryKey(coupon.getId());
         if (liveCoupon==null){
             throw new ServiceException(1005,"该优惠卷不存在");
+        }
+        if(coupon.getUseLimit()!=null && coupon.getUseLimit()<=0){
+            throw new ServiceException(1007,"优惠卷消费限制必须大于0");
         }
         return couponMapper.updateByPrimaryKeySelective(coupon)>0;
     }

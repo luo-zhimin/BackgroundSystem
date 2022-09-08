@@ -45,7 +45,8 @@ public class PdfUtil {
 
     //@Value("${zip.file}")
     private static String FILE_PATH = "/Users/sugar/Desktop/BackgroundSystem/upload";
-    private static String OCR_PATH = FILE_PATH + "/ocr.png";
+    private static String OCR_PATH = FILE_PATH + "/new.png";
+    private static String CUP_PATH = FILE_PATH + "/new.";
     private static String mergedPdfName;
 
     private static boolean flag = true;
@@ -53,8 +54,8 @@ public class PdfUtil {
 
     public static void main(String[] args) {
         List<String> lis = new ArrayList<>();
-        lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/1.jpg");
-        lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/1.jpg");
+        lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/1.png");
+        lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/1.png");
         try {
             String nidie = imageToMergePdf(lis, UUID.randomUUID().toString() + ".pdf",60, 92);
             System.out.println(nidie);
@@ -129,40 +130,36 @@ public class PdfUtil {
      * @throws Exception
      */
     private static String adjustImageSize(String sourcePath, Integer width, Integer height) throws Exception {
-        HttpUtil.downloadFile(sourcePath, OCR_PATH);
-        String targetPath = FILE_PATH + "/" + System.currentTimeMillis() + "target.png";
-
-        Thumbnails.of(OCR_PATH)
-                .size((int) (height * 72 / 25.4), (int) (width * 72 / 25.4))
-                .keepAspectRatio(false)
-                .toFile(targetPath);
-        tempImagePath.add(targetPath);
-        return targetPath;
+        HttpUtil.downloadFile("https://etumwb-duigzq-8000.preview.myide.io/hello?url=" + sourcePath + "&type=1&os=1&xnx=2", OCR_PATH);
+        tempImagePath.add(OCR_PATH);
+        return OCR_PATH;
     }
 
     private static String adjustImageSize2(String sourcePath, Integer width, Integer height) throws Exception {
+        // target
         String[] split = sourcePath.split("\\.");
-        String targetPath = FILE_PATH + "/" + System.currentTimeMillis() + "target." + split[1];
 
-        // todo 改变图片dpi 为300 即可
+        // init
+        String url = AliUploadUtils.uploadPdf(new File(sourcePath), UUID.randomUUID() + "." + split[1]);
 
-
+        String sb = "";
         if (flag) {
-            Thumbnails.of(sourcePath)
-                    .size((int) (width * 72 / 25.4), (int) (height * 72 / 25.4))
-                    .keepAspectRatio(false)
-                    .rotate(-90)
-                    .toFile(targetPath);
+            sb = "xnx=0";
         }else {
-            Thumbnails.of(sourcePath)
-                    .size((int) (width * 72 / 25.4), (int) (height * 72 / 25.4))
-                    .keepAspectRatio(false)
-                    .rotate(90)
-                    .toFile(targetPath);
+            sb = "xnx=1";
         }
+
+        // type select
+        if (split[1].equals("jpg") || split[1].equals("jpeg")) {
+            CUP_PATH = FILE_PATH +  "/new.jpg";
+            HttpUtil.downloadFile("https://etumwb-duigzq-8000.preview.myide.io/hello?url=" + url + "&type=0&os=0&" + sb, CUP_PATH);
+        }else {
+            CUP_PATH = FILE_PATH +  "/new.png";
+            HttpUtil.downloadFile("https://etumwb-duigzq-8000.preview.myide.io/hello?url=" + url + "&type=1&os=0&" + sb, CUP_PATH);
+        }
+
         flag = !flag;
-        tempImagePath.add(targetPath);
-        return targetPath;
+        return CUP_PATH;
     }
 
     /**

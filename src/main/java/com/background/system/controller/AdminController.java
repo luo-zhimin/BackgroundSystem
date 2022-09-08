@@ -8,10 +8,8 @@ import com.background.system.entity.Coupon;
 import com.background.system.entity.Size;
 import com.background.system.entity.token.Token;
 import com.background.system.entity.vo.AdminLoginVo;
-import com.background.system.service.CouponService;
-import com.background.system.service.MaterialQualityService;
-import com.background.system.service.OrderService;
-import com.background.system.service.SizeService;
+import com.background.system.response.PictureResponse;
+import com.background.system.service.*;
 import com.background.system.service.admin.IAdminUseService;
 import com.background.system.util.Result;
 import io.swagger.annotations.Api;
@@ -49,6 +47,8 @@ public class AdminController {
     @Autowired
     private MaterialQualityService qualityService;
 
+    @Autowired
+    private PictureService pictureService;
 
     /**
      * 登录请求
@@ -143,7 +143,6 @@ public class AdminController {
 
     @GetMapping("/order/count")
     @ApiOperation("后台-订单列表-数量统计")
-    @IgnoreLogin
     public Result<?> getAdminOrderCount()
     {
         return Result.success(orderService.getAdminOrderCount());
@@ -164,7 +163,6 @@ public class AdminController {
 
     @GetMapping("/size/detail")
     @ApiOperation("后台-尺寸详情")
-    @IgnoreLogin
     public Result<?> getSizeDetail(@RequestParam(value = "id")String id)
     {
         return Result.success(sizeService.getSizeDetail(id));
@@ -193,7 +191,6 @@ public class AdminController {
 
     @PostMapping("/material/insert")
     @ApiOperation("后台-材质新增")
-    @IgnoreLogin
     public Result<?> materialQualityInsert(@RequestBody Caizhi caizhi)
     {
         return Result.success(qualityService.materialQualityInsert(caizhi));
@@ -201,7 +198,6 @@ public class AdminController {
 
     @PostMapping("/material/update")
     @ApiOperation("后台-材质修改")
-    @IgnoreLogin
     public Result<?> materialQualityUpdate(@RequestBody Caizhi caizhi)
     {
         return Result.success(qualityService.materialQualityUpdate(caizhi));
@@ -209,7 +205,6 @@ public class AdminController {
 
     @GetMapping("/material/list")
     @ApiOperation("材质列表")
-    @IgnoreLogin
     public Result<?> materialQualityList()
     {
         return Result.success(qualityService.getMaterialQualityList());
@@ -217,9 +212,17 @@ public class AdminController {
 
     @DeleteMapping("/material/delete")
     @ApiOperation("删除材质")
-    @IgnoreLogin
     public Result<?> deleteMaterialQuality(@RequestParam String id)
     {
         return Result.success(qualityService.deleteMaterialQuality(id));
     }
+
+
+    @PostMapping("/indexPicture/update")
+    @ApiOperation("修改小程序首页图片")
+    public Result<?> updateIndexPicture(@RequestBody PictureResponse request)
+    {
+        return Result.success(pictureService.updateIndexPicture(request));
+    }
+
 }

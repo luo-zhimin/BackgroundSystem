@@ -1,5 +1,6 @@
 package com.background.system.service;
 
+import com.background.system.entity.Picture;
 import com.background.system.response.PictureResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,5 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface PictureService {
 
-    PictureResponse getPicture(MultipartFile file);
+    PictureResponse getPicture(MultipartFile file,String father);
+
+    Picture getIndexPicture();
+
+    Boolean updateIndexPicture(PictureResponse request);
 }

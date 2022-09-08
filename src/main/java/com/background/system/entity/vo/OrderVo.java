@@ -25,7 +25,7 @@ public class OrderVo {
     private Long sizeId;
 
     @ApiModelProperty(value="材质ID")
-    private Long caizhiId;
+    private String caizhiId;
 
     @ApiModelProperty(value="详细")
     private List<OrderElement> orderElements;

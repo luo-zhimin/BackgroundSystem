@@ -71,6 +71,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     @Transactional
     public String createOrder(OrderVo orderVo) {
         Orderd order = new Orderd();
+
+        if (StringUtils.isEmpty(orderVo.getCaizhiId())){
+            throw new ServiceException(1003,"请选择材质后在进行操作");
+        }
+
         BeanUtil.copyProperties(orderVo, order);
         Caizhi caizhi = caizhiMapper.selectById(order.getCaizhiId());
         List<OrderElement> orderElements = orderVo.getOrderElements();

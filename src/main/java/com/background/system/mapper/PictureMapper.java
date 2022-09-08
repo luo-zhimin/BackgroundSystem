@@ -24,4 +24,8 @@ public interface PictureMapper extends BaseMapper<Picture> {
     int updateByPrimaryKey(Picture record);
 
     List<Picture> getPicturesByIds(@Param("ids")List<String> ids);
+
+    Picture getIndexPicture();
+
+    int updateIndexPicture(@Param("url")String url);
 }

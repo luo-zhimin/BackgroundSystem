@@ -157,7 +157,7 @@ public class ZipFileUtils {
                 byte[] bytes = Files.readAllBytes(Paths.get(readyUploadFile.getUrl()));
 //                System.out.println(readyUploadFile.getName()+" "+bytes.length);
                 MockMultipartFile mockMultipartFile = new MockMultipartFile("file",readyUploadFile.getName(),"text/plain",bytes);
-                PictureResponse picture = pictureService.getPicture(mockMultipartFile);
+                PictureResponse picture = pictureService.getPicture(mockMultipartFile,"zip");
                 baseResponses.add(new BaseResponse(readyUploadFile.getOrderId(),picture.getUrl()));
                 deleteFile.add(new File(readyUploadFile.getUrl()));
             }

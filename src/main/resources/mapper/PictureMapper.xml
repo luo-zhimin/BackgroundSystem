@@ -116,4 +116,12 @@
         values (#{name,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{father,jdbcType=VARCHAR},
                 #{createTime,jdbcType=TIMESTAMP})
     </insert>
+
+    <select id="getIndexPicture" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from picture where father='index' limit 1
+    </select>
+
+    <update id="updateIndexPicture">
+        update picture set url=#{url} where father='index'
+    </update>
 </mapper>

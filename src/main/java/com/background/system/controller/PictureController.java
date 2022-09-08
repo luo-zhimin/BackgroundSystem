@@ -6,6 +6,7 @@ import com.background.system.util.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +34,21 @@ public class PictureController {
     @ApiOperation("上传图片")
     @IgnoreLogin
     public Result<?> getPicture(MultipartFile file) {
-        return Result.success(pictureService.getPicture(file));
+        return Result.success(pictureService.getPicture(file,"default"));
     }
 
+
+    @PostMapping("uploadIndex")
+    @ApiOperation("上传首页图片")
+    @IgnoreLogin
+    public Result<?> uploadIndex(MultipartFile file) {
+        return Result.success(pictureService.getPicture(file,"index"));
+    }
+
+    @GetMapping("getIndexPicture")
+    @ApiOperation("获取首页大图")
+    @IgnoreLogin
+    public Result<?> getIndexPicture() {
+        return Result.success(pictureService.getIndexPicture());
+    }
 }

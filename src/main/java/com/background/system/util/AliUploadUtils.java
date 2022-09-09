@@ -5,6 +5,7 @@ import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
+import com.background.system.cache.ConfigCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +15,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.background.system.constant.Constant.BUCKET_NAME;
+
 /**
  * @Description:
  * @Author: 方糖
@@ -22,11 +25,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class AliUploadUtils {
 
-    private static final String ENDPOINT = "https://oss-cn-hangzhou.aliyuncs.com";
-    private static final String RESULT_URL = "https://asugar.oss-cn-hangzhou.aliyuncs.com";
-    private static final String ACCESS_KEY_ID = "LTAI5tJdGdn4guLATNEwNJft";
-    private static final String ACCESS_KEY_SECRET = "C66R67VRkLqihwJnSRD0knnhzkPhja";
-    private static final String BUCKET_NAME = "asugar";
+    private static final String ENDPOINT;
+    private static final String RESULT_URL;
+    private static final String ACCESS_KEY_ID;
+    private static final String ACCESS_KEY_SECRET;
+
+    static {
+        ENDPOINT = ConfigCache.configMap.get("ENDPOINT");
+        RESULT_URL = ConfigCache.configMap.get("RESULT_URL");
+        ACCESS_KEY_ID = ConfigCache.configMap.get("ACCESS_KEY_ID");
+        ACCESS_KEY_SECRET = ConfigCache.configMap.get("ACCESS_KEY_SECRET");
+    }
 
     /**
      * @param file   文件流
@@ -56,6 +65,7 @@ public class AliUploadUtils {
     }
 
 
+    //todo 线程池异步处理
     public static Map<String,String> uploadImages(MultipartFile[] files, String father) {
         Map<String,String> pictureMap = new ConcurrentHashMap<>();
         OSS ossClient = new OSSClientBuilder().build(ENDPOINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET);

@@ -22,7 +22,7 @@ import java.util.List;
 @SpringBootTest
 public class JasyptTest {
 
-    private static final String key = "5de88f71a509010ba5a0491c751b2d77";
+    private static final String key = "";
 
     @Autowired
     @Qualifier(value = "jasyptStringEncryptor")
@@ -30,8 +30,8 @@ public class JasyptTest {
 
     @Test
     void encrypt(){
-        List<String> values = Lists.newArrayList("root","XNXxnx520",
-                "jdbc:mysql://rm-7xvkbcfxrhi0ht10cto.mysql.rds.aliyuncs.com/backgroundSystem?rewriteBatchedStatements=true&useSSL=false&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai");
+        List<String> values = Lists.newArrayList("","",
+                "jdbc:mysql://r/backgroundSystem?rewriteBatchedStatements=true&useSSL=false&zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai");
         StringBuilder builder = new StringBuilder();
         PooledPBEStringEncryptor pooledPBEStringEncryptor = new PooledPBEStringEncryptor();
         pooledPBEStringEncryptor.setConfig(cryptOr());
@@ -47,8 +47,8 @@ public class JasyptTest {
     @Test
      void decry(){
         //QTiY5V4X87ARB6MFvaRGKbnXrQ8KZiYg
-        List<String> values = Lists.newArrayList("ENC(yYyhCiJrQK/rhL69R4y1vqJp2Y7JlTkG)","ENC(p7tzRJgmD2r+2cfBc55DfEY2i8VHtpnTMreGrTEQHGM=)",
-                "ENC(ZSYUag+xsz7GgoYU08vMUH+tHqiYW+H1stPbtVWpyzH+kI4st9pc20BTPtN80W0WMMHe0ODi2yajsf9MNNSwpHipNt7h2VKJ+LpDtX3a2OnQA4bSlT1oHc82jxSuRMSOxtY2ounon3pO9z5kyelAodlqzlAoBONjn4W+z75Basb7l+tJPEQYYC2eoKfb/+iOM2jhN0UV6V0MQAxn69diDGLWK7YLmnP1i+Ab9drzH/VLBLAf7OSl0IWnniKcrAAdhtKJzW1x9bYGOXjrwrAp36cRG0uTSC5YyqsxAp6ljDg=)");
+        List<String> values = Lists.newArrayList("ENC(/rhL69R4y1vqJp2Y7JlTkG)","ENC(+2cfBc55DfEY2i8VHtpnTMreGrTEQHGM=)",
+                "ENC(ZSYUag+xsz7GgoYU08vMUH+tHqiYW++kI4st9pc20BTPtN80W0WMMHe0ODi2yajsf9MNNSwpHipNt7h2VKJ+LpDtX3a2OnQA4bSlT1oHc82jxSuRMSOxtY2ounon3pO9z5kyelAodlqzlAoBONjn4W+z75Basb7l+tJPEQYYC2eoKfb/+iOM2jhN0UV6V0MQAxn69diDGLWK7YLmnP1i+Ab9drzH/VLBLAf7OSl0IWnniKcrAAdhtKJzW1x9bYGOXjrwrAp36cRG0uTSC5YyqsxAp6ljDg=)");
         PooledPBEStringEncryptor pooledPBEStringEncryptor = new PooledPBEStringEncryptor();
         pooledPBEStringEncryptor.setConfig(cryptOr());
         values.forEach(v->{

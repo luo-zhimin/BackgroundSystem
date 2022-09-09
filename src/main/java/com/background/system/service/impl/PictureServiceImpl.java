@@ -92,6 +92,7 @@ public class PictureServiceImpl implements PictureService {
                     .url(picture.getUrl())
                     .build());
         });
+
         return responses;
     }
 

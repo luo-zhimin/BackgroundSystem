@@ -52,7 +52,6 @@ public class AliUploadUtils {
         } finally {
             ossClient.shutdown();
         }
-//        return RESULT_URL + "/" + father + "/" + title + type;
         return RESULT_URL + "/" + father + "/" + title ;
     }
 
@@ -62,20 +61,20 @@ public class AliUploadUtils {
         OSS ossClient = new OSSClientBuilder().build(ENDPOINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET);
         //名字 后缀会重叠
         for (MultipartFile file : files) {
-            String title = file.getOriginalFilename();//zh_cn path name
+            String title = file.getOriginalFilename()+"-"+System.currentTimeMillis();//zh_cn path name
             String path = father + "/" + title;
             try {
                 PutObjectRequest request =
                         new PutObjectRequest(BUCKET_NAME, path, new ByteArrayInputStream(file.getBytes()));
                 PutObjectResult putObjectResult = ossClient.putObject(request);
                 PushPlusUtils.push(putObjectResult);
-                log.info("[上传信息] - " + JSON.toJSONString(putObjectResult));
                 pictureMap.put(title,RESULT_URL + "/" + father + "/" + title);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         ossClient.shutdown();
+        log.info("[上传信息] - " + JSON.toJSONString(pictureMap));
         return pictureMap;
     }
 

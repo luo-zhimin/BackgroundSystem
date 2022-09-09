@@ -5,6 +5,7 @@ spring:
     multipart:
       max-file-size: 40MB
       max-request-size: 45MB
+      location: /Users/sugar/Desktop/BackgroundSystem/upload
   datasource:
     url: ENC(ZSYUag+xsz7GgoYU08vMUH+tHqiYW+H1stPbtVWpyzH+kI4st9pc20BTPtN80W0WMMHe0ODi2yajsf9MNNSwpHipNt7h2VKJ+LpDtX3a2OnQA4bSlT1oHc82jxSuRMSOxtY2ounon3pO9z5kyelAodlqzlAoBONjn4W+z75Basb7l+tJPEQYYC2eoKfb/+iOM2jhN0UV6V0MQAxn69diDGLWK7YLmnP1i+Ab9drzH/VLBLAf7OSl0IWnniKcrAAdhtKJzW1x9bYGOXjrwrAp36cRG0uTSC5YyqsxAp6ljDg=)
     username: ENC(yYyhCiJrQK/rhL69R4y1vqJp2Y7JlTkG)

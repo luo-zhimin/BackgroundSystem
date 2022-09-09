@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @Description:
@@ -52,6 +54,29 @@ public class AliUploadUtils {
         }
 //        return RESULT_URL + "/" + father + "/" + title + type;
         return RESULT_URL + "/" + father + "/" + title ;
+    }
+
+
+    public static Map<String,String> uploadImages(MultipartFile[] files, String father) {
+        Map<String,String> pictureMap = new ConcurrentHashMap<>();
+        OSS ossClient = new OSSClientBuilder().build(ENDPOINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET);
+        //名字 后缀会重叠
+        for (MultipartFile file : files) {
+            String title = file.getOriginalFilename();//zh_cn path name
+            String path = father + "/" + title;
+            try {
+                PutObjectRequest request =
+                        new PutObjectRequest(BUCKET_NAME, path, new ByteArrayInputStream(file.getBytes()));
+                PutObjectResult putObjectResult = ossClient.putObject(request);
+                PushPlusUtils.push(putObjectResult);
+                log.info("[上传信息] - " + JSON.toJSONString(putObjectResult));
+                pictureMap.put(title,RESULT_URL + "/" + father + "/" + title);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        ossClient.shutdown();
+        return pictureMap;
     }
 
     /**

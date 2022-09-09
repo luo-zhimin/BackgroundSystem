@@ -4,6 +4,8 @@ import com.background.system.entity.Picture;
 import com.background.system.response.PictureResponse;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * @Author : 镜像
@@ -16,4 +18,6 @@ public interface PictureService {
     Picture getIndexPicture();
 
     Boolean updateIndexPicture(PictureResponse request);
+
+    List<PictureResponse> upload(MultipartFile[] file,String father);
 }

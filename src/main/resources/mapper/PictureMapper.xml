@@ -124,4 +124,14 @@
     <update id="updateIndexPicture">
         update picture set url=#{url} where father='index' and id=#{id}
     </update>
+
+    <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
+        insert into picture
+            (`name`, url, father, create_time)
+        values
+        <foreach collection="pictures" item="item" separator=",">
+            (#{item.name,jdbcType=VARCHAR}, #{item.url,jdbcType=VARCHAR}, #{item.father,jdbcType=VARCHAR}, now())
+        </foreach>
+    </insert>
+
 </mapper>

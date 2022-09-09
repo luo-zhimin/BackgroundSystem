@@ -77,30 +77,20 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         }
 
         BeanUtil.copyProperties(orderVo, order);
-        Caizhi caizhi = caizhiMapper.selectById(order.getCaizhiId());
+
+//        Caizhi caizhi = caizhiMapper.selectById(order.getCaizhiId());
         List<OrderElement> orderElements = orderVo.getOrderElements();
         //多个
-        List<Caizhi> materialQualities = materialQualityService.getMaterialListByIds(order.getMaterialQualityIds());
-        if (caizhi==null || CollectionUtils.isEmpty(materialQualities)){
-            throw new ServiceException(1000,"请选择材质！");
-        }
-        //材质价格
-        //（材质+尺寸）
-        BigDecimal total = caizhi.getPrice();
+//        //材质价格
+//        //（材质+尺寸）
+//        BigDecimal total = caizhi.getPrice();
+//
+//        //价格计算 单 or 双 * 组  数量 *（材质+尺寸）
+//        //一共买了多少
+//        int totalNumber = orderElements.stream().mapToInt(OrderElement::getNumber).sum();
+//        total = total.multiply(BigDecimal.valueOf(totalNumber));
 
-        //价格计算 单 or 双 * 组  数量 *（材质+尺寸）
-        //一共买了多少
-        int totalNumber = orderElements.stream().mapToInt(OrderElement::getNumber).sum();
-        total = total.multiply(BigDecimal.valueOf(totalNumber));
 
-        //运费
-        if (total.compareTo(new BigDecimal("30.00")) < 0) {
-            BigDecimal portPrice = order.getPortPrice();
-            if (portPrice!=null){
-                total = total.add(portPrice);
-            }
-        }
-        order.setTotal(total);
         order.setIsPay(false);
         order.setIsDel(false);
         order.setStatus("0");

@@ -103,6 +103,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         order.setTotal(total);
         order.setIsPay(false);
         order.setIsDel(false);
+        order.setStatus("0");
         order.setCreateTime(LocalDateTime.now());
         order.setUpdateTime(LocalDateTime.now());
         //谁下单的

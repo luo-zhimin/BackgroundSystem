@@ -105,6 +105,7 @@ public class PayServiceImpl extends BaseService implements PayService {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectMapper objectMapper = new ObjectMapper();
 
+        double total_fee = total.doubleValue() * 100;
 
         ObjectNode rootNode = objectMapper.createObjectNode();
         String wx_no = UUID.randomUUID().toString().replaceAll("-", "");
@@ -114,7 +115,7 @@ public class PayServiceImpl extends BaseService implements PayService {
                 .put("notify_url", "http://127.0.0.1:8100/jsapi/pay/notify")
                 .put("out_trade_no", wx_no);
         rootNode.putObject("amount")
-                .put("total", total);
+                .put("total", (int) total_fee);
         rootNode.putObject("payer")
                 .put("openid", openId);
 

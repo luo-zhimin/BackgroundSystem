@@ -183,11 +183,9 @@ public class PdfUtil {
             Document doc = new Document(null, 0, 0, 0, 0);
 
             //更换图片图层
-            BufferedImage bufferedImage =
-                new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+            BufferedImage bufferedImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
             bufferedImage.getGraphics().drawImage(img, 0, 0, img.getWidth(), img.getHeight(), null);
-            bufferedImage =
-                new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB), null).filter(bufferedImage, null);
+            bufferedImage = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB), null).filter(bufferedImage, null);
 
             //图片流处理
             doc.setPageSize(new Rectangle(bufferedImage.getWidth(), bufferedImage.getHeight()));

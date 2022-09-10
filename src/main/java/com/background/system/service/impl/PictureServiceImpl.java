@@ -42,6 +42,8 @@ public class PictureServiceImpl implements PictureService {
             throw new ServiceException(1000, "请至少选择一张图片！");
         }
 
+        logger.info("getPicture fileSize[{}]",file.getSize());
+
         String aDefault = AliUploadUtils.uploadImage(file, father);
         Picture picture = new Picture();
         picture.setUrl(aDefault);
@@ -75,7 +77,10 @@ public class PictureServiceImpl implements PictureService {
         if (files==null || files.length<=0){
             throw new ServiceException(1000, "请至少选择一张图片！");
         }
+        logger.info("开始上传图片 total[{}]",files.length);
+        long ossStart = System.currentTimeMillis();
         Map<String, String> pictureMap = AliUploadUtils.uploadImages(files, "father");
+        long ossEnd = System.currentTimeMillis();
         List<Picture> pictures = Lists.newArrayList();
         pictureMap.forEach((k,v)->{
             Picture picture = new Picture();
@@ -92,7 +97,9 @@ public class PictureServiceImpl implements PictureService {
                     .url(picture.getUrl())
                     .build());
         });
-
+        long finish = System.currentTimeMillis();
+        logger.info("oss need time[{}]",ossEnd-ossStart);
+        logger.info("upload need time[{}]",finish-ossStart);
         return responses;
     }
 

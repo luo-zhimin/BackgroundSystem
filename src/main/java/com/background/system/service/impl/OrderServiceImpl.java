@@ -1,6 +1,7 @@
 package com.background.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.alibaba.fastjson.JSON;
 import com.background.system.entity.Coupon;
 import com.background.system.entity.OrderElement;
 import com.background.system.entity.Orderd;
@@ -105,7 +106,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         order.setCreateUser(currentUser.getUsername());
         orderMapper.insert(order);
         //下单时候 具体详情进入 element里面
-        logger.info("order elements[{}]", orderElements);
+        logger.info("order elements[{}]", JSON.toJSONString(orderElements));
         if (CollectionUtils.isNotEmpty(orderElements)) {
             orderElements.forEach(orderElement -> {
                 orderElement.setOrderId(order.getId());

@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/picture")
 @Api(tags = "图库管理")
+//@Scope(value="prototype")
 public class PictureController {
 
     @Autowired
@@ -34,6 +35,7 @@ public class PictureController {
     @ApiOperation("上传图片")
     @IgnoreLogin
     public Result<?> getPicture(MultipartFile file) {
+        //前端一直循环调取 是否加锁
         return Result.success(pictureService.getPicture(file,"default"));
     }
 

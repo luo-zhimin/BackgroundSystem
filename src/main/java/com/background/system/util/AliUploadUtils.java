@@ -101,7 +101,7 @@ public class AliUploadUtils {
             PutObjectRequest request = null;
             try {
                 //图片压缩
-                byte[] bytes = compressPicForScale(file.getBytes(), 60);
+                byte[] bytes = compressPicForScale(file.getBytes(), 120);
                 request = new PutObjectRequest(BUCKET_NAME, path, new ByteArrayInputStream(bytes));
             } catch (IOException e) {
                 logger.error("图片上传失败[{}]",e.getMessage());

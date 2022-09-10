@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -203,6 +204,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Override
     public Boolean updateOrder(Orderd order) {
+        //判断优惠卷限制
+        if (order.getCouponId()!=null && order.getCouponId()!=0){
+            Coupon coupon = couponService.getCouponDetail(order.getCouponId());
+            Integer userLimit = coupon.getUseLimit();
+            if (order.getTotal()!=null && order.getTotal().compareTo(BigDecimal.valueOf(userLimit))<0){
+                throw new ServiceException(1004,"您不符合当前优惠卷限制，请重新选择");
+            }
+        }
         return orderMapper.updateByPrimaryKeySelective(order) > 0;
     }
 
@@ -387,5 +396,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             order.setPictures(pictureService.getPicturesByIds(order.getPictureIds()));
         });
         return orders;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(BigDecimal.valueOf(1).compareTo(BigDecimal.valueOf(2)));
     }
 }

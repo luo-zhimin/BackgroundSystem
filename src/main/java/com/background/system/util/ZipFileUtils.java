@@ -54,9 +54,6 @@ public class ZipFileUtils {
     @Autowired
     private OrderMapper orderMapper;
 
-    @Autowired
-    private PdfUtil pdfUtil;
-
     /**
      * 准备删除的文件
      */
@@ -94,9 +91,11 @@ public class ZipFileUtils {
                 handleFiles.add(new HandleFile(picture.getName(), picture.getUrl()));
             });
 
+            //todo 图片进行了压缩处理需要还原
+
             // 下载图片
             for (HandleFile handleFile : handleFiles) {
-                String picPath = acceptFilePath + handleFile.getName() + ".jpg";
+                String picPath = acceptFilePath + handleFile.getName();
                 picList.add(picPath);
                 FileOutputStream outputStream = new FileOutputStream(picPath, true);
                 transformHandleFile(handleFile, outputStream);
@@ -107,7 +106,7 @@ public class ZipFileUtils {
             String sendName = DateTimeFormatter.ofPattern("yyyyMMddhhmmss").format(LocalDateTime.now()) + "-" + response.getWxNo() + "-" + response.getSizeName() + "-" + response.getNumber();
 
             // 获取PDF路径  todo size 不同
-            String pdfUrl = pdfUtil.imageToMergePdf(picList, sendName, response.getWeight(), response.getHeight());
+            String pdfUrl = PdfUtil.imageToMergePdf(picList, sendName, response.getWeight(), response.getHeight());
             handleFiles.add(new HandleFile(sendName + ".pdf", pdfUrl));
 
             String saveName = acceptFilePath + File.separator + sendName;

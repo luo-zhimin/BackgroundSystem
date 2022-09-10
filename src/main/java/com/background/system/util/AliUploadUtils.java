@@ -158,8 +158,8 @@ public class AliUploadUtils {
                         .toOutputStream(outputStream);
                 imageBytes = outputStream.toByteArray();
             }
-//            logger.info("图片原大小={}kb | 压缩后大小={}kb",
-//                    srcSize / ONE_ZERO_TWO_FOUR, imageBytes.length / ONE_ZERO_TWO_FOUR);
+            logger.info("图片原大小={}kb | 压缩后大小={}kb | 压缩倍数={}",
+                    srcSize / ONE_ZERO_TWO_FOUR, imageBytes.length / ONE_ZERO_TWO_FOUR,accuracy);
         } catch (Exception e) {
             logger.error("【图片压缩】msg=图片压缩失败!", e);
         }

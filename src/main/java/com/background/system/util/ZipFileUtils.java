@@ -150,15 +150,19 @@ public class ZipFileUtils {
         if (CollectionUtils.isNotEmpty(readyUploadFiles)){
             List<BaseResponse> baseResponses = Lists.newArrayList();
             logger.info("开始上传zip包");
+//            List<MockMultipartFile> uploadFiles = Lists.newArrayList();
             for (ReadyUploadFile readyUploadFile : readyUploadFiles) {
                 //file - > MultipartFile
                 byte[] bytes = Files.readAllBytes(Paths.get(readyUploadFile.getUrl()));
-//                System.out.println(readyUploadFile.getName()+" "+bytes.length);
                 MockMultipartFile mockMultipartFile = new MockMultipartFile("file",readyUploadFile.getName(),"text/plain",bytes);
+//                uploadFiles.add(mockMultipartFile);
                 PictureResponse picture = pictureService.getPicture(mockMultipartFile,"zip");
                 baseResponses.add(new BaseResponse(readyUploadFile.getOrderId(),picture.getUrl()));
                 deleteFile.add(new File(readyUploadFile.getUrl()));
             }
+
+            //批量处理 组装数据 内存 减少时间消耗
+//            pictureService.upload()
             logger.info("上传完毕开始删除数据");
             //上传完毕删除数据
             deleteFile();

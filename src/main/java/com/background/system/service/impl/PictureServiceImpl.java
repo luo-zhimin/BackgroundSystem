@@ -79,7 +79,7 @@ public class PictureServiceImpl implements PictureService {
         }
         logger.info("开始上传图片 total[{}]",files.length);
         long ossStart = System.currentTimeMillis();
-        Map<String, String> pictureMap = AliUploadUtils.uploadImages(files, "father");
+        Map<String, String> pictureMap = AliUploadUtils.uploadImages(files, father);
         long ossEnd = System.currentTimeMillis();
         List<Picture> pictures = Lists.newArrayList();
         pictureMap.forEach((k,v)->{

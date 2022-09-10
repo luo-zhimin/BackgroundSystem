@@ -74,8 +74,12 @@ public class AliUploadUtils {
         String title = father.equals("zip") ? file.getOriginalFilename() : System.currentTimeMillis() + "-" + file.getOriginalFilename();//zh_cn path name
         String path = father+File.separator +title;
         try {
+
+            //图片压缩
+            byte[] bytes = compressPicForScale(file.getBytes(), 120);
+
             PutObjectRequest request =
-                new PutObjectRequest(BUCKET_NAME, path, new ByteArrayInputStream(file.getBytes()));
+                new PutObjectRequest(BUCKET_NAME, path, new ByteArrayInputStream(bytes));
             PutObjectResult putObjectResult = ossClient.putObject(request);
             PushPlusUtils.push(putObjectResult);
             logger.info("[上传信息] - " + JSON.toJSONString(putObjectResult));
@@ -100,6 +104,17 @@ public class AliUploadUtils {
 
             PutObjectRequest request = null;
             try {
+
+                //设置size 大小 方便下面压缩使用
+//                ByteArrayInputStream inputStream = new ByteArrayInputStream(file.getBytes());
+//                BufferedImage bufferedImage = ImageIO.read(inputStream);
+//
+//                ByteArrayOutputStream outputStream = new ByteArrayOutputStream(file.getBytes().length);
+//                Thumbnails.of(inputStream)
+//                        //size(width,height)
+//                        .size(bufferedImage.getWidth(),bufferedImage.getHeight())
+//                        .toOutputStream(outputStream);
+
                 //图片压缩
                 byte[] bytes = compressPicForScale(file.getBytes(), 120);
                 request = new PutObjectRequest(BUCKET_NAME, path, new ByteArrayInputStream(bytes));

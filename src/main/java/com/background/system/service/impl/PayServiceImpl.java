@@ -4,11 +4,13 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONObject;
 import com.background.system.cache.ConfigCache;
+import com.background.system.entity.Coupon;
 import com.background.system.entity.Orderd;
 import com.background.system.entity.Size;
 import com.background.system.entity.token.Token;
 import com.background.system.mapper.OrderMapper;
 import com.background.system.mapper.SizeMapper;
+import com.background.system.service.CouponService;
 import com.background.system.service.PayService;
 import com.background.system.util.WxUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,6 +57,9 @@ public class PayServiceImpl extends BaseService implements PayService {
     @Resource
     private SizeMapper sizeMapper;
 
+    @Resource
+    private CouponService couponService;
+
     @Override
     @Transactional
     @SneakyThrows
@@ -70,6 +75,12 @@ public class PayServiceImpl extends BaseService implements PayService {
 
         // 前端判断运费是 0 或者 多少
         total = total.add(orderd.getPortPrice());
+
+        //检查是否有优惠卷
+        if (orderd.getCouponId()!=null && orderd.getCouponId()!=0){
+            Coupon coupon = couponService.getCouponDetail(orderd.getCouponId());
+            total = total.subtract(coupon.getPrice());
+        }
 
         // 获取订单信息
         Size size = sizeMapper.selectById(orderd.getSizeId());

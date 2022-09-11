@@ -1,11 +1,17 @@
 package com.background.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.background.system.entity.*;
+import com.alibaba.fastjson.JSON;
+import com.background.system.entity.Coupon;
+import com.background.system.entity.OrderElement;
+import com.background.system.entity.Orderd;
 import com.background.system.entity.token.Token;
 import com.background.system.entity.vo.OrderVo;
 import com.background.system.exception.ServiceException;
-import com.background.system.mapper.*;
+import com.background.system.mapper.CaizhiMapper;
+import com.background.system.mapper.CouponMapper;
+import com.background.system.mapper.OrderElementsMapper;
+import com.background.system.mapper.OrderMapper;
 import com.background.system.response.CountResponse;
 import com.background.system.response.OrderCountResponse;
 import com.background.system.response.OrderElementResponse;
@@ -101,7 +107,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         order.setCreateUser(currentUser.getUsername());
         orderMapper.insert(order);
         //下单时候 具体详情进入 element里面
-        logger.info("order elements[{}]", orderElements);
+        logger.info("order elements[{}]", JSON.toJSONString(orderElements));
         if (CollectionUtils.isNotEmpty(orderElements)) {
             orderElements.forEach(orderElement -> {
                 orderElement.setOrderId(order.getId());
@@ -198,6 +204,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Override
     public Boolean updateOrder(Orderd order) {
+        //判断优惠卷限制
+        if (order.getCouponId()!=null && order.getCouponId()!=0){
+            Coupon coupon = couponService.getCouponDetail(order.getCouponId());
+            Integer userLimit = coupon.getUseLimit();
+            if (order.getTotal()!=null && order.getTotal().compareTo(BigDecimal.valueOf(userLimit))<0){
+                throw new ServiceException(1004,"您不符合当前优惠卷限制，请重新选择");
+            }
+        }
         return orderMapper.updateByPrimaryKeySelective(order) > 0;
     }
 
@@ -382,5 +396,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             order.setPictures(pictureService.getPicturesByIds(order.getPictureIds()));
         });
         return orders;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(BigDecimal.valueOf(1).compareTo(BigDecimal.valueOf(2)));
     }
 }

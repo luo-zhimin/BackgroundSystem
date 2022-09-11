@@ -22,5 +22,7 @@ public class Constant {
 
     public static final String PASSWORD = "password";
 
+    public static final String BUCKET_NAME = "asugar";
+
     public static final Long EXPIRE_TIME = System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 15;
 }

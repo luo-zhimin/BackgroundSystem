@@ -6,6 +6,7 @@ import com.background.system.mapper.PictureMapper;
 import com.background.system.response.PictureResponse;
 import com.background.system.service.PictureService;
 import com.background.system.util.AliUploadUtils;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -39,6 +41,8 @@ public class PictureServiceImpl implements PictureService {
         if (file == null) {
             throw new ServiceException(1000, "请至少选择一张图片！");
         }
+
+        logger.info("getPicture fileSize[{}]",file.getSize());
 
         String aDefault = AliUploadUtils.uploadImage(file, father);
         Picture picture = new Picture();
@@ -66,6 +70,37 @@ public class PictureServiceImpl implements PictureService {
             throw new ServiceException(1000,"请填写要修改的图片地址");
         }
         return pictureMapper.updateIndexPicture(request.getUrl(),request.getId())>0;
+    }
+
+    @Override
+    public List<PictureResponse> upload(MultipartFile[] files,String father) {
+        if (files==null || files.length<=0){
+            throw new ServiceException(1000, "请至少选择一张图片！");
+        }
+        logger.info("开始上传图片 total[{}]",files.length);
+        long ossStart = System.currentTimeMillis();
+        Map<String, String> pictureMap = AliUploadUtils.uploadImages(files, father);
+        long ossEnd = System.currentTimeMillis();
+        List<Picture> pictures = Lists.newArrayList();
+        pictureMap.forEach((k,v)->{
+            Picture picture = new Picture();
+            picture.setUrl(v);
+            picture.setFather(father);
+            picture.setName(k);
+            pictures.add(picture);
+        });
+        pictureMapper.batchInsert(pictures);
+        List<PictureResponse> responses = Lists.newArrayList();
+        pictures.forEach(picture -> {
+            responses.add(PictureResponse.builder()
+                    .id(picture.getId())
+                    .url(picture.getUrl())
+                    .build());
+        });
+        long finish = System.currentTimeMillis();
+        logger.info("oss need time[{}]",ossEnd-ossStart);
+        logger.info("upload need time[{}]",finish-ossStart);
+        return responses;
     }
 
     public List<Picture> getPicturesByIds(List<String> ids){

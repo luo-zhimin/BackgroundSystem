@@ -107,7 +107,7 @@ public class OrderController {
     }
 
     @PostMapping("/close")
-    @ApiOperation("后台-订单确认完成")
+    @ApiOperation("订单确认完成")
     public Result<?> orderClose(@RequestParam String id)
     {
         return Result.success(orderService.orderClose(id));

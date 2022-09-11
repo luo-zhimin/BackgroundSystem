@@ -203,6 +203,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     }
 
     @Override
+    @Transactional
     public Boolean updateOrder(Orderd order) {
         //判断优惠卷限制
         if (order.getCouponId()!=null && order.getCouponId()!=0){
@@ -398,7 +399,4 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         return orders;
     }
 
-    public static void main(String[] args) {
-        System.out.println(BigDecimal.valueOf(1).compareTo(BigDecimal.valueOf(2)));
-    }
 }

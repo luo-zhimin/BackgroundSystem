@@ -8,6 +8,7 @@ import com.background.system.entity.Coupon;
 import com.background.system.entity.Size;
 import com.background.system.entity.token.Token;
 import com.background.system.entity.vo.AdminLoginVo;
+import com.background.system.exception.ServiceException;
 import com.background.system.response.PictureResponse;
 import com.background.system.service.*;
 import com.background.system.service.admin.IAdminUseService;
@@ -61,12 +62,12 @@ public class AdminController {
         String userName = loginVo.getUsername();
         String password = loginVo.getPassword();
         if (StringUtils.isBlank(userName) || StringUtils.isBlank(password)) {
-            return Result.setData(200, null, "账号和密码都不能为空");
+            throw new ServiceException(1000,"账号和密码都不能为空");
         }
         password = DigestUtils.md5Hex(password);
         Boolean loginFlag = adminUseService.queryUser(userName, password);
         if (!loginFlag) {
-            return Result.setData(200, null, "账号或密码错误");
+            throw new ServiceException(1001,"账号或密码错误");
         }
         Token token = createToken(userName, password);
         return Result.success(token);

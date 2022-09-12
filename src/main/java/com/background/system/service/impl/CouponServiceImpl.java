@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -58,7 +59,7 @@ public class CouponServiceImpl extends BaseService implements CouponService {
         if (CollectionUtils.isEmpty(coupons)) {
             return couponPage;
         }
-        List<String> pictureIds = coupons.stream().map(Coupon::getPictureId).collect(Collectors.toList());
+        List<String> pictureIds = coupons.stream().map(Coupon::getPictureId).filter(Objects::nonNull).collect(Collectors.toList());
         List<Picture> pictures = pictureService.getPicturesByIds(pictureIds);
         coupons.forEach(coupon -> {
             CouponResponse response = new CouponResponse();

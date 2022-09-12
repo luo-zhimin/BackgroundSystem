@@ -8,6 +8,7 @@ import com.background.system.entity.Coupon;
 import com.background.system.entity.Orderd;
 import com.background.system.entity.Size;
 import com.background.system.entity.token.Token;
+import com.background.system.mapper.CouponMapper;
 import com.background.system.mapper.OrderMapper;
 import com.background.system.mapper.SizeMapper;
 import com.background.system.service.CouponService;
@@ -59,6 +60,9 @@ public class PayServiceImpl extends BaseService implements PayService {
 
     @Resource
     private CouponService couponService;
+
+    @Resource
+    private CouponMapper couponMapper;
 
     @Override
     @Transactional
@@ -132,7 +136,7 @@ public class PayServiceImpl extends BaseService implements PayService {
 
         // 回写微信支付订单号
         orderd.setWxNo(wx_no);
-        orderd.setIsPay(false);  // 支付状态
+//        orderd.setIsPay(false);  // 支付状态
         orderd.setStatus("0");     // 发货状态
         orderMapper.updateByPrimaryKeySelective(orderd);
 
@@ -185,6 +189,15 @@ public class PayServiceImpl extends BaseService implements PayService {
         log.info("payOk [{}]",orderId);
         Orderd orderd = orderMapper.selectByPrimaryKey(orderId);
         orderd.setIsPay(true);
+        orderd.setStatus("1");
+        //检查是否有优惠卷
+        if (orderd.getCouponId()!=null && orderd.getCouponId()!=0){
+            Coupon coupon = couponService.getCouponDetail(orderd.getCouponId());
+            if (coupon!=null){
+                coupon.setIsUsed(true);
+                couponMapper.updateByPrimaryKeySelective(coupon);
+            }
+        }
         return orderMapper.updateByPrimaryKey(orderd)>0;
     }
 }

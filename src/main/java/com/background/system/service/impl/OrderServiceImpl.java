@@ -2,6 +2,7 @@ package com.background.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
+import com.background.system.entity.Caizhi;
 import com.background.system.entity.Coupon;
 import com.background.system.entity.OrderElement;
 import com.background.system.entity.Orderd;
@@ -84,19 +85,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
         BeanUtil.copyProperties(orderVo, order);
 
-//        Caizhi caizhi = caizhiMapper.selectById(order.getCaizhiId());
+        Caizhi caizhi = caizhiMapper.selectById(order.getCaizhiId());
         List<OrderElement> orderElements = orderVo.getOrderElements();
         //多个
 //        //材质价格
 //        //（材质+尺寸）
-//        BigDecimal total = caizhi.getPrice();
+        BigDecimal total = caizhi.getPrice();
 //
 //        //价格计算 单 or 双 * 组  数量 *（材质+尺寸）
 //        //一共买了多少
-//        int totalNumber = orderElements.stream().mapToInt(OrderElement::getNumber).sum();
-//        total = total.multiply(BigDecimal.valueOf(totalNumber));
+        int totalNumber = orderElements.stream().mapToInt(OrderElement::getNumber).sum();
+        total = total.multiply(BigDecimal.valueOf(totalNumber));
 
-
+        order.setTotal(total);
         order.setIsPay(false);
         order.setIsDel(false);
         order.setStatus("0");
@@ -203,6 +204,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     }
 
     @Override
+    @Transactional
     public Boolean updateOrder(Orderd order) {
         //判断优惠卷限制
         if (order.getCouponId()!=null && order.getCouponId()!=0){
@@ -224,7 +226,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         if (!order.getCreateUser().equals(currentUser.getUsername())){
             throw new ServiceException(1002,"请修改属于你自己的订单");
         }
-
+        //0-待付款 1-待发货 2-配送中 3-已完成 4-已取消
         return orderMapper.deleteOrderById(id)>0;
     }
 
@@ -257,6 +259,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         //isPay 1 付款 待发货 有 kdNo 就是配送
         //待付款 待发货 配送中 已取消 已完成 支付金额
         //分组统计 最好设置 state 默认 为 0
+        //todo 可以适当改造 前面维护status  0-待付款  1-待发货 2-配送中 3-已完成 4-已取消
         List<OrderCountResponse> orderCount = orderMapper.getOrderCount();
         //配送
         int orderNoCount = orderMapper.getHasKdNoCount();
@@ -299,6 +302,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         logger.info("orderClose [{}]",id);
         checkOrder(id);
         Token currentUser = getWeChatCurrentUser();
+        //0-待付款  1-待发货 2-配送中 3-已完成 4-已取消
         return orderMapper.closeOrder(id,currentUser.getUsername())>0;
     }
 
@@ -313,28 +317,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         String currentDay = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now());
         return orderMapper.getIndexOrderCount(currentDay);
     }
-
-//    @Override
-//    public Page<OrderResponse> getOrderAllList(Integer page, Integer size) {
-//        List<OrderResponse> orderResponses = Lists.newArrayList();
-//        Page<OrderResponse> orderPage = initPage(page, size);
-//        List<Order> orderList = orderMapper.getOrderAllList(page, size);
-//        //商品
-//        if (CollectionUtils.isNotEmpty(orderList)){
-//            orderList.forEach(order -> {
-//                OrderResponse orderResponse = new OrderResponse();
-//                BeanUtils.copyProperties(order,orderResponse);
-//                if (order.getSizeId() != null) {
-//                    orderResponse.setSize(sizeService.getSizeDetail(order.getSizeId()+""));
-//                }
-//                orderResponses.add(orderResponse);
-//            });
-//        }
-//        int orderCount = orderList.size();
-//        orderPage.setTotal(orderCount);
-//        orderPage.setRecords(orderResponses);
-//        return orderPage;
-//    }
 
     private Map<String,Integer> initCountMap(){
         Map<String,Integer> countMap = new HashMap<>();
@@ -398,7 +380,4 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         return orders;
     }
 
-    public static void main(String[] args) {
-        System.out.println(BigDecimal.valueOf(1).compareTo(BigDecimal.valueOf(2)));
-    }
 }

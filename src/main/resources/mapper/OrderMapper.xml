@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.background.system.mapper.OrderMapper">
-
     <resultMap id="BaseResultMap" type="com.background.system.entity.Orderd">
         <!--@Table `orderd`-->
         <id column="id" jdbcType="VARCHAR" property="id"/>
@@ -19,8 +18,6 @@
         <result column="address_id" jdbcType="VARCHAR" property="addressId"/>
         <result column="zip_path" jdbcType="VARCHAR" property="zipPath"/>
         <result column="is_download" jdbcType="CHAR" property="isDownload"/>
-<!--        <result column="num" jdbcType="INTEGER" property="num"/>-->
-<!--        <result column="picture_id" jdbcType="VARCHAR" property="pictureId"/>-->
         <result column="caizhi_id" jdbcType="VARCHAR" property="caizhiId"/>
         <result column="size_id" jdbcType="VARCHAR" property="sizeId"/>
         <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
@@ -43,8 +40,6 @@
         address_id,
         zip_path,
         is_download,
-<!--        num,-->
-<!--        picture_id,-->
         size_id,
         caizhi_id,
         create_user,
@@ -106,12 +101,6 @@
             <if test="addressId != null and addressId != ''">
                 address_id,
             </if>
-<!--            <if test="num != null">-->
-<!--                num,-->
-<!--            </if>-->
-<!--            <if test="pictureId != null and pictureId != ''">-->
-<!--                picture_id,-->
-<!--            </if>-->
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null and id != ''">
@@ -153,12 +142,6 @@
             <if test="addressId != null and addressId != ''">
                 #{addressId,jdbcType=VARCHAR},
             </if>
-<!--            <if test="num != null">-->
-<!--                #{num,jdbcType=INTEGER},-->
-<!--            </if>-->
-<!--            <if test="pictureId != null and pictureId != ''">-->
-<!--                #{pictureId,jdbcType=VARCHAR},-->
-<!--            </if>-->
         </trim>
     </insert>
 
@@ -201,12 +184,12 @@
             <if test="addressId != null and addressId != ''">
                 address_id = #{addressId,jdbcType=VARCHAR},
             </if>
-<!--            <if test="num != null">-->
-<!--                num = #{num,jdbcType=INTEGER},-->
-<!--            </if>-->
-<!--            <if test="pictureId != null and pictureId != ''">-->
-<!--                picture_id = #{pictureId,jdbcType=VARCHAR},-->
-<!--            </if>-->
+            <!--            <if test="num != null">-->
+            <!--                num = #{num,jdbcType=INTEGER},-->
+            <!--            </if>-->
+            <!--            <if test="pictureId != null and pictureId != ''">-->
+            <!--                picture_id = #{pictureId,jdbcType=VARCHAR},-->
+            <!--            </if>-->
         </set>
         where id = #{id,jdbcType=VARCHAR}
     </update>
@@ -214,69 +197,89 @@
     <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Orderd">
         update `orderd`
         set order_no    = #{wxNo,jdbcType=VARCHAR},
-        kd_no       = #{kdNo,jdbcType=VARCHAR},
-        is_pay      = #{isPay,jdbcType=CHAR},
-        remark      = #{remark,jdbcType=VARCHAR},
-        port_price  = #{portPrice,jdbcType=DECIMAL},
-        is_del      = #{isDel,jdbcType=CHAR},
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-        total       = #{total,jdbcType=DECIMAL},
-        coupon_id   = #{couponId,jdbcType=BIGINT},
-        `status`    = #{status,jdbcType=CHAR},
-        address_id  = #{addressId,jdbcType=VARCHAR}
+            kd_no       = #{kdNo,jdbcType=VARCHAR},
+            is_pay      = #{isPay,jdbcType=CHAR},
+            remark      = #{remark,jdbcType=VARCHAR},
+            port_price  = #{portPrice,jdbcType=DECIMAL},
+            is_del      = #{isDel,jdbcType=CHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            update_time = #{updateTime,jdbcType=TIMESTAMP},
+            total       = #{total,jdbcType=DECIMAL},
+            coupon_id   = #{couponId,jdbcType=BIGINT},
+            `status`    = #{status,jdbcType=CHAR},
+            address_id  = #{addressId,jdbcType=VARCHAR}
         where id = #{id,jdbcType=VARCHAR}
     </update>
 
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Orderd" useGeneratedKeys="true">
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Orderd"
+            useGeneratedKeys="true">
         insert into `orderd` (remark, port_price, total,
-        coupon_id, `status`, address_id,
-        caizhi_id,
-        size_id, create_user,
-        create_time)
+                              coupon_id, `status`, address_id,
+                              caizhi_id,
+                              size_id, create_user,
+                              create_time)
         values (#{remark,jdbcType=VARCHAR}, #{portPrice,jdbcType=DECIMAL}, #{total,jdbcType=DECIMAL},
-        #{couponId,jdbcType=BIGINT}, #{status,jdbcType=CHAR}, #{addressId,jdbcType=VARCHAR},
-         #{caizhiId,jdbcType=VARCHAR},
-        #{sizeId,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR},
-        #{createTime,jdbcType=TIMESTAMP})
+                #{couponId,jdbcType=BIGINT}, #{status,jdbcType=CHAR}, #{addressId,jdbcType=VARCHAR},
+                #{caizhiId,jdbcType=VARCHAR},
+                #{sizeId,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR},
+                #{createTime,jdbcType=TIMESTAMP})
     </insert>
 
     <select id="getCurrentOrderCount" resultType="int">
-        select count(*) from `orderd` where is_del=0 and create_user=#{openId}
+        select count(*)
+        from `orderd`
+        where is_del = 0
+          and create_user = #{openId}
     </select>
 
     <select id="getOrderList" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from `orderd` where is_del=0 and  create_user=#{openId}
+        from `orderd` where is_del = 0
+                        and create_user = #{openId}
         <if test="page != null and size != null">
-            limit #{page},#{size}
+            limit #{page}
+              , #{size}
         </if>
     </select>
 
     <delete id="deleteOrderById">
-        update `orderd` set is_del = 1 where id=#{id};
+        update `orderd`
+        set is_del = 1,
+            status=4
+        where id = #{id};
     </delete>
 
     <select id="getOrderAllList" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from `orderd` where is_del=0
+        from `orderd` where is_del = 0
         <if test="page != null and size != null">
-            limit #{page},#{size}
+            limit #{page}
+                , #{size}
         </if>
     </select>
 
     <select id="getOrderCount" resultType="com.background.system.response.OrderCountResponse">
-        select any_value(sum(total)) totalCount, any_value(count(is_pay)) payCount, is_pay, any_value(count(is_del)) delCount, is_del from `orderd` group by is_del
+        select any_value(sum(total))    totalCount,
+               any_value(count(is_pay)) payCount,
+               is_pay,
+               any_value(count(is_del)) delCount,
+               is_del
+        from `orderd`
+        group by is_del
     </select>
 
     <select id="getHasKdNoCount" resultType="int">
-        select count(*) from `orderd` where kd_no is not null
+        select count(*)
+        from `orderd`
+        where kd_no is not null
     </select>
 
     <select id="getCloseCount" resultType="int">
-        select count(*) from `orderd` where `status` = 4
+        select count(*)
+        from `orderd`
+        where `status` = 3
     </select>
 
     <!-- 0-待付款  1-待发货 2-配送中 3-已完成 4-已取消   -->
@@ -303,7 +306,7 @@
         <if test="type == 3">
             select *
             from `orderd`
-            where `status` = 4
+            where `status` = 3
         </if>
         <!--  已取消 -->
         <if test="type == 4">
@@ -318,7 +321,8 @@
             </foreach>
         </if>
         <if test="page != null and size != null">
-            limit #{page},#{size}
+            limit #{page}
+              , #{size}
         </if>
     </select>
 
@@ -345,7 +349,7 @@
         <if test="type == 3">
             select count(*)
             from `orderd`
-            where `status` = 4
+            where `status` = 3
         </if>
         <!--  已取消 -->
         <if test="type == 4">
@@ -362,15 +366,27 @@
     </select>
 
     <update id="updateKdNo">
-        update `orderd` set kd_no =#{kdNo},update_user=#{updateUser} where id=#{id}
+        update `orderd`
+        set status=2,
+            kd_no =#{kdNo},
+            update_user=#{updateUser}
+        where id = #{id}
     </update>
 
     <update id="closeOrder">
-        update `orderd` set status = 4,update_user=#{updateUser} where id=#{id}
+        update `orderd`
+        set status     = 3,
+            update_user=#{updateUser}
+        where id = #{id}
     </update>
 
     <select id="getNoZipPathOrder" resultType="com.background.system.response.file.ReadyDownloadFileResponse">
-        select o.id, s.name sizeName,s.size, o.order_no wxNo, GROUP_CONCAT(oe.picture_id) pictureId,sum(oe.number) number
+        select o.id,
+               s.name                      sizeName,
+               s.size,
+               o.order_no                  wxNo,
+               GROUP_CONCAT(oe.picture_id) pictureId,
+               sum(oe.number)              number
         from `orderd` o
                  inner join size s on o.size_id = s.id
                  inner join order_element oe on o.id = oe.order_id
@@ -396,13 +412,15 @@
     </update>
 
     <delete id="orderDownload">
-        update `orderd` set is_download = 1 where id=#{id}
+        update `orderd`
+        set is_download = 1
+        where id = #{id}
     </delete>
 
     <select id="getIndexOrderCount" resultType="com.background.system.response.IndexCountResponse">
         select count(1) as count ,date_format(create_time,'%h') as time
         from `orderd`
-        where create_time like concat(#{time},'%')
+        where create_time like concat(#{time}, '%')
         group by date_format(create_time, '%h')
     </select>
 </mapper>

@@ -39,6 +39,4 @@ public interface OrderService {
     Boolean orderDownload(String id);
 
     Object getOrderCurrentDay();
-
-//    Page<OrderResponse> getOrderAllList(Integer page, Integer size);
 }

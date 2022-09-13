@@ -52,7 +52,7 @@ public class PdfUtil {
             String yml = Objects.requireNonNull(PdfUtil.class.getResource("/application.yml")).getFile();
             properties.load(new FileReader(yml));
         } catch (IOException e) {
-            log.error("load error[{}]",e.getMessage());
+            log.error("load error[{}]", e.getMessage());
         }
         FILE_PATH = properties.getProperty("file");
         OCR_PATH = FILE_PATH + "/new.png";
@@ -196,7 +196,8 @@ public class PdfUtil {
             image = Image.getInstance(adjustImgPath);
             // 调整pdf图片的dpi
             float scalePercentage = (72 / 300f) * 100.0f;
-            image.scalePercent(scalePercentage, scalePercentage);
+//            image.scalePercent(scalePercentage, scalePercentage);
+            image.scalePercent(300f);
             //写入PDF
             log.info("写入PDf:" + pdfPath);
             FileOutputStream fos = new FileOutputStream(pdfPath);

@@ -1,6 +1,7 @@
 package com.background.system;
 
 import com.background.system.service.impl.PictureServiceImpl;
+import com.background.system.util.PdfUtil;
 import com.background.system.util.ZipFileUtils;
 import lombok.SneakyThrows;
 import org.apache.http.HttpEntity;
@@ -9,6 +10,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.junit.jupiter.api.Test;
+import org.python.google.common.collect.Lists;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -20,6 +22,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -112,5 +115,14 @@ public class FileTest {
         long end = System.currentTimeMillis();
         System.out.println("耗时 = " + (end - start));//24803 单个
 //        System.out.println(responses);
+    }
+
+    @Test
+    @SneakyThrows
+    void creatPdf(){
+        List<String> files = Lists.newArrayList("https://asugar.oss-cn-hangzhou.aliyuncs.com/default/tcnX5ahQ4ng1804132f0c804ea65bde6bfa14871bee9.jpg"
+                ,"https://asugar.oss-cn-hangzhou.aliyuncs.com/default/tmp_7520270ad5b9c095a52231fc2ea99f24.jpg");
+
+        System.out.println(PdfUtil.imageToMergePdf(files, "test.pdf", 100, 80));
     }
 }

@@ -195,9 +195,9 @@ public class PdfUtil {
             doc.setPageSize(new Rectangle(bufferedImage.getWidth(), bufferedImage.getHeight()));
             image = Image.getInstance(adjustImgPath);
             // 调整pdf图片的dpi
-            float scalePercentage = (72 / 300f) * 100.0f;
+//            float scalePercentage = (144 / 300f) * 100.0f;
 //            image.scalePercent(scalePercentage, scalePercentage);
-            image.scalePercent(300f);
+//            image.scalePercent(100f);
             //写入PDF
             log.info("写入PDf:" + pdfPath);
             FileOutputStream fos = new FileOutputStream(pdfPath);

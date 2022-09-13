@@ -2,10 +2,7 @@ package com.background.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
-import com.background.system.entity.Caizhi;
-import com.background.system.entity.Coupon;
-import com.background.system.entity.OrderElement;
-import com.background.system.entity.Orderd;
+import com.background.system.entity.*;
 import com.background.system.entity.token.Token;
 import com.background.system.entity.vo.OrderVo;
 import com.background.system.exception.ServiceException;
@@ -21,6 +18,9 @@ import com.background.system.response.file.ReadyDownloadFileResponse;
 import com.background.system.service.OrderService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
+import lombok.Builder;
+import lombok.Data;
+import lombok.ToString;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -373,10 +373,37 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         if (CollectionUtils.isEmpty(orders)){
             return Collections.emptyList();
         }
+
+        List<SourceOrderPicture> sourceOrderPictures = Lists.newArrayList();
+
+        orders.forEach(order -> {
+            sourceOrderPictures.add(SourceOrderPicture.builder().orderId(order.getId()).pictureIds(order.getPictureIds()).build());
+//            order.setPictures(pictureService.getPicturesByIds(order.getPictureIds()));
+            order.setPictureMap(pictureService.getPicturesByIds(order.getPictureIds()).stream().collect(Collectors.groupingBy(Picture::getId)));
+        });
+        //18, 19, 23, 30, 29, 22, 20, 17, 21, 24, 31, 32, 25, 33, 34, 36, 35, 27
+        logger.info("source [{}]",sourceOrderPictures);
+        //二次处理 sort
         orders.forEach(order->{
-            order.setPictures(pictureService.getPicturesByIds(order.getPictureIds()));
+            sourceOrderPictures.forEach(source->{
+                if (order.getId().equals(source.getOrderId())){
+                    source.getPictureIds().forEach(pId->{
+                        order.getPictures().addAll(Optional.ofNullable(order.getPictureMap().get(pId)).orElse(Collections.emptyList()));
+                    });
+                }
+            });
         });
         return orders;
     }
 
+
+    @Data
+    @ToString
+    @Builder
+    static class SourceOrderPicture{
+
+        private String orderId;
+
+        private List<String> pictureIds;
+    }
 }

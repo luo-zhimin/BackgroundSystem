@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,9 +34,11 @@ public class ReadyDownloadFileResponse {
     @ApiModelProperty(value = "尺寸 第一个width 第二个height")
     private String size;//mm*mm
 
-    private List<Picture> pictures;
+    private List<Picture> pictures = Lists.newArrayList();
 
     private Integer number;
+
+    private Map<String,List<Picture>> pictureMap;
 
     @Tolerate
     public ReadyDownloadFileResponse(){}

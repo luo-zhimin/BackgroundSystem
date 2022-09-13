@@ -13,6 +13,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -33,15 +34,14 @@ import java.util.UUID;
  * @author menghui.wan
  */
 @Slf4j
-@Service
+@Component
 public class PdfUtil {
 
     private static List<String> tempPdfPath = new ArrayList<>();
     private static List<String> tempImagePath = new ArrayList<>();
     private static final String DATE_FORMAT = "yyyy-MM-dd_HH:mm:ss";
 
-    @Value("${zip.file}")
-    private static String FILE_PATH;
+    private static String FILE_PATH = "/Users/sugar/Desktop/BackgroundSystem/upload";
 
     private static String OCR_PATH = FILE_PATH + "/new.png";
     private static String CUP_PATH = FILE_PATH + "/new.";

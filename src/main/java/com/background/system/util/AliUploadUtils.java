@@ -29,13 +29,13 @@ public class AliUploadUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(AliUploadUtils.class);
 
-    private static final String ENDPOINT;
+    private static final String ENDPOINT = "https://oss-cn-hangzhou.aliyuncs.com";
 
-    private static final String RESULT_URL;
+    private static final String RESULT_URL = "https://asugar.oss-cn-hangzhou.aliyuncs.com";
 
-    private static final String ACCESS_KEY_ID;
+    private static final String ACCESS_KEY_ID = "LTAI5tJdGdn4guLATNEwNJft";
 
-    private static final String ACCESS_KEY_SECRET;
+    private static final String ACCESS_KEY_SECRET = "C66R67VRkLqihwJnSRD0knnhzkPhja";
 
     private static final Integer ZERO = 0;
 
@@ -55,13 +55,6 @@ public class AliUploadUtils {
 
     private static final Double ZERO_FOUR = 0.4;
 
-    static {
-        ENDPOINT = ConfigCache.configMap.get("ENDPOINT");
-        RESULT_URL = ConfigCache.configMap.get("RESULT_URL");
-        ACCESS_KEY_ID = ConfigCache.configMap.get("ACCESS_KEY_ID");
-        ACCESS_KEY_SECRET = ConfigCache.configMap.get("ACCESS_KEY_SECRET");
-    }
-
     /**
      * @param file   文件流
      * @param father 上级目录（上传哪个文件夹）
@@ -76,7 +69,7 @@ public class AliUploadUtils {
         try {
 
             //图片压缩
-            byte[] bytes = compressPicForScale(file.getBytes(), 120);
+            byte[] bytes = compressPicForScale(file.getBytes(), 2048);
 
             PutObjectRequest request =
                 new PutObjectRequest(BUCKET_NAME, path, new ByteArrayInputStream(bytes));
@@ -116,7 +109,7 @@ public class AliUploadUtils {
 //                        .toOutputStream(outputStream);
 
                 //图片压缩
-                byte[] bytes = compressPicForScale(file.getBytes(), 120);
+                byte[] bytes = compressPicForScale(file.getBytes(), 2048);
                 request = new PutObjectRequest(BUCKET_NAME, path, new ByteArrayInputStream(bytes));
             } catch (IOException e) {
                 logger.error("图片上传失败[{}]",e.getMessage());

@@ -85,6 +85,10 @@ public class ZipFileUtils {
                 logger.info("该订单没有照片--" + response.getId());
                 continue;
             }
+
+            // init
+            picList.clear();
+
             //一个订单里面所有的照片
             List<HandleFile> handleFiles = Lists.newArrayList();
             response.getPictures().forEach(picture -> {

@@ -76,7 +76,7 @@ public class AliUploadUtils {
         try {
 
             //图片压缩
-            byte[] bytes = compressPicForScale(file.getBytes(), 2048);
+            byte[] bytes = father.equals("zip") ? file.getBytes() : compressPicForScale(file.getBytes(), 2048);
 
             PutObjectRequest request =
                 new PutObjectRequest(BUCKET_NAME, path, new ByteArrayInputStream(bytes));

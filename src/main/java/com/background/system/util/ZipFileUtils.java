@@ -99,8 +99,9 @@ public class ZipFileUtils {
 
             // 下载图片
             for (HandleFile handleFile : handleFiles) {
-                String picPath = acceptFilePath + handleFile.getName();
+                String picPath = acceptFilePath+ File.separator + handleFile.getName();
                 picList.add(picPath);
+                deleteFile.add(new File(picPath));
                 FileOutputStream outputStream = new FileOutputStream(picPath, true);
                 transformHandleFile(handleFile, outputStream);
             }
@@ -115,7 +116,7 @@ public class ZipFileUtils {
 
             String saveName = acceptFilePath + File.separator + sendName;
 
-            logger.info("handleFiles = " + handleFiles);
+            logger.info("handleFiles[{}]",handleFiles.size());
 
             //1.创建临时文件
             judgeFileExists(Lists.newArrayList(saveName));

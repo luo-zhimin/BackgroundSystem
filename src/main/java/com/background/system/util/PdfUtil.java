@@ -49,18 +49,16 @@ public class PdfUtil {
 
     private static boolean flag = true;
 
-
     public static void main(String[] args) {
         List<String> lis = new ArrayList<>();
         lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/1.png");
         lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/1.png");
         try {
-            String nidie = imageToMergePdf(lis, UUID.randomUUID().toString() + ".pdf",60, 92);
+            String nidie = imageToMergePdf(lis, UUID.randomUUID().toString() + ".pdf", 60, 92);
             System.out.println(nidie);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 
     /**
@@ -70,10 +68,11 @@ public class PdfUtil {
      * @return
      * @throws Exception
      */
-    public static String imageToMergePdf(List<String> sourcePaths, String name, Integer width, Integer height) throws Exception {
+    public static String imageToMergePdf(List<String> sourcePaths, String name, Integer width, Integer height)
+        throws Exception {
         // add ocr
-        sourcePaths.add(0,"https://img.asugar.cn/asugar/1.png");
-        sourcePaths.add(0,"https://img.asugar.cn/asugar/2.png");
+        sourcePaths.add(0, "https://img.asugar.cn/asugar/1.png");
+        sourcePaths.add(0, "https://img.asugar.cn/asugar/2.png");
 
         File uploadDirectory = new File(FILE_PATH);
         if (!uploadDirectory.exists()) {
@@ -92,8 +91,10 @@ public class PdfUtil {
                 String url;
                 try {
                     cnt++;
-                    if (cnt > 2) url = adjustImageSize2(file, width, height);
-                    else url = adjustImageSize(file, width, height);
+                    if (cnt > 2)
+                        url = adjustImageSize2(file, width, height);
+                    else
+                        url = adjustImageSize(file, width, height);
                 } catch (Exception e) {
                     log.error("调整图片大小失败，异常{}", e.getMessage());
                     throw new ServiceException(500, e.getMessage());
@@ -128,7 +129,8 @@ public class PdfUtil {
      * @throws Exception
      */
     private static String adjustImageSize(String sourcePath, Integer width, Integer height) throws Exception {
-        HttpUtil.downloadFile("https://etumwb-duigzq-8000.preview.myide.io/hello?url=" + sourcePath + "&type=1&os=1&xnx=2", OCR_PATH);
+        HttpUtil.downloadFile(
+            "https://etumwb-duigzq-8000.preview.myide.io/hello?url=" + sourcePath + "&type=1&os=1&xnx=2", OCR_PATH);
         tempImagePath.add(OCR_PATH);
         return OCR_PATH;
     }
@@ -143,17 +145,19 @@ public class PdfUtil {
         String sb = "";
         if (flag) {
             sb = "xnx=0";
-        }else {
+        } else {
             sb = "xnx=1";
         }
 
         // type select
         if (split[1].equals("jpg") || split[1].equals("jpeg")) {
-            CUP_PATH = FILE_PATH +  "/new.jpg";
-            HttpUtil.downloadFile("https://etumwb-duigzq-8000.preview.myide.io/hello?url=" + url + "&type=0&os=0&" + sb, CUP_PATH);
-        }else {
-            CUP_PATH = FILE_PATH +  "/new.png";
-            HttpUtil.downloadFile("https://etumwb-duigzq-8000.preview.myide.io/hello?url=" + url + "&type=1&os=0&" + sb, CUP_PATH);
+            CUP_PATH = FILE_PATH + "/new.jpg";
+            HttpUtil.downloadFile("https://etumwb-duigzq-8000.preview.myide.io/hello?url=" + url + "&type=0&os=0&" + sb,
+                CUP_PATH);
+        } else {
+            CUP_PATH = FILE_PATH + "/new.png";
+            HttpUtil.downloadFile("https://etumwb-duigzq-8000.preview.myide.io/hello?url=" + url + "&type=1&os=0&" + sb,
+                CUP_PATH);
         }
 
         flag = !flag;
@@ -183,14 +187,18 @@ public class PdfUtil {
             Document doc = new Document(null, 0, 0, 0, 0);
 
             //更换图片图层
-            BufferedImage bufferedImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+            BufferedImage bufferedImage =
+                new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
             bufferedImage.getGraphics().drawImage(img, 0, 0, img.getWidth(), img.getHeight(), null);
-            bufferedImage = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB), null).filter(bufferedImage, null);
+            bufferedImage =
+                new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB), null).filter(bufferedImage, null);
 
             //图片流处理
             doc.setPageSize(new Rectangle(bufferedImage.getWidth(), bufferedImage.getHeight()));
             image = Image.getInstance(adjustImgPath);
-
+            // 调整pdf图片的dpi
+            float scalePercentage = (72 / 300f) * 100.0f;
+            image.scalePercent(scalePercentage, scalePercentage);
             //写入PDF
             log.info("写入PDf:" + pdfPath);
             FileOutputStream fos = new FileOutputStream(pdfPath);

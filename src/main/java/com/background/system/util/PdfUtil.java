@@ -12,9 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.color.ColorSpace;
@@ -22,11 +20,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * pdf工具类
@@ -41,24 +38,25 @@ public class PdfUtil {
     private static List<String> tempImagePath = new ArrayList<>();
     private static final String DATE_FORMAT = "yyyy-MM-dd_HH:mm:ss";
 
-    private static String FILE_PATH = "/Users/sugar/Desktop/BackgroundSystem/upload";
+    private static String OCR_PATH;
+    private static String CUP_PATH;
 
-    private static String OCR_PATH = FILE_PATH + "/new.png";
-    private static String CUP_PATH = FILE_PATH + "/new.";
+    private static String FILE_PATH;
     private static String mergedPdfName;
 
     private static boolean flag = true;
 
-    public static void main(String[] args) {
-        List<String> lis = new ArrayList<>();
-        lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/1.png");
-        lis.add("/Users/sugar/Desktop/BackgroundSystem/upload/1.png");
+    static {
+        Properties properties = new Properties();
         try {
-            String nidie = imageToMergePdf(lis, UUID.randomUUID().toString() + ".pdf", 60, 92);
-            System.out.println(nidie);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            String yml = Objects.requireNonNull(PdfUtil.class.getResource("/application.yml")).getFile();
+            properties.load(new FileReader(yml));
+        } catch (IOException e) {
+            log.error("load error[{}]",e.getMessage());
         }
+        FILE_PATH = properties.getProperty("file");
+        OCR_PATH = FILE_PATH + "/new.png";
+        CUP_PATH = FILE_PATH + "/new.";
     }
 
     /**

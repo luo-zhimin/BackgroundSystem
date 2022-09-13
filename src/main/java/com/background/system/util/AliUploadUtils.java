@@ -29,13 +29,13 @@ public class AliUploadUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(AliUploadUtils.class);
 
-    private static final String ENDPOINT = "https://oss-cn-hangzhou.aliyuncs.com";
+    private static final String ENDPOINT;
 
-    private static final String RESULT_URL = "https://asugar.oss-cn-hangzhou.aliyuncs.com";
+    private static final String RESULT_URL;
 
-    private static final String ACCESS_KEY_ID = "LTAI5tJdGdn4guLATNEwNJft";
+    private static final String ACCESS_KEY_ID;
 
-    private static final String ACCESS_KEY_SECRET = "C66R67VRkLqihwJnSRD0knnhzkPhja";
+    private static final String ACCESS_KEY_SECRET;
 
     private static final Integer ZERO = 0;
 
@@ -54,6 +54,13 @@ public class AliUploadUtils {
     private static final Double ZERO_FOUR_FOUR = 0.44;
 
     private static final Double ZERO_FOUR = 0.4;
+
+    static {
+        ENDPOINT = ConfigCache.configMap.get("ENDPOINT");
+        RESULT_URL = ConfigCache.configMap.get("RESULT_URL");
+        ACCESS_KEY_ID = ConfigCache.configMap.get("ACCESS_KEY_ID");
+        ACCESS_KEY_SECRET = ConfigCache.configMap.get("ACCESS_KEY_SECRET");
+    }
 
     /**
      * @param file   文件流

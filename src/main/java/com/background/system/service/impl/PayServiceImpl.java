@@ -137,7 +137,7 @@ public class PayServiceImpl extends BaseService implements PayService {
         // 回写微信支付订单号
         orderd.setWxNo(wx_no);
 //        orderd.setIsPay(false);  // 支付状态
-        orderd.setStatus("0");     // 发货状态
+//        orderd.setStatus("0");     // 发货状态
         orderMapper.updateByPrimaryKeySelective(orderd);
 
         httpPost.setEntity(new StringEntity(bos.toString("UTF-8"), "UTF-8"));

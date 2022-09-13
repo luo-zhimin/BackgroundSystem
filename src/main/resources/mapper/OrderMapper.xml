@@ -331,25 +331,25 @@
         <if test="type == 0">
             select count(*)
             from `orderd`
-            where is_pay = 0
+            where is_pay = 0 and is_del=0
         </if>
         <!--   待发货  -->
         <if test="type == 1">
             select count(*)
             from `orderd`
-            where is_pay = 1
+            where is_pay = 1 and is_del=0
         </if>
         <!--  配送中  -->
         <if test="type == 2">
             select count(*)
             from `orderd`
-            where kd_no is not null
+            where kd_no is not null and is_del=0
         </if>
         <!-- 已完成 -->
         <if test="type == 3">
             select count(*)
             from `orderd`
-            where `status` = 3
+            where `status` = 3 and is_del=0
         </if>
         <!--  已取消 -->
         <if test="type == 4">

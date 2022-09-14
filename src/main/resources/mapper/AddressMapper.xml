@@ -35,14 +35,16 @@
         from address
         where id = #{id,jdbcType=VARCHAR}
     </delete>
+
     <insert id="insert" parameterType="com.background.system.entity.Address">
-        insert into address (id, openId, `name`,
+        insert into address (openId, `name`,
                              phone, province, address,
-                             is_del, create_time)
-        values (#{id,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+                             create_time)
+        values (#{openid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
                 #{phone,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
-                #{isDel,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP})
+                now())
     </insert>
+
     <insert id="insertSelective" parameterType="com.background.system.entity.Address">
         insert into address
         <trim prefix="(" suffix=")" suffixOverrides=",">

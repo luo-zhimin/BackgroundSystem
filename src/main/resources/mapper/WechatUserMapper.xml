@@ -11,6 +11,7 @@
         <result column="is_del" jdbcType="CHAR" property="isDel"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
     </resultMap>
+
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
         id,
@@ -20,6 +21,7 @@
         is_del,
         create_time
     </sql>
+
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         <!--@mbg.generated-->
         select
@@ -27,18 +29,21 @@
         from wechat_user
         where id = #{id,jdbcType=BIGINT}
     </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         <!--@mbg.generated-->
         delete
         from wechat_user
         where id = #{id,jdbcType=BIGINT}
     </delete>
+
     <insert id="insert" parameterType="com.background.system.entity.WechatUser">
         <!--@mbg.generated-->
-        insert into wechat_user (id, open_id, union_id, user_info, is_del, create_time)
-        values (#{id,jdbcType=BIGINT}, #{openId,jdbcType=VARCHAR}, #{unionId,jdbcType=VARCHAR},
-                #{userInfo,jdbcType=VARCHAR}, #{isDel,jdbcType=INTEGER}, now())
+        insert into wechat_user (open_id, union_id, user_info, create_time)
+        values (#{openId,jdbcType=VARCHAR}, #{unionId,jdbcType=VARCHAR},
+                #{userInfo,jdbcType=VARCHAR}, now())
     </insert>
+
     <insert id="insertSelective" parameterType="com.background.system.entity.WechatUser">
         <!--@mbg.generated-->
         insert into wechat_user
@@ -83,6 +88,7 @@
             </if>
         </trim>
     </insert>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.WechatUser">
         <!--@mbg.generated-->
         update wechat_user
@@ -105,6 +111,7 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
+
     <update id="updateByPrimaryKey" parameterType="com.background.system.entity.WechatUser">
         <!--@mbg.generated-->
         update wechat_user
@@ -120,10 +127,14 @@
         select count(*)
         from wechat_user
         where is_del = 0
-            and open_id = #{openId}  limit 1
+          and open_id = #{openId}
+        limit 1
     </select>
 
     <update id="updateUserInfoByOpenId">
-        UPDATE wechat_user set user_info=#{userInfo} WHERE open_id=#{openId} and is_del=0
+        UPDATE wechat_user
+        set user_info=#{userInfo}
+        WHERE open_id = #{openId}
+          and is_del = 0
     </update>
 </mapper>

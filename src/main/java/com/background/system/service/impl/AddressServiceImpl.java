@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,9 +36,8 @@ public class AddressServiceImpl extends BaseService implements AddressService {
         log.info("insertAddress request[{}]",request);
         Token weChatCurrentUser = getWeChatCurrentUser();
         request.setOpenid(weChatCurrentUser.getUsername());
-        request.setIsDel(false);
-        request.setCreateTime(LocalDateTime.now());
-        return insert(request)>0;
+//        request.setIsDel(false);
+        return addressMapper.insert(request)>0;
     }
 
     @Override
@@ -100,32 +98,12 @@ public class AddressServiceImpl extends BaseService implements AddressService {
         return false;
     }
 
-    public int deleteByPrimaryKey(Long id) {
-        return addressMapper.deleteByPrimaryKey(id);
-    }
-
-
-    public int insert(Address record) {
-        return addressMapper.insert(record);
-    }
-
-
-    public int insertSelective(Address record) {
-        return addressMapper.insertSelective(record);
-    }
-
-
     public Address selectByPrimaryKey(String id) {
         return addressMapper.selectByPrimaryKey(id);
     }
 
-
     public int updateByPrimaryKeySelective(Address record) {
         return addressMapper.updateByPrimaryKeySelective(record);
-    }
-
-    public int updateByPrimaryKey(Address record) {
-        return addressMapper.updateByPrimaryKey(record);
     }
 
     /**

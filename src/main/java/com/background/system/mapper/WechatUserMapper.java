@@ -11,7 +11,7 @@ public interface WechatUserMapper extends BaseMapper<WechatUser> {
 
     int insert(WechatUser record);
 
-    int insertSelective(@Param("record") WechatUser record);
+    int insertSelective(WechatUser record);
 
     WechatUser selectByPrimaryKey(Long id);
 

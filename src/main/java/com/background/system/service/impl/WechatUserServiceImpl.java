@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.net.URLEncoder;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
@@ -99,8 +100,8 @@ public class WechatUserServiceImpl extends BaseService implements WechatUserServ
             if (!wechatUserMapper.selectByOpenId(openId)) {
                 WechatUser wechatUser = new WechatUser();
                 wechatUser.setOpenId(openId);
-                wechatUser.setIsDel("0");
-                wechatUserMapper.insert(wechatUser);
+                wechatUser.setCreateTime(LocalDateTime.now());
+                wechatUserMapper.insertSelective(wechatUser);
             }
 
             return result;

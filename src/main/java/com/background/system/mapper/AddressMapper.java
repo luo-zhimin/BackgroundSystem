@@ -13,6 +13,8 @@ import java.util.List;
 */
 public interface AddressMapper extends BaseMapper<Address> {
 
+    int insert(Address address);
+
     int deleteByPrimaryKey(Long id);
 
     int insertSelective(Address record);

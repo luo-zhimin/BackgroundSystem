@@ -134,14 +134,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         order.setStatus("1");
         order.setIsPay(true);
         order.setCouponId(couponId);
-        orderMapper.updateById(order);
+        orderMapper.updateByPrimaryKeySelective(order);
 
         // 优惠券标记使用过
         coupon.setIsUsed(true);
         Token weChatCurrentUser = getWeChatCurrentUser();
         String username = weChatCurrentUser.getUsername();
         coupon.setOpenId(username);
-        couponMapper.updateById(coupon);
+        couponMapper.updateByPrimaryKeySelective(coupon);
 
         return true;
     }

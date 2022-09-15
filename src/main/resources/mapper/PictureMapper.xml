@@ -39,6 +39,9 @@
             <if test="id != null">
                 id,
             </if>
+            <if test="name != null and name != ''">
+                name,
+            </if>
             <if test="url != null and url != ''">
                 url,
             </if>
@@ -50,6 +53,9 @@
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null and name != ''">
+                #{name,jdbcType=VARCHAR},
             </if>
             <if test="url != null and url != ''">
                 #{url,jdbcType=VARCHAR},

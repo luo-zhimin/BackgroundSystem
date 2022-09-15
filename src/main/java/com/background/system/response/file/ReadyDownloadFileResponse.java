@@ -40,6 +40,8 @@ public class ReadyDownloadFileResponse {
 
     private Map<String,List<Picture>> pictureMap;
 
+    private String face;
+
     @Tolerate
     public ReadyDownloadFileResponse(){}
 

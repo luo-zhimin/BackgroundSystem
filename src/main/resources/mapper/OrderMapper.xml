@@ -384,6 +384,7 @@
         select o.id,
                s.name                      sizeName,
                s.size,
+               s.faces                     face,
                o.order_no                  wxNo,
                GROUP_CONCAT(oe.picture_id) pictureId,
                sum(oe.number)              number

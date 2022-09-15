@@ -92,40 +92,45 @@ public class ZipFileUtils {
             //一个订单里面所有的照片
             List<HandleFile> handleFiles = Lists.newArrayList();
             response.getPictures().forEach(picture -> {
-                handleFiles.add(new HandleFile(picture.getName(), picture.getUrl()));
+                handleFiles.add(new HandleFile(picture.getId(),picture.getName(), picture.getUrl()));
             });
 
-            //todo 图片进行了压缩处理需要还原
+            logger.info("handleFiles[{}]",handleFiles.size());
 
-            // 下载图片
-            for (HandleFile handleFile : handleFiles) {
-                String picPath = acceptFilePath+ File.separator + handleFile.getName();
-                picList.add(picPath);
-                deleteFile.add(new File(picPath));
-                FileOutputStream outputStream = new FileOutputStream(picPath, true);
-                transformHandleFile(handleFile, outputStream);
-            }
+            //todo 图片进行了压缩处理需要还原
 
             //创建目录 压缩zip 删除 目录 保留zip
             //订单号+成品名称+数量  日期+支付订单号+size(name)+数量
             String sendName = DateTimeFormatter.ofPattern("yyyyMMddhhmmss").format(LocalDateTime.now()) + "-" + response.getWxNo() + "-" + response.getSizeName() + "-" + response.getNumber();
 
-            // 获取PDF路径  todo size 不同
-            String pdfUrl = PdfUtil.imageToMergePdf(picList, sendName, response.getWeight(), response.getHeight());
-            handleFiles.add(new HandleFile(sendName + ".pdf", pdfUrl));
-
             String saveName = acceptFilePath + File.separator + sendName;
-
-            logger.info("handleFiles[{}]",handleFiles.size());
 
             //1.创建临时文件
             judgeFileExists(Lists.newArrayList(saveName));
 
-            //准备进行文件处理
-            for (HandleFile handleFile : handleFiles) {
-                FileOutputStream os = new FileOutputStream(saveName + File.separator + handleFile.getName());
-                transformHandleFile(handleFile, os);
+            // 下载图片
+            for (int i = 0; i < handleFiles.size(); i++) {
+                String picPath = "";
+                if (response.getFace().equals("单面")){
+                    picPath = saveName + File.separator + (i + 1) + "-" + handleFiles.get(i).getId()
+                            + "-" + handleFiles.get(i).getName();
+                }else {
+                    picPath = saveName + File.separator + (i + 1) + "-" + handleFiles.get(i).getId()
+                            + "-" + (i % 2 == 0 ? "反" : "正") + "-" + handleFiles.get(i).getName();
+                }
+
+                picList.add(picPath);
+                deleteFile.add(new File(picPath));
+                FileOutputStream outputStream = new FileOutputStream(picPath);
+                transformHandleFile(handleFiles.get(i), outputStream);
             }
+
+            // 获取PDF路径  todo size 不同
+            String pdfUrl = PdfUtil.imageToMergePdf(picList, sendName, response.getWeight(), response.getHeight());
+//            handleFiles.add(new HandleFile("9999",sendName + ".pdf", pdfUrl));
+            //准备进行文件处理 单独处理pdf
+            FileOutputStream os = new FileOutputStream(saveName + File.separator + sendName + ".pdf");
+            transformHandleFile(new HandleFile("9999",sendName + ".pdf", pdfUrl),os);
 
             deleteFile.add(new File(saveName));
             deleteFile.add(new File(pdfUrl));

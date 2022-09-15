@@ -14,6 +14,8 @@ import lombok.ToString;
 @AllArgsConstructor
 public class HandleFile {
 
+    private String id;
+
     private String name;
 
     private String url;

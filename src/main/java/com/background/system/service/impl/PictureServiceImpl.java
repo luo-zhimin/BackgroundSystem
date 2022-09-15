@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -47,11 +46,11 @@ public class PictureServiceImpl implements PictureService {
         String aDefault = AliUploadUtils.uploadImage(file, father);
         Picture picture = new Picture();
         picture.setUrl(aDefault);
-        picture.setIsDel(false);
+//        picture.setIsDel(false);
         picture.setFather(father);
         picture.setName(file.getOriginalFilename());
-        picture.setCreateTime(LocalDateTime.now());
-        pictureMapper.insert(picture);
+//        picture.setCreateTime(LocalDateTime.now());
+        pictureMapper.insertSelective(picture);
         return PictureResponse.builder()
                 .id(picture.getId())
                 .url(picture.getUrl())

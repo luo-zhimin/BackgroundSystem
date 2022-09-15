@@ -45,12 +45,7 @@
             <if test="father != null and father != ''">
                 father,
             </if>
-            <if test="isDel != null and isDel != ''">
-                is_del,
-            </if>
-            <if test="createTime != null">
-                create_time,
-            </if>
+            create_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -62,12 +57,7 @@
             <if test="father != null and father != ''">
                 #{father,jdbcType=VARCHAR},
             </if>
-            <if test="isDel != null and isDel != ''">
-                #{isDel,jdbcType=CHAR},
-            </if>
-            <if test="createTime != null">
-                #{createTime,jdbcType=TIMESTAMP},
-            </if>
+            now()
         </trim>
     </insert>
 

@@ -83,9 +83,7 @@
             <if test="isDel != null and isDel != ''">
                 is_del,
             </if>
-            <if test="createTime != null">
                 create_time,
-            </if>
             <if test="updateTime != null">
                 update_time,
             </if>
@@ -124,9 +122,7 @@
             <if test="isDel != null and isDel != ''">
                 #{isDel,jdbcType=CHAR},
             </if>
-            <if test="createTime != null">
-                #{createTime,jdbcType=TIMESTAMP},
-            </if>
+            now(),
             <if test="updateTime != null">
                 #{updateTime,jdbcType=TIMESTAMP},
             </if>
@@ -386,15 +382,14 @@
                s.size,
                s.faces                     face,
                o.order_no                  wxNo,
-               GROUP_CONCAT(oe.picture_id) pictureId,
-               sum(oe.number)              number
+               oe.picture_id pictureId,
+               oe.number
         from `orderd` o
                  inner join size s on o.size_id = s.id
                  inner join order_element oe on o.id = oe.order_id
         where o.is_del = 0
           and o.zip_path is null
           and o.order_no is not null
-        group by o.id
     </select>
 
     <update id="updateZipPathById" parameterType="com.background.system.response.BaseResponse">

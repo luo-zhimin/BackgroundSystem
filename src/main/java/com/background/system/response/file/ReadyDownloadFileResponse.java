@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,16 +37,18 @@ public class ReadyDownloadFileResponse {
 
     private Integer number;
 
-    private Map<String,List<Picture>> pictureMap;
-
     private String face;
 
     @Tolerate
     public ReadyDownloadFileResponse(){}
 
     public List<String> getPictureIds() {
-        if (StringUtils.isNotBlank(this.pictureId)) {
-            return Lists.newArrayList(this.pictureId.split(","));
+        if (StringUtils.isNotBlank(this.pictureId) && this.number!=null) {
+            StringBuilder picture = new StringBuilder();
+            for (int i = 0; i < this.number; i++) {
+                picture.append(this.pictureId).append(",");
+            }
+            return Lists.newArrayList(picture.substring(0,picture.length()-1).split(","));
         }
         return Collections.emptyList();
     }

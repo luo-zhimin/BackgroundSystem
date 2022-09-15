@@ -33,7 +33,7 @@
         where id = #{id,jdbcType=VARCHAR}
     </delete>
 
-    <insert id="insertSelective" parameterType="com.background.system.entity.Picture">
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" useGeneratedKeys="true" parameterType="com.background.system.entity.Picture">
         insert into picture
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">

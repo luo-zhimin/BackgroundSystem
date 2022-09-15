@@ -59,12 +59,9 @@
         where id = #{id,jdbcType=VARCHAR}
     </delete>
 
-    <insert id="insertSelective" parameterType="com.background.system.entity.Orderd">
-        insert into `orderd`
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Orderd" useGeneratedKeys="true">
+        insert into orderd
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null and id != ''">
-                id,
-            </if>
             <if test="wxNo != null and wxNo != ''">
                 order_no,
             </if>
@@ -80,13 +77,6 @@
             <if test="portPrice != null">
                 port_price,
             </if>
-            <if test="isDel != null and isDel != ''">
-                is_del,
-            </if>
-                create_time,
-            <if test="updateTime != null">
-                update_time,
-            </if>
             <if test="total != null">
                 total,
             </if>
@@ -96,14 +86,38 @@
             <if test="status != null and status != ''">
                 `status`,
             </if>
-            <if test="addressId != null and addressId != ''">
+            <if test="addressId != null">
                 address_id,
+            </if>
+            <if test="caizhiId != null and caizhiId != ''">
+                caizhi_id,
+            </if>
+            <if test="sizeId != null">
+                size_id,
+            </if>
+            <if test="zipPath != null and zipPath != ''">
+                zip_path,
+            </if>
+            <if test="isDownload != null and isDownload != ''">
+                is_download,
+            </if>
+            <if test="createUser != null and createUser != ''">
+                create_user,
+            </if>
+            <if test="isDel != null and isDel != ''">
+                is_del,
+            </if>
+
+                create_time,
+
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateUser != null and updateUser != ''">
+                update_user,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null and id != ''">
-                #{id,jdbcType=VARCHAR},
-            </if>
             <if test="wxNo != null and wxNo != ''">
                 #{wxNo,jdbcType=VARCHAR},
             </if>
@@ -119,13 +133,6 @@
             <if test="portPrice != null">
                 #{portPrice,jdbcType=DECIMAL},
             </if>
-            <if test="isDel != null and isDel != ''">
-                #{isDel,jdbcType=CHAR},
-            </if>
-            now(),
-            <if test="updateTime != null">
-                #{updateTime,jdbcType=TIMESTAMP},
-            </if>
             <if test="total != null">
                 #{total,jdbcType=DECIMAL},
             </if>
@@ -135,8 +142,33 @@
             <if test="status != null and status != ''">
                 #{status,jdbcType=CHAR},
             </if>
-            <if test="addressId != null and addressId != ''">
-                #{addressId,jdbcType=VARCHAR},
+            <if test="addressId != null">
+                #{addressId,jdbcType=BIGINT},
+            </if>
+            <if test="caizhiId != null and caizhiId != ''">
+                #{caizhiId,jdbcType=VARCHAR},
+            </if>
+            <if test="sizeId != null">
+                #{sizeId,jdbcType=BIGINT},
+            </if>
+            <if test="zipPath != null and zipPath != ''">
+                #{zipPath,jdbcType=VARCHAR},
+            </if>
+            <if test="isDownload != null and isDownload != ''">
+                #{isDownload,jdbcType=CHAR},
+            </if>
+            <if test="createUser != null and createUser != ''">
+                #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="isDel != null and isDel != ''">
+                #{isDel,jdbcType=CHAR},
+            </if>
+           now(),
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null and updateUser != ''">
+                #{updateUser,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>

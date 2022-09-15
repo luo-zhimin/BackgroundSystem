@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/picture")
 @Api(tags = "图库管理")
-//@Scope(value="prototype")
 public class PictureController {
 
     @Autowired

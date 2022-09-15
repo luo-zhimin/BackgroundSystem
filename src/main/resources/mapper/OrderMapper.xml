@@ -382,8 +382,8 @@
                s.size,
                s.faces                     face,
                o.order_no                  wxNo,
-               oe.picture_id pictureId,
-               oe.number
+               GROUP_CONCAT(oe.picture_id) pictureId,
+               sum(oe.number)              number
         from `orderd` o
                  inner join size s on o.size_id = s.id
                  inner join order_element oe on o.id = oe.order_id

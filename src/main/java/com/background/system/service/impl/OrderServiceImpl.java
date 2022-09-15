@@ -374,32 +374,26 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             return Collections.emptyList();
         }
 
-        List<ReadyDownloadFileResponse> targetOrders = Lists.newArrayList();
-        Map<String, List<ReadyDownloadFileResponse>> orderMap = orders.stream().collect(Collectors.groupingBy(ReadyDownloadFileResponse::getId));
-        orderMap.forEach((k,v)->{
-            List<Picture> pictures = Lists.newArrayList();
-            v.forEach(vv->{
-                Map<String, List<Picture>> pictureMap = pictureService.getPicturesByIds(vv.getPictureIds()).stream().collect(Collectors.groupingBy(Picture::getId));
-                vv.getPictureIds().forEach(p->{
-                    vv.getPictures().addAll(Optional.ofNullable(pictureMap.get(p)).orElse(new ArrayList<>()));
-                });
-                pictures.addAll(vv.getPictures());
-            });
-            ReadyDownloadFileResponse response = ReadyDownloadFileResponse.builder()
-                    .id(k)
-                    .pictures(pictures)
-                    .number(v.stream().mapToInt(ReadyDownloadFileResponse::getNumber).sum())
-                    .size(v.stream().findFirst().orElse(new ReadyDownloadFileResponse()).getSize())
-                    .sizeName(v.stream().findFirst().orElse(new ReadyDownloadFileResponse()).getSizeName())
-                    .face(v.stream().findFirst().orElse(new ReadyDownloadFileResponse()).getFace())
-                    .wxNo(v.stream().findFirst().orElse(new ReadyDownloadFileResponse()).getWxNo())
-                    .build();
-            targetOrders.add(response);
-        });
+        List<SourceOrderPicture> sourceOrderPictures = Lists.newArrayList();
 
+        orders.forEach(order -> {
+            sourceOrderPictures.add(SourceOrderPicture.builder().orderId(order.getId()).pictureIds(order.getPictureIds()).build());
+//            order.setPictures(pictureService.getPicturesByIds(order.getPictureIds()));
+            order.setPictureMap(pictureService.getPicturesByIds(order.getPictureIds()).stream().collect(Collectors.groupingBy(Picture::getId)));
+        });
         //18, 19, 23, 30, 29, 22, 20, 17, 21, 24, 31, 32, 25, 33, 34, 36, 35, 27
-        logger.info("source [{}]",targetOrders);
-        return targetOrders;
+        logger.info("source [{}]",sourceOrderPictures);
+        //二次处理 sort
+        orders.forEach(order->{
+            sourceOrderPictures.forEach(source->{
+                if (order.getId().equals(source.getOrderId())){
+                    source.getPictureIds().forEach(pId->{
+                        order.getPictures().addAll(Optional.ofNullable(order.getPictureMap().get(pId)).orElse(Collections.emptyList()));
+                    });
+                }
+            });
+        });
+        return orders;
     }
 
 

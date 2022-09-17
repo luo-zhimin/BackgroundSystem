@@ -4,7 +4,7 @@ import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTUtil;
 import com.background.system.annotation.IgnoreLogin;
 import com.background.system.constant.Constant;
-import com.background.system.exception.VerifyException;
+import com.background.system.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -48,7 +48,8 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
         }
         String authorization = request.getHeader(Constant.TOKEN_KEY);
         if (StringUtils.isBlank(authorization)) {
-            throw VerifyException.builder().code(200).exceptionMsg("请登录之后再操作").build();
+            throw new ServiceException(403,"请登录之后再操作");
+//            throw VerifyException.builder().code(200).exceptionMsg("请登录之后再操作").build();
         }
 
         // 校验token
@@ -62,7 +63,8 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
                 String tokenKey = userName + password;
                 verify = JWTUtil.verify(authorization, tokenKey.getBytes());
             } catch (Exception e) {
-                throw VerifyException.builder().code(200).exceptionMsg("token无效请重新登录").build();
+                throw new ServiceException(403,"token无效请重新登录");
+//                throw VerifyException.builder().code(200).exceptionMsg("token无效请重新登录").build();
             }
         } else {
             String openId = jwt.getPayload(Constant.WX_TOKEN_KEY).toString();
@@ -74,7 +76,8 @@ public class RequestInterceptHandle extends HandlerInterceptorAdapter {
         }
 
         if (!verify) {
-            throw VerifyException.builder().code(200).exceptionMsg("token无效请重新登录").build();
+            throw new ServiceException(403,"token无效请重新登录");
+//            throw VerifyException.builder().code(200).exceptionMsg("token无效请重新登录").build();
         }
         return true;
     }

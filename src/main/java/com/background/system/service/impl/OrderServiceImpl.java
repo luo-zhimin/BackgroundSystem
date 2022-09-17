@@ -10,10 +10,7 @@ import com.background.system.mapper.CaizhiMapper;
 import com.background.system.mapper.CouponMapper;
 import com.background.system.mapper.OrderElementsMapper;
 import com.background.system.mapper.OrderMapper;
-import com.background.system.response.CountResponse;
-import com.background.system.response.OrderCountResponse;
-import com.background.system.response.OrderElementResponse;
-import com.background.system.response.OrderdResponse;
+import com.background.system.response.*;
 import com.background.system.response.file.ReadyDownloadFileResponse;
 import com.background.system.service.OrderService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -256,33 +253,23 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     @Override
     public Map<String, Integer> getAdminOrderCount() {
         Map<String, Integer> countMap = initCountMap();
-        //isPay 1 付款 待发货 有 kdNo 就是配送
         //待付款 待发货 配送中 已取消 已完成 支付金额
         //分组统计 最好设置 state 默认 为 0
         //todo 可以适当改造 前面维护status  0-待付款  1-待发货 2-配送中 3-已完成 4-已取消
-        List<OrderCountResponse> orderCount = orderMapper.getOrderCount();
-        //配送
-        int orderNoCount = orderMapper.getHasKdNoCount();
-        countMap.put("配送中",orderNoCount);
-        int closeCount = orderMapper.getCloseCount();
-        countMap.put("已完成",closeCount);
+        List<OrderCount> orderCount = orderMapper.getOrderCount();
+
         if (CollectionUtils.isNotEmpty(orderCount)){
-            List<OrderCountResponse> deleteResponse = orderCount.stream()
-                    .filter(OrderCountResponse::getIsDel).collect(Collectors.toList());
+            Integer orderTotalMoney = orderMapper.getOrderTotalMoney();
+            Map<String, Integer> orderMap = orderCount.stream()
+                    .collect(Collectors.toMap(OrderCount::getStatus, OrderCount::getCount));
 
-            List<OrderCountResponse> noPay = orderCount.stream()
-                    .filter(o -> !o.getIsPay()).collect(Collectors.toList());
+            countMap.put("待付款",Optional.ofNullable(orderMap.get("0")).orElse(0));
+            countMap.put("待发货",Optional.ofNullable(orderMap.get("1")).orElse(0));
+            countMap.put("配送中",Optional.ofNullable(orderMap.get("2")).orElse(0));
+            countMap.put("已完成",Optional.ofNullable(orderMap.get("3")).orElse(0));
+            countMap.put("已取消",Optional.ofNullable(orderMap.get("4")).orElse(0));
+            countMap.put("支付金额",orderTotalMoney);
 
-            List<OrderCountResponse> pay = orderCount.stream()
-                    .filter(o->o.getIsPay() && !o.getIsDel()).collect(Collectors.toList());
-
-            orderCount.removeAll(deleteResponse);
-
-            countMap.put("待付款",noPay.stream().mapToInt(OrderCountResponse::getPayCount).sum());
-            countMap.put("待发货",pay.stream().mapToInt(OrderCountResponse::getPayCount).sum());
-            countMap.put("已取消",deleteResponse.stream().mapToInt(OrderCountResponse::getDelCount).sum());
-
-            countMap.put("支付金额",pay.stream().mapToInt(OrderCountResponse::getTotalCount).sum());
         }
         return countMap;
     }

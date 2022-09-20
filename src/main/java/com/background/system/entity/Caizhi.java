@@ -25,4 +25,6 @@ public class Caizhi {
 
     @ApiModelProperty(value="价格")
     private BigDecimal price;
+
+    private Boolean isDel;
 }

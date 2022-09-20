@@ -50,7 +50,8 @@ public class SizeServiceImpl extends BaseService implements SizeService {
         page = (page - 1) * size;
 
         List<Size> sizeList = sizeMapper.getSizeList(page, size);
-        Long sizeCount = sizeMapper.selectCount(new QueryWrapper<>());
+        Long sizeCount = sizeMapper.selectCount(new QueryWrapper<Size>()
+                .eq("is_del", false));
         if (CollectionUtils.isEmpty(sizeList)) {
             return sizePage;
         }

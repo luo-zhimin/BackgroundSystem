@@ -13,6 +13,7 @@
         <result column="material_id" jdbcType="VARCHAR" property="materialId"/>
         <result column="size" jdbcType="VARCHAR" property="size"/>
         <result column="faces" jdbcType="VARCHAR" property='faces'/>
+        <result column="is_del" jdbcType="TINYINT" property='isDel'/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -25,7 +26,8 @@
         u_price,
         material_id,
         `size`,
-        `faces`
+        `faces`,
+        is_del
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -36,15 +38,16 @@
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-        delete
-        from `size`
-        where id = #{id,jdbcType=VARCHAR}
+<!--        delete-->
+<!--        from `size`-->
+<!--        where id = #{id,jdbcType=VARCHAR}-->
+        update size set is_del=1 where id=#{id}
     </delete>
 
     <select id="getSizeList" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from `size`
+        from `size` where is_del=0
         <if test="page != null and size != null">
             limit #{page},#{size}
         </if>

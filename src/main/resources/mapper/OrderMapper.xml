@@ -417,8 +417,10 @@
                  inner join size s on o.size_id = s.id
                  inner join order_element oe on o.id = oe.order_id
         where o.is_del = 0
+           and o.is_pay = 1
           and o.zip_path is null
           and o.order_no is not null
+        GROUP BY o.id
     </select>
 
     <update id="updateZipPathById" parameterType="com.background.system.response.BaseResponse">

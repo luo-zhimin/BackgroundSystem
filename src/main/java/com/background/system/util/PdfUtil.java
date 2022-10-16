@@ -94,7 +94,7 @@ public class PdfUtil {
                     else
                         url = adjustImageSize(file, width, height);
                 } catch (Exception e) {
-                    log.error("调整图片大小失败，异常{}", e.getMessage());
+                    log.error("调整图片大小失败，异常{}", e.getMessage()+"-> path {}"+file);
                     throw new ServiceException(500, e.getMessage());
                 }
                 if (StringUtils.isBlank(url)) {
@@ -256,5 +256,21 @@ public class PdfUtil {
         mergePdf.setDestinationFileName(FILE_PATH + "/" + mergeFileName);
         mergePdf.mergeDocuments();
         log.info("成功合并～");
+    }
+
+    public static void main(String[] args) {
+        Conversion("jpg","png","/Users/luozhimin/Desktop/java.");
+    }
+
+    public static void Conversion(String inputFormat,String outputFormat,String src){
+
+        try {
+            File input = new File(src+inputFormat);
+            BufferedImage bim = ImageIO.read(input);
+            File output = new File(src+outputFormat);
+            ImageIO.write(bim, outputFormat, output);
+        } catch (Exception e) {
+            System.out.println("有损图片 ==  > "+e.getMessage());
+        }
     }
 }

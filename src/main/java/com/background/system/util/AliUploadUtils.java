@@ -15,6 +15,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -55,6 +57,10 @@ public class AliUploadUtils {
 
     private static final Double ZERO_FOUR = 0.4;
 
+    private static final int descSize = 1024*4;
+
+    private static Map<String,Object> zipMap = new ConcurrentHashMap<>();
+
     static {
         ENDPOINT = ConfigCache.configMap.get("ENDPOINT");
         RESULT_URL = ConfigCache.configMap.get("RESULT_URL");
@@ -76,7 +82,11 @@ public class AliUploadUtils {
         try {
 
             //图片压缩
-            byte[] bytes = father.equals("zip") ? file.getBytes() : compressPicForScale(file.getBytes(), 2048);
+            byte[] bytes = father.equals("zip") ? file.getBytes() : compressPicForScale(file.getBytes(), descSize);
+
+            if (!father.equals("zip") && file.getBytes().length<=descSize){
+                zipMap.put(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),RESULT_URL + "/" + father + "/" + title);
+            }
 
             PutObjectRequest request =
                 new PutObjectRequest(BUCKET_NAME, path, new ByteArrayInputStream(bytes));
@@ -116,7 +126,7 @@ public class AliUploadUtils {
 //                        .toOutputStream(outputStream);
 
                 //图片压缩
-                byte[] bytes = compressPicForScale(file.getBytes(), 2048);
+                byte[] bytes = compressPicForScale(file.getBytes(), descSize);
                 request = new PutObjectRequest(BUCKET_NAME, path, new ByteArrayInputStream(bytes));
             } catch (IOException e) {
                 logger.error("图片上传失败[{}]",e.getMessage());
@@ -164,6 +174,7 @@ public class AliUploadUtils {
         long srcSize = imageBytes.length;
         double accuracy = getAccuracy(srcSize / ONE_ZERO_TWO_FOUR);
         try {
+            //srcSize > destSize * 1024
             while (imageBytes.length > desFileSize * ONE_ZERO_TWO_FOUR) {
                 ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes);
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream(imageBytes.length);
@@ -198,5 +209,9 @@ public class AliUploadUtils {
             accuracy = ZERO_FOUR;
         }
         return accuracy;
+    }
+
+    public static Map<String,Object> getZipMap(){
+        return zipMap;
     }
 }

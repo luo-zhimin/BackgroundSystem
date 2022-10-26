@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
-import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
 import java.awt.color.ColorSpace;
@@ -20,10 +19,11 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * pdf工具类
@@ -44,10 +44,6 @@ public class PdfUtil {
     private static String mergedPdfName;
 
     private static boolean flag = true;
-
-    public static void main(String[] args) {
-
-    }
 
     /**
      * 多图片转pdf并且进行pdf合并
@@ -156,7 +152,6 @@ public class PdfUtil {
      * 图片转pdf
      *
      * @param adjustImgPath 图片路径
-     * @return
      * @throws IOException
      */
     private static String imgToPdf(String adjustImgPath) throws IOException {

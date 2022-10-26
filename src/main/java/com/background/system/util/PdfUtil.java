@@ -94,7 +94,7 @@ public class PdfUtil {
                     else
                         url = adjustImageSize(file, width, height);
                 } catch (Exception e) {
-                    log.error("调整图片大小失败，异常{}", e.getMessage()+"-> path {}"+file);
+                    log.error("调整图片大小失败，异常{}", e.getMessage()+"-> path："+file);
                     throw new ServiceException(500, e.getMessage());
                 }
                 if (StringUtils.isBlank(url)) {
@@ -206,7 +206,7 @@ public class PdfUtil {
             doc.add(image);
             doc.close();
         } catch (IOException | DocumentException e) {
-            log.error("图片转pdf失败。异常{}", e.getMessage());
+            log.error("图片转pdf失败。异常{},地址{}", e.getMessage(),adjustImgPath);
             throw new ServiceException(500, e.getMessage());
         }
         return pdfPath;
@@ -256,10 +256,6 @@ public class PdfUtil {
         mergePdf.setDestinationFileName(FILE_PATH + "/" + mergeFileName);
         mergePdf.mergeDocuments();
         log.info("成功合并～");
-    }
-
-    public static void main(String[] args) {
-        Conversion("jpg","png","/Users/luozhimin/Desktop/java.");
     }
 
     public static void Conversion(String inputFormat,String outputFormat,String src){

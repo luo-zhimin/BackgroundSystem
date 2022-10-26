@@ -265,6 +265,7 @@
         <include refid="Base_Column_List"/>
         from `orderd` where is_del = 0
                         and create_user = #{openId}
+        ORDER BY id desc
         <if test="page != null and size != null">
             limit #{page}
               , #{size}
@@ -343,6 +344,7 @@
                 #{key,jdbcType=VARCHAR}
             </foreach>
         </if>
+        ORDER BY id desc
         <if test="page != null and size != null">
             limit #{page}
               , #{size}

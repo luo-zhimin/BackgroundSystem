@@ -265,6 +265,7 @@
         <include refid="Base_Column_List"/>
         from `orderd` where is_del = 0
                         and create_user = #{openId}
+        ORDER BY id desc
         <if test="page != null and size != null">
             limit #{page}
               , #{size}
@@ -288,66 +289,62 @@
         </if>
     </select>
 
-    <select id="getOrderCount" resultType="com.background.system.response.OrderCountResponse">
-        select any_value(sum(total))    totalCount,
-               any_value(count(is_pay)) payCount,
-               is_pay,
-               any_value(count(is_del)) delCount,
-               is_del
-        from `orderd`
-        group by is_del
-    </select>
+    <select id="getOrderCount" resultType="com.background.system.response.OrderCount">
+<!--        select any_value(sum(total))    totalCount,-->
+<!--               any_value(count(is_pay)) payCount,-->
+<!--               is_pay,-->
+<!--               any_value(count(is_del)) delCount,-->
+<!--               is_del-->
+<!--        from `orderd`-->
+<!--        group by is_del-->
 
-    <select id="getHasKdNoCount" resultType="int">
-        select count(*)
-        from `orderd`
-        where kd_no is not null
-    </select>
-
-    <select id="getCloseCount" resultType="int">
-        select count(*)
-        from `orderd`
-        where `status` = 3
+        select count(*) count, status
+        from orderd
+        group by status
     </select>
 
     <!-- 0-待付款  1-待发货 2-配送中 3-已完成 4-已取消   -->
     <select id="getOrderByType" resultMap="BaseResultMap">
         <!--  待付款      -->
-        <if test="type == 0">
-            select *
-            from `orderd`
-            where is_pay = 0
-        </if>
-        <!--   待发货  -->
-        <if test="type == 1">
-            select *
-            from `orderd`
-            where is_pay = 1
-        </if>
-        <!--  配送中  -->
-        <if test="type == 2">
-            select *
-            from `orderd`
-            where kd_no is not null
-        </if>
-        <!-- 已完成 -->
-        <if test="type == 3">
-            select *
-            from `orderd`
-            where `status` = 3
-        </if>
-        <!--  已取消 -->
-        <if test="type == 4">
-            select *
-            from `orderd`
-            where is_del = 1
-        </if>
+<!--        <if test="type == 0">-->
+<!--            select *-->
+<!--            from `orderd`-->
+<!--            where is_pay = 0-->
+<!--        </if>-->
+<!--        &lt;!&ndash;   待发货  &ndash;&gt;-->
+<!--        <if test="type == 1">-->
+<!--            select *-->
+<!--            from `orderd`-->
+<!--            where is_pay = 1-->
+<!--        </if>-->
+<!--        &lt;!&ndash;  配送中  &ndash;&gt;-->
+<!--        <if test="type == 2">-->
+<!--            select *-->
+<!--            from `orderd`-->
+<!--            where kd_no is not null-->
+<!--        </if>-->
+<!--        &lt;!&ndash; 已完成 &ndash;&gt;-->
+<!--        <if test="type == 3">-->
+<!--            select *-->
+<!--            from `orderd`-->
+<!--            where `status` = 3-->
+<!--        </if>-->
+<!--        &lt;!&ndash;  已取消 &ndash;&gt;-->
+<!--        <if test="type == 4">-->
+<!--            select *-->
+<!--            from `orderd`-->
+<!--            where is_del = 1-->
+<!--        </if>-->
+        select
+        <include refid="Base_Column_List"/>
+        from orderd where status = #{type}
         <if test="sizeIds != null and sizeIds.size() != 0">
             and size_id in
             <foreach collection="sizeIds" item="key" index="index" open="(" close=")" separator=",">
                 #{key,jdbcType=VARCHAR}
             </foreach>
         </if>
+        ORDER BY id desc
         <if test="page != null and size != null">
             limit #{page}
               , #{size}
@@ -356,35 +353,37 @@
 
     <select id="getOrderCountByType" resultType="int">
         <!--  待付款      -->
-        <if test="type == 0">
-            select count(*)
-            from `orderd`
-            where is_pay = 0 and is_del=0
-        </if>
-        <!--   待发货  -->
-        <if test="type == 1">
-            select count(*)
-            from `orderd`
-            where is_pay = 1 and is_del=0
-        </if>
-        <!--  配送中  -->
-        <if test="type == 2">
-            select count(*)
-            from `orderd`
-            where kd_no is not null and is_del=0
-        </if>
-        <!-- 已完成 -->
-        <if test="type == 3">
-            select count(*)
-            from `orderd`
-            where `status` = 3 and is_del=0
-        </if>
-        <!--  已取消 -->
-        <if test="type == 4">
-            select count(*)
-            from `orderd`
-            where is_del = 1
-        </if>
+<!--        <if test="type == 0">-->
+<!--            select count(*)-->
+<!--            from `orderd`-->
+<!--            where is_pay = 0 and is_del=0-->
+<!--        </if>-->
+<!--        &lt;!&ndash;   待发货  &ndash;&gt;-->
+<!--        <if test="type == 1">-->
+<!--            select count(*)-->
+<!--            from `orderd`-->
+<!--            where is_pay = 1 and is_del=0-->
+<!--        </if>-->
+<!--        &lt;!&ndash;  配送中  &ndash;&gt;-->
+<!--        <if test="type == 2">-->
+<!--            select count(*)-->
+<!--            from `orderd`-->
+<!--            where kd_no is not null and is_del=0-->
+<!--        </if>-->
+<!--        &lt;!&ndash; 已完成 &ndash;&gt;-->
+<!--        <if test="type == 3">-->
+<!--            select count(*)-->
+<!--            from `orderd`-->
+<!--            where `status` = 3 and is_del=0-->
+<!--        </if>-->
+<!--        &lt;!&ndash;  已取消 &ndash;&gt;-->
+<!--        <if test="type == 4">-->
+<!--            select count(*)-->
+<!--            from `orderd`-->
+<!--            where is_del = 1-->
+<!--        </if>-->
+        select count(*)
+        from orderd where status = #{type}
         <if test="sizeIds != null and sizeIds.size() != 0">
             and size_id in
             <foreach collection="sizeIds" item="key" index="index" open="(" close=")" separator=",">
@@ -420,6 +419,7 @@
                  inner join size s on o.size_id = s.id
                  inner join order_element oe on o.id = oe.order_id
         where o.is_del = 0
+           and o.is_pay = 1
           and o.zip_path is null
           and o.order_no is not null
         GROUP BY o.id
@@ -451,5 +451,9 @@
         from `orderd`
         where create_time like concat(#{time}, '%')
         group by date_format(create_time, '%h')
+    </select>
+
+    <select id="getOrderTotalMoney" resultType="java.lang.Integer">
+        select sum(total) total from orderd where is_del=0
     </select>
 </mapper>

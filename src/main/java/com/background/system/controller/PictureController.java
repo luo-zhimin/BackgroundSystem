@@ -58,4 +58,11 @@ public class PictureController {
     public Result<?> getIndexPicture() {
         return Result.success(pictureService.getIndexPicture());
     }
+
+
+    @GetMapping("readMemory")
+    @IgnoreLogin
+    public Result<?> readMemory() {
+        return Result.success(pictureService.readMemory());
+    }
 }

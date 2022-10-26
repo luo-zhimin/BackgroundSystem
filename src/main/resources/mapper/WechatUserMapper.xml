@@ -48,9 +48,6 @@
         <!--@mbg.generated-->
         insert into wechat_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                id,
-            </if>
             <if test="openId != null">
                 open_id,
             </if>
@@ -60,17 +57,9 @@
             <if test="userInfo != null">
                 user_info,
             </if>
-            <if test="isDel != null">
-                is_del,
-            </if>
-            <if test="createTime != null">
                 create_time,
-            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=BIGINT},
-            </if>
             <if test="openId != null">
                 #{openId,jdbcType=VARCHAR},
             </if>
@@ -80,12 +69,7 @@
             <if test="userInfo != null">
                 #{userInfo,jdbcType=VARCHAR},
             </if>
-            <if test="isDel != null">
-                #{isDel,jdbcType=CHAR},
-            </if>
-            <if test="createTime != null">
-                #{createTime,jdbcType=TIMESTAMP},
-            </if>
+            now()
         </trim>
     </insert>
 

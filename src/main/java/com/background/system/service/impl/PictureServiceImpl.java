@@ -102,6 +102,11 @@ public class PictureServiceImpl implements PictureService {
         return responses;
     }
 
+    @Override
+    public Map<String, Object> readMemory() {
+        return AliUploadUtils.getZipMap();
+    }
+
     public List<Picture> getPicturesByIds(List<String> ids){
         if (CollectionUtils.isNotEmpty(ids)){
             return this.pictureMapper.getPicturesByIds(ids);

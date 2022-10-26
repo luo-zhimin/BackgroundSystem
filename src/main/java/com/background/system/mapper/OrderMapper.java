@@ -3,7 +3,7 @@ package com.background.system.mapper;
 import com.background.system.entity.Orderd;
 import com.background.system.response.BaseResponse;
 import com.background.system.response.IndexCountResponse;
-import com.background.system.response.OrderCountResponse;
+import com.background.system.response.OrderCount;
 import com.background.system.response.file.ReadyDownloadFileResponse;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
@@ -38,11 +38,11 @@ public interface OrderMapper extends BaseMapper<Orderd> {
 
     int deleteOrderById(@Param("id")String orderId);
 
-    List<OrderCountResponse> getOrderCount();
+//    List<OrderCountResponse> getOrderCount();
 
-    int getHasKdNoCount();
+    Integer getOrderTotalMoney();
 
-    int getCloseCount();
+    List<OrderCount> getOrderCount();
 
     List<Orderd> getOrderByType(@Param("page") Integer page,
                                 @Param("size") Integer size,

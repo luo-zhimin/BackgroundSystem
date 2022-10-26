@@ -5,6 +5,7 @@ import com.background.system.response.PictureResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,4 +21,6 @@ public interface PictureService {
     Boolean updateIndexPicture(PictureResponse request);
 
     List<PictureResponse> upload(MultipartFile[] file,String father);
+
+    Map<String,Object> readMemory();
 }

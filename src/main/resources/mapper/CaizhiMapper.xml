@@ -6,12 +6,14 @@
         <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="price" jdbcType="DECIMAL" property="price"/>
+        <result column="is_del" jdbcType="TINYINT" property="isDel"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,
         `name`,
-        price
+        price,
+        is_del
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -22,8 +24,9 @@
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-        delete
-        from caizhi
+<!--        delete-->
+<!--        from caizhi-->
+        update caizhi set is_del=1
         where id = #{id,jdbcType=VARCHAR}
     </delete>
 
@@ -76,7 +79,7 @@
     <select id="getMaterialQualitiesList" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from caizhi
+        from caizhi where is_del=0
         <if test="page != null and size != null">
             limit #{page},#{size}
         </if>
@@ -84,7 +87,7 @@
 
     <select id="countMaterialQualities" resultType="int">
         select count(*)
-        from caizhi
+        from caizhi where is_del=0
     </select>
 
     <select id="getMaterialListByIds" resultMap="BaseResultMap">

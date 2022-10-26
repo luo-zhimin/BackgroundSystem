@@ -50,6 +50,8 @@ public class Size {
     @ApiModelProperty(value = "单面 or 双面")
     private String faces;
 
+    private Boolean isDel;
+
     public List<String> getPictureIds() {
         if (StringUtils.isNotBlank(this.pic)) {
             return Lists.newArrayList(this.pic.split(","));

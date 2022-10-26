@@ -42,8 +42,7 @@ public class ZipFileUtils {
 
     private final Logger logger = LoggerFactory.getLogger(ZipFileUtils.class);
 
-    @Value("${zip.file}")
-    private String acceptFilePath;// = "/Users/sugar/Desktop/BackgroundSystem/upload";
+    private String acceptFilePath = "/root/project/upload";
 
     @Autowired
     private OrderServiceImpl orderService;

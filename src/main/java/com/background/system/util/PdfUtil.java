@@ -31,32 +31,22 @@ import java.util.*;
  * @author menghui.wan
  */
 @Slf4j
-@Component
 public class PdfUtil {
 
     private static List<String> tempPdfPath = new ArrayList<>();
     private static List<String> tempImagePath = new ArrayList<>();
     private static final String DATE_FORMAT = "yyyy-MM-dd_HH:mm:ss";
 
-    private static String OCR_PATH;
-    private static String CUP_PATH;
+    private static String FILE_PATH = "/root/project/upload";
+    private static String OCR_PATH = FILE_PATH + "/new.png";
+    private static String CUP_PATH = FILE_PATH + "/new.";
 
-    private static String FILE_PATH;
     private static String mergedPdfName;
 
     private static boolean flag = true;
 
-    static {
-        Properties properties = new Properties();
-        try {
-            String yml = Objects.requireNonNull(PdfUtil.class.getResource("/application.yml")).getFile();
-            properties.load(new FileReader(yml));
-        } catch (IOException e) {
-            log.error("load error[{}]", e.getMessage());
-        }
-        FILE_PATH = properties.getProperty("file");
-        OCR_PATH = FILE_PATH + "/new.png";
-        CUP_PATH = FILE_PATH + "/new.";
+    public static void main(String[] args) {
+
     }
 
     /**
@@ -128,7 +118,7 @@ public class PdfUtil {
      */
     private static String adjustImageSize(String sourcePath, Integer width, Integer height) throws Exception {
         HttpUtil.downloadFile(
-            "https://etumwb-duigzq-8000.preview.myide.io/hello?url=" + sourcePath + "&type=1&os=1&xnx=2", OCR_PATH);
+            "http://119.23.228.135:8600/hello?url=" + sourcePath + "&type=1&os=1&xnx=2", OCR_PATH);
         tempImagePath.add(OCR_PATH);
         return OCR_PATH;
     }
@@ -150,11 +140,11 @@ public class PdfUtil {
         // type select
         if (split[1].equals("jpg") || split[1].equals("jpeg")) {
             CUP_PATH = FILE_PATH + "/new.jpg";
-            HttpUtil.downloadFile("https://etumwb-duigzq-8000.preview.myide.io/hello?url=" + url + "&type=0&os=0&" + sb,
+            HttpUtil.downloadFile("http://119.23.228.135:8600/hello?url=" + url + "&type=0&os=0&" + sb,
                 CUP_PATH);
         } else {
             CUP_PATH = FILE_PATH + "/new.png";
-            HttpUtil.downloadFile("https://etumwb-duigzq-8000.preview.myide.io/hello?url=" + url + "&type=1&os=0&" + sb,
+            HttpUtil.downloadFile("http://119.23.228.135:8600/hello?url=" + url + "&type=1&os=0&" + sb,
                 CUP_PATH);
         }
 
@@ -194,10 +184,7 @@ public class PdfUtil {
             //图片流处理
             doc.setPageSize(new Rectangle(bufferedImage.getWidth(), bufferedImage.getHeight()));
             image = Image.getInstance(adjustImgPath);
-            // 调整pdf图片的dpi
-//            float scalePercentage = (144 / 300f) * 100.0f;
-//            image.scalePercent(scalePercentage, scalePercentage);
-//            image.scalePercent(100f);
+
             //写入PDF
             log.info("写入PDf:" + pdfPath);
             FileOutputStream fos = new FileOutputStream(pdfPath);

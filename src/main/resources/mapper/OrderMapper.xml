@@ -422,6 +422,7 @@
         where o.is_del = 0
           and o.zip_path is null
           and o.order_no is not null
+        GROUP BY o.id
     </select>
 
     <update id="updateZipPathById" parameterType="com.background.system.response.BaseResponse">

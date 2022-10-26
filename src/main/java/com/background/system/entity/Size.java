@@ -36,7 +36,7 @@ public class Size {
     private String detailPic;
 
     @ApiModelProperty(value="原价")
-    private BigDecimal price;
+    private Integer price;
 
     @ApiModelProperty(value="优惠后价格")
     private BigDecimal uPrice;

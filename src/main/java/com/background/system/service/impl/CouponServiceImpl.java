@@ -108,8 +108,8 @@ public class CouponServiceImpl extends BaseService implements CouponService {
         if(coupon.getUseLimit()<=0){
             throw new ServiceException(1007,"优惠卷消费限制必须大于0");
         }
-        if (coupon.getPrice().compareTo(BigDecimal.valueOf(coupon.getUseLimit()))<=0){
-            //12 8
+        if (coupon.getPrice().compareTo(BigDecimal.valueOf(coupon.getUseLimit()))>=0){
+            //1001 1000
             throw new ServiceException(1008,"优惠卷消费价格需要小于消费限制");
         }
         return couponMapper.insertSelective(coupon)>0;

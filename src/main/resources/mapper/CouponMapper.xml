@@ -137,6 +137,7 @@
         <if test="openId != null and openId != ''">
             where open_id=#{openId}
         </if>
+        order by id desc
         <if test="page != null and size != null">
             limit #{page},#{size}
         </if>

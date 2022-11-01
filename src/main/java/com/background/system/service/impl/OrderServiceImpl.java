@@ -260,6 +260,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
         if (CollectionUtils.isNotEmpty(orderCount)){
             Integer orderTotalMoney = orderMapper.getOrderTotalMoney();
+            Integer actualMoney = orderMapper.getActualMoney();
             Map<String, Integer> orderMap = orderCount.stream()
                     .collect(Collectors.toMap(OrderCount::getStatus, OrderCount::getCount));
 
@@ -269,6 +270,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             countMap.put("已完成",Optional.ofNullable(orderMap.get("3")).orElse(0));
             countMap.put("已取消",Optional.ofNullable(orderMap.get("4")).orElse(0));
             countMap.put("支付金额",orderTotalMoney);
+            //不包括运费
+            countMap.put("实际金额",actualMoney);
 
         }
         return countMap;
@@ -349,6 +352,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             throw new ServiceException(1004,"该订单不存在，请确认后重新操作");
         }
     }
+
+    @Transactional
+    public void closeOrder(){
+        logger.info("really close");
+        List<Long> orderIds = orderMapper.getCloseOrderId();
+        if (CollectionUtils.isEmpty(orderIds)){
+            logger.info("no order need close");
+            return;
+        }
+        this.orderMapper.close(orderIds);
+    }
+
 
     /**
      * 得到没有zip链接的

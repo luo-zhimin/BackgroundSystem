@@ -1,6 +1,7 @@
 package com.background.system.scheduling;
 
 import com.background.system.controller.TimeTask;
+import com.background.system.service.impl.OrderServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,17 @@ public class Scheduling {
     @Autowired
     TimeTask timeTask;
 
+    @Autowired
+    OrderServiceImpl orderService;
+
     @Scheduled(cron = "0 0/5 * * * ? ")
     public synchronized void executeCreateZip(){
         logger.info("scheduling execute time[{}]", LocalDateTime.now().getHour()+":"+LocalDateTime.now().getMinute());
         timeTask.task();
+    }
+
+    @Scheduled(cron = "0 0 12 * * ? ")
+    public synchronized void closeOrder(){
+        orderService.closeOrder();
     }
 }

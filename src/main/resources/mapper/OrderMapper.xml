@@ -456,4 +456,19 @@
     <select id="getOrderTotalMoney" resultType="java.lang.Integer">
         select sum(total) total from orderd where is_del=0
     </select>
+
+    <select id="getActualMoney" resultType="java.lang.Integer">
+        select sum(total) total from orderd where is_del=0 and is_pay = 1
+    </select>
+
+    <select id="getCloseOrderId" resultType="java.lang.Long">
+        select id from orderd where is_del=0 and is_pay = 1 and kd_no is not null and  update_time between date_sub(now(),interval 30 day) and now()
+    </select>
+
+    <select id="close" resultType="int">
+        UPDATE orderd set status=3 ,update_user='system' where id in
+        <foreach collection="ids" item="key" index="index" open="(" close=")" separator=",">
+            #{key,jdbcType=VARCHAR}
+        </foreach>
+    </select>
 </mapper>

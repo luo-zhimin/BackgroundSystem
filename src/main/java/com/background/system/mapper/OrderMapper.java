@@ -66,4 +66,10 @@ public interface OrderMapper extends BaseMapper<Orderd> {
     int orderDownload(@Param("id")String id);
 
     List<IndexCountResponse> getIndexOrderCount(@Param("time")String time);
+
+    Integer getActualMoney();
+
+    List<Long> getCloseOrderId();
+
+    int close(@Param("ids")List<Long> ids);
 }

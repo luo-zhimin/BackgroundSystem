@@ -108,6 +108,12 @@ public class ZipFileUtils {
 
             // 下载图片
             for (int i = 0; i < handleFiles.size(); i++) {
+
+                //todo 是否需要进行格式转化 全部转化成为jpg格式
+                if (handleFiles.get(i).getName().endsWith(".png") || handleFiles.get(i).getName().endsWith(".jpeg") ){
+                    //转化jpg 在进行输出
+                }
+
                 String picPath = "";
                 if (response.getFace().equals("单面")){
                     picPath = saveName + File.separator + (i + 1) + "-" + handleFiles.get(i).getId()

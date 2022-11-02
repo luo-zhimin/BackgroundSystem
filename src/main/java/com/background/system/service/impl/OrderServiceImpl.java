@@ -10,14 +10,14 @@ import com.background.system.mapper.CaizhiMapper;
 import com.background.system.mapper.CouponMapper;
 import com.background.system.mapper.OrderElementsMapper;
 import com.background.system.mapper.OrderMapper;
-import com.background.system.response.*;
+import com.background.system.response.CountResponse;
+import com.background.system.response.OrderCount;
+import com.background.system.response.OrderElementResponse;
+import com.background.system.response.OrderdResponse;
 import com.background.system.response.file.ReadyDownloadFileResponse;
 import com.background.system.service.OrderService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -371,43 +371,75 @@ public class OrderServiceImpl extends BaseService implements OrderService {
      * 得到没有zip链接的
      * @return 所有待处理对象
      */
-    public List<ReadyDownloadFileResponse> getFile(){
+    public List<ReadyDownloadFileResponse> getFile() {
+        //找到支付 没有删除的订单 并且没有链接生产的
+//        List<ReadyDownloadFileResponse> orders = orderMapper.getNoZipPathOrder();
+//        if (CollectionUtils.isEmpty(orders)){
+//            return Collections.emptyList();
+//        }
+//
+//        List<SourceOrderPicture> sourceOrderPictures = Lists.newArrayList();
+//
+//        orders.forEach(order -> {
+//            sourceOrderPictures.add(SourceOrderPicture.builder().orderId(order.getId()).pictureIds(order.getPictureIds()).build());
+////            order.setPictures(pictureService.getPicturesByIds(order.getPictureIds()));
+//            order.setPictureMap(pictureService.getPicturesByIds(order.getPictureIds()).stream().collect(Collectors.groupingBy(Picture::getId)));
+//        });
+//        //18, 19, 23, 30, 29, 22, 20, 17, 21, 24, 31, 32, 25, 33, 34, 36, 35, 27
+//        logger.info("source [{}]",sourceOrderPictures);
+//        //二次处理 sort
+//        orders.forEach(order->{
+//            sourceOrderPictures.forEach(source->{
+//                if (order.getId().equals(source.getOrderId())){
+//                    source.getPictureIds().forEach(pId->{
+//                        order.getPictures().addAll(Optional.ofNullable(order.getPictureMap().get(pId)).orElse(Collections.emptyList()));
+//                    });
+//                }
+//            });
+//        });
+//        return orders;
         //找到支付 没有删除的订单 并且没有链接生产的
         List<ReadyDownloadFileResponse> orders = orderMapper.getNoZipPathOrder();
-        if (CollectionUtils.isEmpty(orders)){
+        if (CollectionUtils.isEmpty(orders)) {
             return Collections.emptyList();
         }
 
-        List<SourceOrderPicture> sourceOrderPictures = Lists.newArrayList();
-
-        orders.forEach(order -> {
-            sourceOrderPictures.add(SourceOrderPicture.builder().orderId(order.getId()).pictureIds(order.getPictureIds()).build());
-//            order.setPictures(pictureService.getPicturesByIds(order.getPictureIds()));
-            order.setPictureMap(pictureService.getPicturesByIds(order.getPictureIds()).stream().collect(Collectors.groupingBy(Picture::getId)));
-        });
-        //18, 19, 23, 30, 29, 22, 20, 17, 21, 24, 31, 32, 25, 33, 34, 36, 35, 27
-        logger.info("source [{}]",sourceOrderPictures);
-        //二次处理 sort
-        orders.forEach(order->{
-            sourceOrderPictures.forEach(source->{
-                if (order.getId().equals(source.getOrderId())){
-                    source.getPictureIds().forEach(pId->{
-                        order.getPictures().addAll(Optional.ofNullable(order.getPictureMap().get(pId)).orElse(Collections.emptyList()));
-                    });
-                }
+        List<ReadyDownloadFileResponse> targetOrders = Lists.newArrayList();
+        Map<String, List<ReadyDownloadFileResponse>> orderMap = orders.stream().collect(Collectors.groupingBy(ReadyDownloadFileResponse::getId));
+        orderMap.forEach((k, v) -> {
+            List<Picture> pictures = Lists.newArrayList();
+            v.forEach(vv -> {
+                Map<String, List<Picture>> pictureMap = pictureService.getPicturesByIds(vv.getPictureIds()).stream().collect(Collectors.groupingBy(Picture::getId));
+                vv.getPictureIds().forEach(p -> {
+                    vv.getPictures().addAll(Optional.ofNullable(pictureMap.get(p)).orElse(new ArrayList<>()));
+                });
+                pictures.addAll(vv.getPictures());
             });
+            ReadyDownloadFileResponse response = ReadyDownloadFileResponse.builder()
+                    .id(k)
+                    .pictures(pictures)
+                    .number(v.stream().mapToInt(ReadyDownloadFileResponse::getNumber).sum())
+                    .size(v.stream().findFirst().orElse(new ReadyDownloadFileResponse()).getSize())
+                    .sizeName(v.stream().findFirst().orElse(new ReadyDownloadFileResponse()).getSizeName())
+                    .face(v.stream().findFirst().orElse(new ReadyDownloadFileResponse()).getFace())
+                    .wxNo(v.stream().findFirst().orElse(new ReadyDownloadFileResponse()).getWxNo())
+                    .build();
+            targetOrders.add(response);
         });
-        return orders;
+
+        //18, 19, 23, 30, 29, 22, 20, 17, 21, 24, 31, 32, 25, 33, 34, 36, 35, 27
+        logger.info("source [{}]", targetOrders);
+        return targetOrders;
     }
 
 
-    @Data
-    @ToString
-    @Builder
-    static class SourceOrderPicture{
-
-        private String orderId;
-
-        private List<String> pictureIds;
-    }
+//    @Data
+//    @ToString
+//    @Builder
+//    static class SourceOrderPicture{
+//
+//        private String orderId;
+//
+//        private List<String> pictureIds;
+//    }
 }

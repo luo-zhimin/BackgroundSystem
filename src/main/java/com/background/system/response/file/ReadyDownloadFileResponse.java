@@ -45,9 +45,20 @@ public class ReadyDownloadFileResponse {
     @Tolerate
     public ReadyDownloadFileResponse(){}
 
+//    public List<String> getPictureIds() {
+//        if (StringUtils.isNotBlank(this.pictureId)) {
+//            return Lists.newArrayList(this.pictureId.split(","));
+//        }
+//        return Collections.emptyList();
+//    }
+
     public List<String> getPictureIds() {
-        if (StringUtils.isNotBlank(this.pictureId)) {
-            return Lists.newArrayList(this.pictureId.split(","));
+        if (StringUtils.isNotBlank(this.pictureId) && this.number!=null) {
+            StringBuilder picture = new StringBuilder();
+            for (int i = 0; i < this.number; i++) {
+                picture.append(this.pictureId).append(",");
+            }
+            return Lists.newArrayList(picture.substring(0,picture.length()-1).split(","));
         }
         return Collections.emptyList();
     }

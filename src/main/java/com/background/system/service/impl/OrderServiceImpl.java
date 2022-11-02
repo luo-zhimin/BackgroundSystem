@@ -229,7 +229,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Override
     @SuppressWarnings({"all"})
-    public Page<OrderdResponse> getAdminOrderList(Integer page, Integer size,Integer type,String sizeId) {
+    public Page<OrderdResponse> getAdminOrderList(Integer page, Integer size,Integer type,
+                                                  String sizeId,Long orderId,String orderNo,String name)
+    {
         //todo 思路俩个接口 一个数量 一个列表 防止数量过大加载慢
         Page<OrderdResponse> orderPage = initPage(page, size);
         if (type>=5){
@@ -242,8 +244,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             sizeIds = Arrays.asList(sizeId.split(","));
         }
 
-        int count = orderMapper.getOrderCountByType(type,sizeIds);
-        List<Orderd>  orders = orderMapper.getOrderByType(page, size, type,sizeIds);
+        int count = orderMapper.getOrderCountByType(type,sizeIds,orderId,orderNo,name);
+        List<Orderd>  orders = orderMapper.getOrderByType(page, size, type,sizeIds,orderId,orderNo,name);
         List<OrderdResponse> orderResponses =  transformOrderResponse(orders);
         orderPage.setTotal(count);
         orderPage.setRecords(orderResponses);

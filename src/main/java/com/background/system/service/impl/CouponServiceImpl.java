@@ -13,6 +13,8 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,8 +42,10 @@ public class CouponServiceImpl extends BaseService implements CouponService {
     @Autowired
     private PictureServiceImpl pictureService;
 
+    private final Logger logger = LoggerFactory.getLogger(CouponServiceImpl.class);
+
     @Override
-    public Page<CouponResponse> getCouponList(Integer page, Integer size,String type) {
+    public Page<CouponResponse> getCouponList(Integer page, Integer size,String type,Boolean isUse,Boolean status) {
         Page<CouponResponse> couponPage = initPage(page, size);
         Token weChatCurrentUser = null;
         switch (type){
@@ -56,7 +60,7 @@ public class CouponServiceImpl extends BaseService implements CouponService {
         }
         List<CouponResponse> responses = Lists.newArrayList();
         List<Coupon> coupons = couponMapper.getCouponsList((page - 1) * size, size,
-                weChatCurrentUser!=null ? weChatCurrentUser.getUsername() : "");
+                weChatCurrentUser!=null ? weChatCurrentUser.getUsername() : "",isUse,status);
         if (CollectionUtils.isEmpty(coupons)) {
             return couponPage;
         }
@@ -130,5 +134,15 @@ public class CouponServiceImpl extends BaseService implements CouponService {
             throw new ServiceException(1007,"优惠卷消费限制必须大于0");
         }
         return couponMapper.updateByPrimaryKeySelective(coupon)>0;
+    }
+
+    @Transactional(rollbackFor = ServiceException.class)
+    public void closeCoupon(){
+        List<Long> couponIds = this.couponMapper.getCloseCoupon();
+        if (CollectionUtils.isEmpty(couponIds)){
+            logger.info("no coupon need handle");
+            return;
+        }
+        this.couponMapper.close(couponIds);
     }
 }

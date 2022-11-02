@@ -97,9 +97,11 @@ public class AdminController {
     @GetMapping("/coupon/list")
     @ApiOperation("后台获取消费卷列表")
     public Result<?> getCoupons(@RequestParam(value = "page",defaultValue = "1")Integer page,
-                                @RequestParam(value = "size",defaultValue = "10")Integer size)
+                                @RequestParam(value = "size",defaultValue = "10")Integer size,
+                                @RequestParam(value = "isUse",required = false)Boolean isUse,
+                                @RequestParam(value = "status",required = false)Boolean status)
     {
-        return Result.success(couponService.getCouponList(page,size,"admin"));
+        return Result.success(couponService.getCouponList(page,size,"admin",isUse,status));
     }
 
     @PostMapping("/coupon/insert")
@@ -120,9 +122,12 @@ public class AdminController {
     public Result<?> getAdminOrderList(@RequestParam(value = "page",defaultValue = "1")Integer page,
                                        @RequestParam(value = "size",defaultValue = "10")Integer size,
                                        @ApiParam(name = "0-待付款  1-待发货 2-配送中 3-已完成 4-已取消",value = "type",defaultValue = "0",required = true) @RequestParam Integer type,
-                                       @RequestParam(value = "sizeId",required = false) String sizeId)
+                                       @RequestParam(value = "sizeId",required = false) String sizeId,
+                                       @RequestParam(value = "orderId",required = false) Long orderId,
+                                       @RequestParam(value = "orderNo",required = false) String orderNo,
+                                       @RequestParam(value = "name",required = false) String name)
     {
-        return Result.success(orderService.getAdminOrderList(page,size,type,sizeId));
+        return Result.success(orderService.getAdminOrderList(page,size,type,sizeId,orderId,orderNo,name));
     }
 
 

@@ -212,12 +212,6 @@
             <if test="addressId != null and addressId != ''">
                 address_id = #{addressId,jdbcType=VARCHAR},
             </if>
-            <!--            <if test="num != null">-->
-            <!--                num = #{num,jdbcType=INTEGER},-->
-            <!--            </if>-->
-            <!--            <if test="pictureId != null and pictureId != ''">-->
-            <!--                picture_id = #{pictureId,jdbcType=VARCHAR},-->
-            <!--            </if>-->
         </set>
         where id = #{id,jdbcType=VARCHAR}
     </update>
@@ -290,14 +284,6 @@
     </select>
 
     <select id="getOrderCount" resultType="com.background.system.response.OrderCount">
-<!--        select any_value(sum(total))    totalCount,-->
-<!--               any_value(count(is_pay)) payCount,-->
-<!--               is_pay,-->
-<!--               any_value(count(is_del)) delCount,-->
-<!--               is_del-->
-<!--        from `orderd`-->
-<!--        group by is_del-->
-
         select count(*) count, status
         from orderd
         group by status
@@ -305,90 +291,64 @@
 
     <!-- 0-待付款  1-待发货 2-配送中 3-已完成 4-已取消   -->
     <select id="getOrderByType" resultMap="BaseResultMap">
-        <!--  待付款      -->
-<!--        <if test="type == 0">-->
-<!--            select *-->
-<!--            from `orderd`-->
-<!--            where is_pay = 0-->
-<!--        </if>-->
-<!--        &lt;!&ndash;   待发货  &ndash;&gt;-->
-<!--        <if test="type == 1">-->
-<!--            select *-->
-<!--            from `orderd`-->
-<!--            where is_pay = 1-->
-<!--        </if>-->
-<!--        &lt;!&ndash;  配送中  &ndash;&gt;-->
-<!--        <if test="type == 2">-->
-<!--            select *-->
-<!--            from `orderd`-->
-<!--            where kd_no is not null-->
-<!--        </if>-->
-<!--        &lt;!&ndash; 已完成 &ndash;&gt;-->
-<!--        <if test="type == 3">-->
-<!--            select *-->
-<!--            from `orderd`-->
-<!--            where `status` = 3-->
-<!--        </if>-->
-<!--        &lt;!&ndash;  已取消 &ndash;&gt;-->
-<!--        <if test="type == 4">-->
-<!--            select *-->
-<!--            from `orderd`-->
-<!--            where is_del = 1-->
-<!--        </if>-->
-        select
-        <include refid="Base_Column_List"/>
-        from orderd where status = #{type}
+        <if test="name != null and name != ''">
+            select distinct o.id, o.*
+            from orderd o
+                     inner join address a on a.openId = o.create_user
+        </if>
+        <if test="name == null or name == ''">
+            select o.*
+            from orderd o
+        </if>
+        where status = #{type}
         <if test="sizeIds != null and sizeIds.size() != 0">
             and size_id in
             <foreach collection="sizeIds" item="key" index="index" open="(" close=")" separator=",">
                 #{key,jdbcType=VARCHAR}
             </foreach>
         </if>
-        ORDER BY id desc
+        <if test="orderId != null">
+            and o.id = #{orderId}
+        </if>
+        <if test="orderNo != null and orderNo != ''">
+            and order_no like concat('%', #{orderNo}, '%')
+        </if>
+        <if test="name != null and name != ''">
+            and name like concat('%', #{name}, '%')
+        </if>
+
+        ORDER BY o.id desc
         <if test="page != null and size != null">
             limit #{page}
-              , #{size}
+                   , #{size}
         </if>
     </select>
 
     <select id="getOrderCountByType" resultType="int">
-        <!--  待付款      -->
-<!--        <if test="type == 0">-->
-<!--            select count(*)-->
-<!--            from `orderd`-->
-<!--            where is_pay = 0 and is_del=0-->
-<!--        </if>-->
-<!--        &lt;!&ndash;   待发货  &ndash;&gt;-->
-<!--        <if test="type == 1">-->
-<!--            select count(*)-->
-<!--            from `orderd`-->
-<!--            where is_pay = 1 and is_del=0-->
-<!--        </if>-->
-<!--        &lt;!&ndash;  配送中  &ndash;&gt;-->
-<!--        <if test="type == 2">-->
-<!--            select count(*)-->
-<!--            from `orderd`-->
-<!--            where kd_no is not null and is_del=0-->
-<!--        </if>-->
-<!--        &lt;!&ndash; 已完成 &ndash;&gt;-->
-<!--        <if test="type == 3">-->
-<!--            select count(*)-->
-<!--            from `orderd`-->
-<!--            where `status` = 3 and is_del=0-->
-<!--        </if>-->
-<!--        &lt;!&ndash;  已取消 &ndash;&gt;-->
-<!--        <if test="type == 4">-->
-<!--            select count(*)-->
-<!--            from `orderd`-->
-<!--            where is_del = 1-->
-<!--        </if>-->
-        select count(*)
-        from orderd where status = #{type}
+        <if test="name != null and name != ''">
+            select count(distinct o.id)
+            from orderd o
+                     inner join address a on a.openId = o.create_user
+        </if>
+        <if test="name == null or name == ''">
+            select count(*)
+            from orderd o
+        </if>
+        where status = #{type}
         <if test="sizeIds != null and sizeIds.size() != 0">
             and size_id in
             <foreach collection="sizeIds" item="key" index="index" open="(" close=")" separator=",">
                 #{key,jdbcType=VARCHAR}
             </foreach>
+        </if>
+        <if test="orderId != null">
+            and o.id = #{orderId}
+        </if>
+        <if test="orderNo != null and orderNo != ''">
+            and order_no like concat('%', #{orderNo}, '%')
+        </if>
+        <if test="name != null and name != ''">
+            and name like concat('%', #{name}, '%')
         </if>
     </select>
 

@@ -1,6 +1,7 @@
 package com.background.system.scheduling;
 
 import com.background.system.controller.TimeTask;
+import com.background.system.service.impl.CouponServiceImpl;
 import com.background.system.service.impl.OrderServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,9 @@ public class Scheduling {
     @Autowired
     OrderServiceImpl orderService;
 
+    @Autowired
+    private CouponServiceImpl couponService;
+
     @Scheduled(cron = "0 0/5 * * * ? ")
     public synchronized void executeCreateZip(){
         logger.info("scheduling execute time[{}]", LocalDateTime.now().getHour()+":"+LocalDateTime.now().getMinute());
@@ -34,6 +38,13 @@ public class Scheduling {
 
     @Scheduled(cron = "0 0 12 * * ? ")
     public synchronized void closeOrder(){
+        logger.info("closeOrder");
         orderService.closeOrder();
+    }
+
+    @Scheduled(cron = "0 0/10 * * * ? ")
+    public synchronized void closeCoupon(){
+        logger.info("closeCoupon");
+        couponService.closeCoupon();
     }
 }

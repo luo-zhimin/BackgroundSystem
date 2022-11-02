@@ -12,6 +12,7 @@
         <result column="use_limit" jdbcType="INTEGER" property="useLimit"/>
         <result column="open_id" jdbcType="VARCHAR" property="openId"/>
         <result column="picture_id" jdbcType="VARCHAR" property="pictureId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="creatTime"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -22,7 +23,8 @@
         price,
         use_limit,
         open_id,
-        picture_id
+        picture_id,
+        create_time
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -40,9 +42,9 @@
 
     <insert id="insert" parameterType="com.background.system.entity.Coupon">
         insert into coupon (id, coupon_id, is_used,
-                            price, use_limit, open_id)
+                            price, use_limit, open_id,create_time)
         values (#{id,jdbcType=BIGINT}, #{couponId,jdbcType=VARCHAR}, #{isUsed,jdbcType=CHAR},
-                #{price,jdbcType=DECIMAL}, #{useLimit,jdbcType=INTEGER}, #{openId,jdbcType=VARCHAR})
+                #{price,jdbcType=DECIMAL}, #{useLimit,jdbcType=INTEGER}, #{openId,jdbcType=VARCHAR},now())
     </insert>
 
     <insert id="insertSelective" parameterType="com.background.system.entity.Coupon">
@@ -69,6 +71,7 @@
             <if test="pictureId != null and pictureId !='' ">
                 picture_id,
             </if>
+            create_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -90,8 +93,9 @@
                 #{openId,jdbcType=VARCHAR},
             </if>
             <if test="pictureId != null and pictureId !='' ">
-                #{pictureId}
+                #{pictureId},
             </if>
+            now()
         </trim>
     </insert>
 
@@ -133,9 +137,15 @@
     <select id="getCouponsList"  resultType="com.background.system.entity.Coupon">
         select
         <include refid="Base_Column_List"/>
-        from coupon
+        from coupon where 1 = 1
         <if test="openId != null and openId != ''">
-            where open_id=#{openId}
+            and open_id = #{openId}
+        </if>
+        <if test="status != null">
+            and status = #{status}
+        </if>
+        <if test="isUse != null">
+            and is_used = #{isUse}
         </if>
         order by id desc
         <if test="page != null and size != null">
@@ -165,4 +175,15 @@
             where open_id=#{openId}
         </if>
     </select>
+
+    <select id="getCloseCoupon" resultType="java.lang.Long">
+        select id from coupon where date_add(create_time,interval 7 day) &lt; now()
+    </select>
+
+    <update id="close">
+        update coupon set status=1 where id in
+        <foreach collection="ids" item="key" index="index" open="(" close=")" separator=",">
+            #{key}
+        </foreach>
+    </update>
 </mapper>

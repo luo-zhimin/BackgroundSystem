@@ -28,7 +28,7 @@ public interface OrderService {
 
     Boolean cancelOrder(String id);
 
-    Page<OrderdResponse> getAdminOrderList(Integer page, Integer size, Integer type, String sizeId);
+    Page<OrderdResponse> getAdminOrderList(Integer page, Integer size, Integer type, String sizeId,Long orderId,String orderNo,String name);
 
     Map<String,Integer> getAdminOrderCount();
 

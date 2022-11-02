@@ -12,7 +12,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
  * @create 2022/8/20 16:12
  */
 public interface CouponService {
-    Page<CouponResponse> getCouponList(Integer page, Integer size,String type);
+    Page<CouponResponse> getCouponList(Integer page, Integer size,String type,Boolean isUse,Boolean status);
 
     Coupon getCouponDetail(Long id);
 

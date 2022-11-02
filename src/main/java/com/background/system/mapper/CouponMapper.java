@@ -12,21 +12,27 @@ public interface CouponMapper extends BaseMapper<Coupon> {
 
     List<Coupon> getCouponsList(@Param("page") Integer page,
                                 @Param("size") Integer size,
-                                @Param("openId")String openId);
+                                @Param("openId") String openId,
+                                @Param("isUse") Boolean isUse,
+                                @Param("status") Boolean status);
 
-    int countCouponsByCurrentUser(@Param("openId")String openId);
+    int countCouponsByCurrentUser(@Param("openId") String openId);
 
-    int updateIsUsedCoupon(@Param("couponId")Long couponId);
+    int updateIsUsedCoupon(@Param("couponId") Long couponId);
 
-    Boolean getCouponByCouponId(@Param("couponId")String couponId);
+    Boolean getCouponByCouponId(@Param("couponId") String couponId);
 
-    int updateCouponUserById(@Param("openId")String openId,@Param("id")String id);
+    int updateCouponUserById(@Param("openId") String openId, @Param("id") String id);
 
     int insertSelective(Coupon coupon);
 
-    Coupon selectByPrimaryKey(@Param("id")Long id);
+    Coupon selectByPrimaryKey(@Param("id") Long id);
 
     int updateByPrimaryKeySelective(Coupon coupon);
 
-    int selectCountByOpenId(@Param("openId")String openId);
+    int selectCountByOpenId(@Param("openId") String openId);
+
+    List<Long> getCloseCoupon();
+
+    int close(@Param("ids")List<Long> ids);
 }

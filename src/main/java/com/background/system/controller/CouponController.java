@@ -24,9 +24,11 @@ public class CouponController {
     @GetMapping("/list")
     @ApiOperation("小程序获取当前用户消费卷列表")
     public Result<?> getCouponList(@RequestParam(value = "page",defaultValue = "1")Integer page,
-                                   @RequestParam(value = "size",defaultValue = "10")Integer size)
+                                   @RequestParam(value = "size",defaultValue = "10")Integer size,
+                                   @RequestParam(value = "isUse",required = false)Boolean isUse,
+                                   @RequestParam(value = "status",required = false)Boolean status)
     {
-        return Result.success(couponService.getCouponList(page,size,"wechat"));
+        return Result.success(couponService.getCouponList(page,size,"wechat",isUse,status));
     }
 
     @GetMapping("/detail")

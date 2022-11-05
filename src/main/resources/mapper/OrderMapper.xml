@@ -422,7 +422,7 @@
     </select>
 
     <select id="getCloseOrderId" resultType="java.lang.Long">
-        select id from orderd where is_del=0 and is_pay = 1 and kd_no is not null and  update_time between date_sub(now(),interval 30 day) and now()
+        select id from orderd where is_del=0 and is_pay = 1 and kd_no is not null and DATE_ADD(update_time,interval 15 day)&lt;NOW()
     </select>
 
     <select id="close" resultType="int">

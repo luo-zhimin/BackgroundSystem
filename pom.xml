@@ -150,11 +150,11 @@
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.github.livesense/org.liveSense.fragment.com.sun.image.codec.jpeg -->
-        <dependency>
-            <groupId>com.github.livesense</groupId>
-            <artifactId>org.liveSense.fragment.com.sun.image.codec.jpeg</artifactId>
-            <version>1.0.5</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.github.livesense</groupId>-->
+<!--            <artifactId>org.liveSense.fragment.com.sun.image.codec.jpeg</artifactId>-->
+<!--            <version>1.0.5</version>-->
+<!--        </dependency>-->
 
 
         <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->

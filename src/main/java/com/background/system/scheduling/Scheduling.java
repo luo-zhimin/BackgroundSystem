@@ -30,7 +30,7 @@ public class Scheduling {
     @Autowired
     private CouponServiceImpl couponService;
 
-    @Scheduled(cron = "0 0/5 * * * ? ")
+    @Scheduled(cron = "0 0/30 * * * ? ")
     public synchronized void executeCreateZip(){
         logger.info("scheduling execute time[{}]", LocalDateTime.now().getHour()+":"+LocalDateTime.now().getMinute());
         timeTask.task();

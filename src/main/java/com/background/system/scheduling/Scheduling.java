@@ -39,7 +39,7 @@ public class Scheduling {
 
     @Scheduled(cron = "0 0 12 * * ? ")
     public synchronized void closeOrder(){
-        logger.info("closeOrder");
+        logger.info("closeOrder delOrder");
         orderService.closeOrder();
     }
 

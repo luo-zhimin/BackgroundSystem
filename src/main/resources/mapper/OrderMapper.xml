@@ -383,7 +383,7 @@
            and o.is_pay = 1
           and o.zip_path is null
           and o.order_no is not null
-        GROUP BY o.id
+        GROUP BY o.id,oe.id
     </select>
 
     <update id="updateZipPathById" parameterType="com.background.system.response.BaseResponse">
@@ -432,4 +432,15 @@
             #{key,jdbcType=VARCHAR}
         </foreach>
     </select>
+
+    <select id="getDeleteOrderIds" resultType="java.lang.Long">
+        select id from orderd where is_del=0 and is_pay = 0 and kd_no is null and DATE_ADD(update_time,interval 15 day)&lt;NOW()
+    </select>
+
+    <delete id="delete">
+        UPDATE orderd set status=4 ,update_user='system' where id in
+        <foreach collection="ids" item="key" index="index" open="(" close=")" separator=",">
+            #{key,jdbcType=VARCHAR}
+        </foreach>
+    </delete>
 </mapper>

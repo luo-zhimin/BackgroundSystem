@@ -42,7 +42,7 @@ public class ZipFileUtils {
 
     private final Logger logger = LoggerFactory.getLogger(ZipFileUtils.class);
 
-    private String acceptFilePath = "/Users/luozhimin/Desktop/File/daily/backgroundSystem";
+    private String acceptFilePath = "/root/project/upload";
 
     @Autowired
     private OrderServiceImpl orderService;

@@ -77,5 +77,5 @@ public interface OrderMapper extends BaseMapper<Orderd> {
 
     List<Long> getCloseOrderId();
 
-    int close(@Param("ids")List<Long> ids);
+    void close(@Param("ids")List<Long> ids);
 }

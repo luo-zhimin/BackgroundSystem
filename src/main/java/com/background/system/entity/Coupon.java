@@ -7,6 +7,7 @@ import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * @Description:
@@ -42,9 +43,10 @@ public class Coupon {
 
     private String pictureId;
 
+    @ApiModelProperty(value = "发布时间")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(
             pattern = "yyyy-MM-dd HH:mm:ss"
     )
-    private String creatTime;
+    private LocalDateTime releaseTime;
 }

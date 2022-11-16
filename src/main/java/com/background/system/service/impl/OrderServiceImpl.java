@@ -428,18 +428,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         });
 
         //18, 19, 23, 30, 29, 22, 20, 17, 21, 24, 31, 32, 25, 33, 34, 36, 35, 27
-        logger.info("source [{}]", targetOrders);
+//        logger.info("source [{}]", targetOrders);
         return targetOrders;
     }
-
-
-//    @Data
-//    @ToString
-//    @Builder
-//    static class SourceOrderPicture{
-//
-//        private String orderId;
-//
-//        private List<String> pictureIds;
-//    }
 }

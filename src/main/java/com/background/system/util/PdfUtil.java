@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.background.system.util.ZipFileUtils.errorPictureAddress;
+
 /**
  * pdf工具类
  *
@@ -72,7 +74,7 @@ public class PdfUtil {
                 || file.toLowerCase().endsWith(".jpg")
                 || file.toLowerCase().endsWith(".jpeg")) {
 
-                String url;
+                String url = "";
                 try {
                     cnt++;
                     if (cnt > 2)
@@ -81,7 +83,9 @@ public class PdfUtil {
                         url = adjustImageSize(file, width, height);
                 } catch (Exception e) {
                     log.error("调整图片大小失败，异常{}", e.getMessage()+"-> path："+file);
-                    throw new ServiceException(500, e.getMessage());
+                    //失败写入txt文件
+//                    throw new ServiceException(500, e.getMessage());
+                    errorPictureAddress.add(file);
                 }
                 if (StringUtils.isBlank(url)) {
                     continue;
@@ -238,17 +242,5 @@ public class PdfUtil {
         mergePdf.setDestinationFileName(FILE_PATH + "/" + mergeFileName);
         mergePdf.mergeDocuments();
         log.info("成功合并～");
-    }
-
-    public static void Conversion(String inputFormat,String outputFormat,String src){
-
-        try {
-            File input = new File(src+inputFormat);
-            BufferedImage bim = ImageIO.read(input);
-            File output = new File(src+outputFormat);
-            ImageIO.write(bim, outputFormat, output);
-        } catch (Exception e) {
-            System.out.println("有损图片 ==  > "+e.getMessage());
-        }
     }
 }

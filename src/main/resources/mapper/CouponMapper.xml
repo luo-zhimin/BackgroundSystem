@@ -12,7 +12,7 @@
         <result column="use_limit" jdbcType="INTEGER" property="useLimit"/>
         <result column="open_id" jdbcType="VARCHAR" property="openId"/>
         <result column="picture_id" jdbcType="VARCHAR" property="pictureId"/>
-        <result column="create_time" jdbcType="TIMESTAMP" property="creatTime"/>
+        <result column="release_time" jdbcType="TIMESTAMP" property="releaseTime"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -24,7 +24,7 @@
         use_limit,
         open_id,
         picture_id,
-        create_time
+        release_time
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -42,9 +42,9 @@
 
     <insert id="insert" parameterType="com.background.system.entity.Coupon">
         insert into coupon (id, coupon_id, is_used,
-                            price, use_limit, open_id,create_time)
+                            price, use_limit, open_id)
         values (#{id,jdbcType=BIGINT}, #{couponId,jdbcType=VARCHAR}, #{isUsed,jdbcType=CHAR},
-                #{price,jdbcType=DECIMAL}, #{useLimit,jdbcType=INTEGER}, #{openId,jdbcType=VARCHAR},now())
+                #{price,jdbcType=DECIMAL}, #{useLimit,jdbcType=INTEGER}, #{openId,jdbcType=VARCHAR})
     </insert>
 
     <insert id="insertSelective" parameterType="com.background.system.entity.Coupon">
@@ -71,7 +71,6 @@
             <if test="pictureId != null and pictureId !='' ">
                 picture_id,
             </if>
-            create_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -95,7 +94,6 @@
             <if test="pictureId != null and pictureId !='' ">
                 #{pictureId},
             </if>
-            now()
         </trim>
     </insert>
 
@@ -166,7 +164,7 @@
     </select>
 
     <update id="updateCouponUserById">
-        update coupon set open_id=#{openId} where coupon_id=#{id}
+        update coupon set open_id=#{openId},release_time=now() where coupon_id=#{id}
     </update>
 
     <select id="selectCountByOpenId" resultType="int">
@@ -177,7 +175,7 @@
     </select>
 
     <select id="getCloseCoupon" resultType="java.lang.Long">
-        select id from coupon where date_add(create_time,interval 7 day) &lt; now()
+        select id from coupon where date_add(release_time,interval 7 day) &lt; now()
     </select>
 
     <update id="close">

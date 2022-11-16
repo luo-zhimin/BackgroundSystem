@@ -374,6 +374,7 @@
                s.faces                     face,
                o.order_no                  wxNo,
                GROUP_CONCAT(oe.picture_id) pictureId,
+               oe.number              onlyNumber,
                sum(oe.number)              number
         from `orderd` o
                  inner join size s on o.size_id = s.id
@@ -425,7 +426,7 @@
         select id from orderd where is_del=0 and is_pay = 1 and kd_no is not null and DATE_ADD(update_time,interval 15 day)&lt;NOW()
     </select>
 
-    <select id="close" resultType="int">
+    <select id="close">
         UPDATE orderd set status=3 ,update_user='system' where id in
         <foreach collection="ids" item="key" index="index" open="(" close=")" separator=",">
             #{key,jdbcType=VARCHAR}

@@ -38,6 +38,8 @@ public class ReadyDownloadFileResponse {
 
     private Integer number;
 
+    private Integer onlyNumber;
+
     private Map<String,List<Picture>> pictureMap;
 
     private String face;
@@ -53,9 +55,9 @@ public class ReadyDownloadFileResponse {
 //    }
 
     public List<String> getPictureIds() {
-        if (StringUtils.isNotBlank(this.pictureId) && this.number!=null) {
+        if (StringUtils.isNotBlank(this.pictureId) && this.onlyNumber!=null) {
             StringBuilder picture = new StringBuilder();
-            for (int i = 0; i < this.number; i++) {
+            for (int i = 0; i < this.onlyNumber; i++) {
                 picture.append(this.pictureId).append(",");
             }
             return Lists.newArrayList(picture.substring(0,picture.length()-1).split(","));

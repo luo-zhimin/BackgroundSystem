@@ -1,5 +1,6 @@
 package com.background.system.util;
 
+import com.alibaba.fastjson.JSON;
 import com.background.system.mapper.OrderMapper;
 import com.background.system.response.BaseResponse;
 import com.background.system.response.PictureResponse;
@@ -41,7 +42,7 @@ public class ZipFileUtils {
 
     private final Logger logger = LoggerFactory.getLogger(ZipFileUtils.class);
 
-    private String acceptFilePath = "/root/project/upload";
+    private String acceptFilePath = "/Users/luozhimin/Desktop/File/daily/backgroundSystem";
 
     @Autowired
     private OrderServiceImpl orderService;
@@ -59,6 +60,8 @@ public class ZipFileUtils {
 
     public List<String> picList = new ArrayList<>();
     public List<ReadyUploadFile> readyUploadFiles = Lists.newArrayList();
+
+    public static List<String> errorPictureAddress = new ArrayList<>();
 
     /**
      * 订单图片处理 压缩zip 上传服务器
@@ -109,10 +112,10 @@ public class ZipFileUtils {
             // 下载图片
             for (int i = 0; i < handleFiles.size(); i++) {
 
-                //todo 是否需要进行格式转化 全部转化成为jpg格式
-                if (handleFiles.get(i).getName().endsWith(".png") || handleFiles.get(i).getName().endsWith(".jpeg") ){
-                    //转化jpg 在进行输出
-                }
+                // 是否需要进行格式转化 全部转化成为jpg格式 前端调用微信api全部转化完毕
+//                if (handleFiles.get(i).getName().endsWith(".png") || handleFiles.get(i).getName().endsWith(".jpeg") ){
+//                    //转化jpg 在进行输出
+//                }
 
                 String picPath = "";
                 if (response.getFace().equals("单面")){
@@ -131,10 +134,16 @@ public class ZipFileUtils {
 
             // 获取PDF路径  todo size 不同
             String pdfUrl = PdfUtil.imageToMergePdf(picList, sendName, response.getWeight(), response.getHeight());
-//            handleFiles.add(new HandleFile("9999",sendName + ".pdf", pdfUrl));
             //准备进行文件处理 单独处理pdf
             FileOutputStream os = new FileOutputStream(saveName + File.separator + sendName + ".pdf");
             transformHandleFile(new HandleFile("9999",sendName + ".pdf", pdfUrl),os);
+
+            if (CollectionUtils.isNotEmpty(errorPictureAddress)){
+                logger.info("error picture write [{}]",JSON.toJSONString(errorPictureAddress));
+                FileOutputStream jsonOut = new FileOutputStream(saveName + File.separator + sendName + ".json");
+                jsonOut.write(JSON.toJSONBytes(errorPictureAddress));
+                jsonOut.close();
+            }
 
             deleteFile.add(new File(saveName));
             deleteFile.add(new File(pdfUrl));
@@ -146,6 +155,7 @@ public class ZipFileUtils {
 
         //删除原始目录
         deleteFile();
+        errorPictureAddress.clear();
     }
 
     private void transformHandleFile(HandleFile handleFile, FileOutputStream os) throws Exception {
@@ -225,9 +235,8 @@ public class ZipFileUtils {
     }
 
 
-    private Boolean zip(String inputFileName, String zipFileName) throws Exception {
+    private void zip(String inputFileName, String zipFileName) throws Exception {
         zip(zipFileName, new File(inputFileName));
-        return true;
     }
 
     private void zip(String zipFileName, File inputFile) throws Exception {

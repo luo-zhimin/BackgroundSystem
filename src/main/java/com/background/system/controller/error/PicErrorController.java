@@ -39,7 +39,7 @@ public class PicErrorController {
         List<Picture> errorList = new ArrayList<>();
         pictures.forEach(picture -> {
             try {
-                String t = "http://119.23.228.135:8600/hello?url=" + picture.getUrl() + "&type=0&os=0&xnx=0";
+                String t = "http://119.23.228.135:8600/hello?url=" + picture.getUrl() + "&type=0&os=0&xnx=0&w=100&h=200";
                 HttpRequest.get(t).execute().body();
             }catch (Exception e) {
                 errorList.add(picture);

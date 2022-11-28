@@ -274,7 +274,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             countMap.put("支付金额",orderTotalMoney);
             //不包括运费
             countMap.put("实际金额",actualMoney);
-
         }
         return countMap;
     }

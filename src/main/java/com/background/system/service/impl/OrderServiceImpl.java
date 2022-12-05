@@ -274,7 +274,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             countMap.put("支付金额",orderTotalMoney);
             //不包括运费
             countMap.put("实际金额",actualMoney);
-
         }
         return countMap;
     }
@@ -357,13 +356,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Transactional
     public void closeOrder(){
-        logger.info("really close");
+        logger.info("really close and delete orders");
         List<Long> orderIds = orderMapper.getCloseOrderId();
-        if (CollectionUtils.isEmpty(orderIds)){
-            logger.info("no order need close");
-            return;
+        List<Long> deleteOrderIds = orderMapper.getDeleteOrderIds();
+        logger.info("really order close[{}],delete[{}]",orderIds.size(),deleteOrderIds.size());
+        if (CollectionUtils.isNotEmpty(orderIds)){
+            this.orderMapper.close(orderIds);
         }
-        this.orderMapper.close(orderIds);
+        if (CollectionUtils.isNotEmpty(deleteOrderIds)){
+            this.orderMapper.delete(deleteOrderIds);
+        }
     }
 
 
@@ -373,33 +375,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
      */
     public List<ReadyDownloadFileResponse> getFile() {
         //找到支付 没有删除的订单 并且没有链接生产的
-//        List<ReadyDownloadFileResponse> orders = orderMapper.getNoZipPathOrder();
-//        if (CollectionUtils.isEmpty(orders)){
-//            return Collections.emptyList();
-//        }
-//
-//        List<SourceOrderPicture> sourceOrderPictures = Lists.newArrayList();
-//
-//        orders.forEach(order -> {
-//            sourceOrderPictures.add(SourceOrderPicture.builder().orderId(order.getId()).pictureIds(order.getPictureIds()).build());
-////            order.setPictures(pictureService.getPicturesByIds(order.getPictureIds()));
-//            order.setPictureMap(pictureService.getPicturesByIds(order.getPictureIds()).stream().collect(Collectors.groupingBy(Picture::getId)));
-//        });
-//        //18, 19, 23, 30, 29, 22, 20, 17, 21, 24, 31, 32, 25, 33, 34, 36, 35, 27
-//        logger.info("source [{}]",sourceOrderPictures);
-//        //二次处理 sort
-//        orders.forEach(order->{
-//            sourceOrderPictures.forEach(source->{
-//                if (order.getId().equals(source.getOrderId())){
-//                    source.getPictureIds().forEach(pId->{
-//                        order.getPictures().addAll(Optional.ofNullable(order.getPictureMap().get(pId)).orElse(Collections.emptyList()));
-//                    });
-//                }
-//            });
-//        });
-//        return orders;
-        //找到支付 没有删除的订单 并且没有链接生产的
         List<ReadyDownloadFileResponse> orders = orderMapper.getNoZipPathOrder();
+        //orderElements
         if (CollectionUtils.isEmpty(orders)) {
             return Collections.emptyList();
         }

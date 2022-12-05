@@ -37,6 +37,10 @@ public class AddressServiceImpl extends BaseService implements AddressService {
         Token weChatCurrentUser = getWeChatCurrentUser();
         request.setOpenid(weChatCurrentUser.getUsername());
 //        request.setIsDel(false);
+        //校验手机号
+        if (request.getPhone().length()>11){
+            throw new ServiceException(1000,"请输入正确的手机号");
+        }
         return addressMapper.insert(request)>0;
     }
 

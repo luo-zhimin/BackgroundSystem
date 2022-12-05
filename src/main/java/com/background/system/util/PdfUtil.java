@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.background.system.util.ZipFileUtils.errorPictureAddress;
 
 /**
  * pdf工具类
@@ -83,9 +82,7 @@ public class PdfUtil {
                         url = adjustImageSize(file, width, height);
                 } catch (Exception e) {
                     log.error("调整图片大小失败，异常{}", e.getMessage()+"-> path："+file);
-                    //失败写入txt文件
-//                    throw new ServiceException(500, e.getMessage());
-                    errorPictureAddress.add(file);
+
                 }
                 if (StringUtils.isBlank(url)) {
                     continue;

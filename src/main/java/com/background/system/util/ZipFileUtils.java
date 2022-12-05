@@ -1,5 +1,6 @@
 package com.background.system.util;
 
+import com.alibaba.fastjson.JSON;
 import com.background.system.mapper.OrderMapper;
 import com.background.system.response.BaseResponse;
 import com.background.system.response.PictureResponse;
@@ -41,8 +42,7 @@ public class ZipFileUtils {
 
     private final Logger logger = LoggerFactory.getLogger(ZipFileUtils.class);
 
-    //private String acceptFilePath = "/root/project/upload";
-    private String acceptFilePath = "/Users/sugar/Desktop/BackgroundSystem/upload";
+    private String acceptFilePath = "/root/project/upload";
 
     @Autowired
     private OrderServiceImpl orderService;
@@ -60,6 +60,8 @@ public class ZipFileUtils {
 
     public List<String> picList = new ArrayList<>();
     public List<ReadyUploadFile> readyUploadFiles = Lists.newArrayList();
+
+    public static List<String> errorPictureAddress = new ArrayList<>();
 
     /**
      * 订单图片处理 压缩zip 上传服务器
@@ -88,6 +90,9 @@ public class ZipFileUtils {
             // init
             picList.clear();
 
+            int weight = response.getWeight();
+            int height = response.getHeight();
+
             //一个订单里面所有的照片
             List<HandleFile> handleFiles = Lists.newArrayList();
             response.getPictures().forEach(picture -> {
@@ -115,7 +120,7 @@ public class ZipFileUtils {
                     for (int j = 1 ; j <= t ; j++) {
                         String local = saveName + File.separator + (i + 1) + "-" + handleFiles.get(i).getId() + "-" + j + ".png";
                         FileOutputStream pre = new FileOutputStream(local);
-                        transformHandleFile(new HandleFile("default","default", "https://img.asugar.cn/asugar/" + j +".png"), pre,j);
+                        transformHandleFile(new HandleFile("default","default", "https://img.asugar.cn/asugar/" + j +".png"), pre,j, weight, height);
                     }
                     t = 0;
                     picPath = saveName + File.separator + (i + 1) + "-" + handleFiles.get(i).getId()
@@ -124,7 +129,7 @@ public class ZipFileUtils {
                     for (int j = 1 ; j <= t ; j++) {
                         String local = saveName + File.separator + (i + 1) + "-" + handleFiles.get(i).getId() + "-" + j + ".png";
                         FileOutputStream pre = new FileOutputStream(local);
-                        transformHandleFile(new HandleFile("default","default", "https://img.asugar.cn/asugar/" + j +".jpg"), pre,j);
+                        transformHandleFile(new HandleFile("default","default", "https://img.asugar.cn/asugar/" + j +".jpg"), pre,j, weight, height);
                     }
                     t = 0;
                     picPath = saveName + File.separator + (i + 1) + "-" + handleFiles.get(i).getId()
@@ -134,7 +139,14 @@ public class ZipFileUtils {
                 picList.add(picPath);
                 deleteFile.add(new File(picPath));
                 FileOutputStream outputStream = new FileOutputStream(picPath);
-                transformHandleFile(handleFiles.get(i), outputStream, i);
+                transformHandleFile(handleFiles.get(i), outputStream, i, weight, height);
+            }
+
+            if (CollectionUtils.isNotEmpty(errorPictureAddress)){
+                logger.info("error picture write [{}]",JSON.toJSONString(errorPictureAddress));
+                FileOutputStream jsonOut = new FileOutputStream(saveName + File.separator + sendName + ".json");
+                jsonOut.write(JSON.toJSONBytes(errorPictureAddress));
+                jsonOut.close();
             }
 
             deleteFile.add(new File(saveName));
@@ -146,14 +158,20 @@ public class ZipFileUtils {
 
         //删除原始目录
         deleteFile();
+        errorPictureAddress.clear();
     }
 
-    private void transformHandleFile(HandleFile handleFile, FileOutputStream os, int i ) throws Exception {
+    private void transformHandleFile(HandleFile handleFile, FileOutputStream os, int i , int width, int height) throws Exception {
         // 这里用py控制图片的旋转和精度
         String temp = handleFile.getUrl();
         // 非预置图片 - 旋转操作
         if (!handleFile.getId().equals("default")) {
-            temp = "http://119.23.228.135:8600/hello?url=" + temp + "&type=0&os=0&" + "xnx=" + (i % 2 == 0 ? "1" : "0");
+            try {
+                temp = "http://119.23.228.135:8600/hello?url=" + temp + "&type=0&os=0&" + "xnx=" + (i % 2 == 0 ? "1" : "0") + "&w=" + width + "&h=" + height;
+            }catch (Exception exception){
+                errorPictureAddress.add(temp);
+                logger.error("transformHandleFile python picture[{}],exception[{}]",temp,exception);
+            }
         }
         logger.info("当前旋转图片为：" + temp);
         URL url = new URL(temp);
@@ -233,9 +251,8 @@ public class ZipFileUtils {
     }
 
 
-    private Boolean zip(String inputFileName, String zipFileName) throws Exception {
+    private void zip(String inputFileName, String zipFileName) throws Exception {
         zip(zipFileName, new File(inputFileName));
-        return true;
     }
 
     private void zip(String zipFileName, File inputFile) throws Exception {

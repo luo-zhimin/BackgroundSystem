@@ -169,7 +169,9 @@ public class ZipFileUtils {
             try {
                 temp = "http://119.23.228.135:8600/hello?url=" + temp + "&type=0&os=0&" + "xnx=" + (i % 2 == 0 ? "1" : "0") + "&w=" + width + "&h=" + height;
             }catch (Exception exception){
+                //todo error download own picture and set errorCollections record
                 errorPictureAddress.add(temp);
+                temp = handleFile.getUrl();
                 logger.error("transformHandleFile python picture[{}],exception[{}]",temp,exception);
             }
         }

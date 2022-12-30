@@ -38,8 +38,6 @@ public interface OrderMapper extends BaseMapper<Orderd> {
 
     int deleteOrderById(@Param("id")String orderId);
 
-//    List<OrderCountResponse> getOrderCount();
-
     Integer getOrderTotalMoney();
 
     List<OrderCount> getOrderCount();

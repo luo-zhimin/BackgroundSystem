@@ -175,7 +175,7 @@
     </select>
 
     <select id="getCloseCoupon" resultType="java.lang.Long">
-        select id from coupon where date_add(release_time,interval 7 day) &lt; now()
+        select id from coupon where status=0 and date_add(release_time,interval 7 day) &lt; now()
     </select>
 
     <update id="close">

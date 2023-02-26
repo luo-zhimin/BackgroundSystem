@@ -31,7 +31,6 @@ public class Scheduling {
     private CouponServiceImpl couponService;
 
     @Scheduled(fixedDelayString="1800000")
-    //cron = "0 0/30 * * * ? ",
     public synchronized void executeCreateZip(){
         logger.info("scheduling execute time[{}]", LocalDateTime.now().getHour()+":"+LocalDateTime.now().getMinute());
         timeTask.task();

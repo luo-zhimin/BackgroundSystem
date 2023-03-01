@@ -57,7 +57,7 @@ public class AliUploadUtils {
 
     private static final Double ZERO_FOUR = 0.4;
 
-    private static final int descSize = 1024*4;
+    private static final int descSize = 1024*1024;
 
     private static Map<String,Object> zipMap = new ConcurrentHashMap<>();
 
@@ -77,7 +77,7 @@ public class AliUploadUtils {
         OSS ossClient = new OSSClientBuilder().build(ENDPOINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET);
         //名字 后缀会重叠
         //default 多个文件 前端循环
-        String title = father.equals("zip") ? file.getOriginalFilename() : System.currentTimeMillis() + "-" + file.getOriginalFilename();//zh_cn path name
+        String title = !father.equals("default") ? file.getOriginalFilename() : System.currentTimeMillis() + "-" + file.getOriginalFilename();//zh_cn path name
         String path = father+File.separator +title;
         try {
 
@@ -109,22 +109,11 @@ public class AliUploadUtils {
         OSS ossClient = new OSSClientBuilder().build(ENDPOINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET);
         long start = System.currentTimeMillis();
         for (MultipartFile file : files) {
-            String title = father.equals("zip") ? file.getOriginalFilename() : System.currentTimeMillis() + "-" + file.getOriginalFilename();//zh_cn path name
+            String title = !father.equals("default") ? file.getOriginalFilename() : System.currentTimeMillis() + "-" + file.getOriginalFilename();//zh_cn path name
             String path = father + File.separator + title;
 
             PutObjectRequest request = null;
             try {
-
-                //设置size 大小 方便下面压缩使用
-//                ByteArrayInputStream inputStream = new ByteArrayInputStream(file.getBytes());
-//                BufferedImage bufferedImage = ImageIO.read(inputStream);
-//
-//                ByteArrayOutputStream outputStream = new ByteArrayOutputStream(file.getBytes().length);
-//                Thumbnails.of(inputStream)
-//                        //size(width,height)
-//                        .size(bufferedImage.getWidth(),bufferedImage.getHeight())
-//                        .toOutputStream(outputStream);
-
                 //图片压缩
                 byte[] bytes = compressPicForScale(file.getBytes(), descSize);
                 request = new PutObjectRequest(BUCKET_NAME, path, new ByteArrayInputStream(bytes));

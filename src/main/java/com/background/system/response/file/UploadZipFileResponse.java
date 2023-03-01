@@ -1,27 +1,26 @@
-package com.background.system.response;
+package com.background.system.response.file;
 
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Tolerate;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Created by IntelliJ IDEA.
  *
  * @Author : 镜像
- * @create 2022/8/31 15:09
+ * @create 2023/3/1 17:00
  */
 @Data
 @ToString
 @Builder
-public class PictureResponse {
+public class UploadZipFileResponse {
 
-    private String id;
-
-    private String url;
+    private MultipartFile  file;
 
     private String orderId;
 
     @Tolerate
-    public PictureResponse(){}
+    public UploadZipFileResponse(){}
 }

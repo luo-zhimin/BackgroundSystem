@@ -34,6 +34,7 @@ public class Scheduling {
     public synchronized void executeCreateZip(){
         logger.info("scheduling execute time[{}]", LocalDateTime.now().getHour()+":"+LocalDateTime.now().getMinute());
         timeTask.task();
+//        timeTask.sourceTask();
     }
 
     @Scheduled(cron = "0 0 12 * * ? ")

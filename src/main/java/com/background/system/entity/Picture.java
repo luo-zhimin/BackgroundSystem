@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.experimental.Tolerate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 @ApiModel(value="picture")
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class Picture {
 
     @ApiModelProperty(value="主键Id")
@@ -42,4 +43,7 @@ public class Picture {
             pattern = "yyyy-MM-dd HH:mm:ss"
     )
     private LocalDateTime createTime;
+
+    @Tolerate
+    public Picture(){}
 }

@@ -2,6 +2,7 @@ package com.background.system.controller;
 
 import com.background.system.annotation.IgnoreLogin;
 import com.background.system.util.Result;
+import com.background.system.util.SourceZipFileUtils;
 import com.background.system.util.ZipFileUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,9 @@ public class TimeTask {
     @Resource
     private ZipFileUtils zipFileUtils;
 
+    @Resource
+    private SourceZipFileUtils sourceZipFileUtils;
+
     @GetMapping("zipTask")
     @IgnoreLogin
     public Result<?> task () {
@@ -32,6 +36,19 @@ public class TimeTask {
         zipFileUtils.uploadZip();
 
         return Result.success("压缩上传完毕");
+    }
+
+    @GetMapping("source/zipTask")
+    @IgnoreLogin
+    public Result<?> sourceTask () {
+
+        sourceZipFileUtils.deleteFile.clear();
+        sourceZipFileUtils.readyUploadFiles.clear();
+
+        sourceZipFileUtils.cratePictureZip();
+        sourceZipFileUtils.uploadZip();
+
+        return Result.success("sourceZip-压缩上传完毕");
     }
 
 }

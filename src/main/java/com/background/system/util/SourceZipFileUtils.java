@@ -2,11 +2,11 @@ package com.background.system.util;
 
 import com.alibaba.fastjson.JSON;
 import com.background.system.mapper.OrderMapper;
-import com.background.system.response.BaseResponse;
 import com.background.system.response.PictureResponse;
 import com.background.system.response.file.HandleFile;
 import com.background.system.response.file.ReadyDownloadFileResponse;
 import com.background.system.response.file.ReadyUploadFile;
+import com.background.system.response.file.UploadZipFileResponse;
 import com.background.system.service.impl.OrderServiceImpl;
 import com.background.system.service.impl.PictureServiceImpl;
 import com.google.common.collect.Lists;
@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.URL;
@@ -28,7 +29,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -41,9 +44,9 @@ import java.util.zip.ZipOutputStream;
  */
 @Service
 @SuppressWarnings({"all"})
-public class ZipFileUtils {
+public class SourceZipFileUtils {
 
-    private final Logger logger = LoggerFactory.getLogger(ZipFileUtils.class);
+    private final Logger logger = LoggerFactory.getLogger(SourceZipFileUtils.class);
 
     @Value("${zip.path}")
     private String acceptFilePath;
@@ -63,6 +66,7 @@ public class ZipFileUtils {
     public List<File> deleteFile = Lists.newArrayList();
 
     public List<String> picList = new ArrayList<>();
+
     public List<ReadyUploadFile> readyUploadFiles = Lists.newArrayList();
 
     public static List<String> errorPictureAddress = new ArrayList<>();
@@ -94,9 +98,6 @@ public class ZipFileUtils {
             // init
             picList.clear();
 
-            int weight = response.getWeight();
-            int height = response.getHeight();
-
             //一个订单里面所有的照片
             List<HandleFile> handleFiles = Lists.newArrayList();
             response.getPictures().forEach(picture -> {
@@ -105,45 +106,31 @@ public class ZipFileUtils {
 
             logger.info("handleFiles[{}]", handleFiles.size());
 
-
             //创建目录 压缩zip 删除 目录 保留zip
             //订单号+成品名称+数量  日期+支付订单号+size(name)+数量
-            String sendName = DateTimeFormatter.ofPattern("yyyyMMddhhmmss").format(LocalDateTime.now()) + "-" + response.getWxNo() + "-" + response.getSizeName() + "-" + response.getNumber();
+            String sendName = response.getId() + "-" + DateTimeFormatter.ofPattern("yyyyMMddhhmmss")
+                    .format(LocalDateTime.now()) + "-" + response.getWxNo() + "-" + response.getSizeName() + "-" + response.getNumber();
 
             String saveName = acceptFilePath + File.separator + sendName;
 
             //1.创建临时文件
             judgeFileExists(Lists.newArrayList(saveName));
 
-
-            int t = 2;
             // 下载图片
             for (int i = 0; i < handleFiles.size(); i++) {
+
                 String picPath = "";
                 if (response.getFace().equals("单面")) {
-                    for (int j = 1; j <= t; j++) {
-                        String local = saveName + File.separator + (i + 1) + "-" + handleFiles.get(i).getId() + "-" + j + ".png";
-                        FileOutputStream pre = new FileOutputStream(local);
-                        transformHandleFile(new HandleFile("default", "default", "https://img.asugar.cn/asugar/" + j + ".png"), pre, j, weight, height);
-                    }
-                    t = 0;
                     picPath = saveName + File.separator + (i + 1) + "-" + handleFiles.get(i).getId()
                             + "-" + handleFiles.get(i).getName();
                 } else {
-                    for (int j = 1; j <= t; j++) {
-                        String local = saveName + File.separator + (i + 1) + "-" + handleFiles.get(i).getId() + "-" + j + ".png";
-                        FileOutputStream pre = new FileOutputStream(local);
-                        transformHandleFile(new HandleFile("default", "default", "https://img.asugar.cn/asugar/" + j + ".jpg"), pre, j, weight, height);
-                    }
-                    t = 0;
                     picPath = saveName + File.separator + (i + 1) + "-" + handleFiles.get(i).getId()
                             + "-" + (i % 2 == 0 ? "反" : "正") + "-" + handleFiles.get(i).getName();
                 }
 
                 picList.add(picPath);
-                deleteFile.add(new File(picPath));
                 FileOutputStream outputStream = new FileOutputStream(picPath);
-                transformHandleFile(handleFiles.get(i), outputStream, i, weight, height);
+                transformHandleFile(handleFiles.get(i), outputStream);
             }
 
             if (CollectionUtils.isNotEmpty(errorPictureAddress)) {
@@ -165,22 +152,8 @@ public class ZipFileUtils {
         errorPictureAddress.clear();
     }
 
-    private void transformHandleFile(HandleFile handleFile, FileOutputStream os, int i, int width, int height) throws Exception {
-        // 这里用py控制图片的旋转和精度
-        String temp = handleFile.getUrl();
-        // 非预置图片 - 旋转操作
-        if (!handleFile.getId().equals("default")) {
-            try {
-                temp = "http://119.23.228.135:8500/hello?url=" + temp + "&type=0&os=0&" + "xnx=" + (i % 2 == 0 ? "1" : "0") + "&w=" + width + "&h=" + height;
-            } catch (Exception exception) {
-                //todo error download own picture and set errorCollections record
-                errorPictureAddress.add(temp);
-                temp = handleFile.getUrl();
-                logger.error("transformHandleFile python picture[{}],exception[{}]", temp, exception);
-            }
-        }
-        logger.info("当前旋转图片为：" + temp);
-        URL url = new URL(temp);
+    private void transformHandleFile(HandleFile handleFile, FileOutputStream os) throws Exception {
+        URL url = new URL(handleFile.getUrl());
         URLConnection urlConnection = url.openConnection();
         InputStream inputStream = urlConnection.getInputStream();
         byte[] bytes = readInputStream(inputStream);
@@ -193,29 +166,40 @@ public class ZipFileUtils {
     @SneakyThrows
     public void uploadZip() {
         if (CollectionUtils.isNotEmpty(readyUploadFiles)) {
-            List<BaseResponse> baseResponses = Lists.newArrayList();
-            logger.info("开始上传zip包");
-//            List<MockMultipartFile> uploadFiles = Lists.newArrayList();
-            for (ReadyUploadFile readyUploadFile : readyUploadFiles) {
+            List<UploadZipFileResponse> uploadFiles = Lists.newArrayList();
+            for (int i = 0; i < readyUploadFiles.size(); i++) {
                 //file - > MultipartFile
-                byte[] bytes = Files.readAllBytes(Paths.get(readyUploadFile.getUrl()));
-                MockMultipartFile mockMultipartFile = new MockMultipartFile("file", readyUploadFile.getName(), "text/plain", bytes);
-//                uploadFiles.add(mockMultipartFile);
-                PictureResponse picture = pictureService.getPicture(mockMultipartFile, "zip");
-                baseResponses.add(new BaseResponse(readyUploadFile.getOrderId(), picture.getUrl()));
-                deleteFile.add(new File(readyUploadFile.getUrl()));
+                byte[] bytes = Files.readAllBytes(Paths.get(readyUploadFiles.get(i).getUrl()));
+
+                uploadFiles.add(UploadZipFileResponse.builder()
+                        .orderId(readyUploadFiles.get(i).getOrderId())
+                        .file(new MockMultipartFile("file", readyUploadFiles.get(i).getName(), "text/plain", bytes))
+                        .build());
             }
 
             //批量处理 组装数据 内存 减少时间消耗
-//            pictureService.upload()
-            logger.info("上传完毕开始删除数据");
-            //上传完毕删除数据
-            deleteFile();
+            List<PictureResponse> uploadResponses = pictureService.upload(uploadFiles, "sourceZip");
+            Map<String, String> uploadMap = uploadResponses.stream()
+                    .collect(Collectors.toMap(PictureResponse::getOrderId, PictureResponse::getUrl));
 
-            //处理准备进入数据库
-            orderMapper.updateZipPathById(baseResponses);
-            //数据清空
-            baseResponses.clear();
+            //写入文件 进行压缩
+            FileOutputStream jsonOut = new FileOutputStream(acceptFilePath + File.separator + "upload.json");
+            jsonOut.write(JSON.toJSONBytes(uploadMap));
+            jsonOut.close();
+            //压缩
+            zip(acceptFilePath, acceptFilePath + File.separator + "upload.zip");
+
+            //上传
+            MultipartFile file = new MockMultipartFile("file", "upload.zip", "text/plain",
+                    Files.readAllBytes(Paths.get(acceptFilePath + File.separator + "upload.zip")));
+
+            PictureResponse picture = pictureService.getPicture(file, "uploadZip");
+
+            logger.info("上传结果[{}]", picture.getUrl());
+
+            //上传完毕删除数据
+            logger.info("上传完毕开始删除数据");
+            deleteFile();
         }
     }
 

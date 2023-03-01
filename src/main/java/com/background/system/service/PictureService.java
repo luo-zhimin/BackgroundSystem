@@ -2,6 +2,7 @@ package com.background.system.service;
 
 import com.background.system.entity.Picture;
 import com.background.system.response.PictureResponse;
+import com.background.system.response.file.UploadZipFileResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public interface PictureService {
 
     Boolean updateIndexPicture(PictureResponse request);
 
-    List<PictureResponse> upload(MultipartFile[] file,String father);
+    List<PictureResponse> upload(List<UploadZipFileResponse> uploadFiles, String father);
 
     Map<String,Object> readMemory();
 }

@@ -38,12 +38,12 @@ public class PictureController {
         return Result.success(pictureService.getPicture(file,"default"));
     }
 
-    @PostMapping("/upload")
-    @ApiOperation("批量-上传图片")
-    @IgnoreLogin
-    public Result<?> upload(MultipartFile[] file) {
-        return Result.success(pictureService.upload(file,"default"));
-    }
+//    @PostMapping("/upload")
+//    @ApiOperation("批量-上传图片")
+//    @IgnoreLogin
+//    public Result<?> upload(MultipartFile[] file) {
+//        return Result.success(pictureService.upload(file,"default"));
+//    }
 
     @PostMapping("uploadIndex")
     @ApiOperation("上传首页图片")

@@ -1,7 +1,7 @@
 package com.background.system.util;
 
 import com.alibaba.fastjson.JSON;
-import com.background.system.mapper.OrderMapper;
+import com.background.system.config.ApplicationContextProvider;
 import com.background.system.response.PictureResponse;
 import com.background.system.response.file.HandleFile;
 import com.background.system.response.file.ReadyDownloadFileResponse;
@@ -14,13 +14,15 @@ import lombok.SneakyThrows;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import javax.annotation.Resource;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -30,10 +32,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+
+import static cn.hutool.core.util.ZipUtil.zip;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,22 +44,12 @@ import java.util.zip.ZipOutputStream;
  * @create 2022/9/3 01:10
  */
 @Service
-@SuppressWarnings({"all"})
 public class SourceZipFileUtils {
 
     private final Logger logger = LoggerFactory.getLogger(SourceZipFileUtils.class);
 
     @Value("${zip.path}")
     private String acceptFilePath;
-
-    @Autowired
-    private OrderServiceImpl orderService;
-
-    @Autowired
-    private PictureServiceImpl pictureService;
-
-    @Autowired
-    private OrderMapper orderMapper;
 
     /**
      * 准备删除的文件
@@ -71,19 +62,31 @@ public class SourceZipFileUtils {
 
     public static List<String> errorPictureAddress = new ArrayList<>();
 
+    @Resource
+    private ZipFileUtils zipFileUtils;
+
     /**
      * 订单图片处理 压缩zip 上传服务器
      */
     @SneakyThrows
-    public void cratePictureZip() {
+    public void cratePictureZip(String orderIds) {
+
+        List<String> targets = CommonUtils.getTargets(orderIds);
+
+        if (CollectionUtils.isEmpty(targets)) {
+            logger.info("无待处理文件");
+            return;
+        }
 
         // init
         picList.clear();
 
         //扫描前创建扫描目录
-        judgeFileExists(Lists.newArrayList(acceptFilePath));
+        zipFileUtils.judgeFileExists(Lists.newArrayList(acceptFilePath));
 
-        List<ReadyDownloadFileResponse> readyDownloadFIleResponses = orderService.getFile();
+        List<ReadyDownloadFileResponse> readyDownloadFIleResponses = ApplicationContextProvider
+                .getBean(OrderServiceImpl.class).getFile(targets);
+
         if (CollectionUtils.isEmpty(readyDownloadFIleResponses)) {
             logger.info("无待处理文件");
             return;
@@ -114,7 +117,7 @@ public class SourceZipFileUtils {
             String saveName = acceptFilePath + File.separator + sendName;
 
             //1.创建临时文件
-            judgeFileExists(Lists.newArrayList(saveName));
+            zipFileUtils.judgeFileExists(Lists.newArrayList(saveName));
 
             // 下载图片
             for (int i = 0; i < handleFiles.size(); i++) {
@@ -129,16 +132,12 @@ public class SourceZipFileUtils {
                 }
 
                 picList.add(picPath);
+                deleteFile.add(new File(picPath));
                 FileOutputStream outputStream = new FileOutputStream(picPath);
                 transformHandleFile(handleFiles.get(i), outputStream);
             }
 
-            if (CollectionUtils.isNotEmpty(errorPictureAddress)) {
-                logger.info("error picture write [{}]", JSON.toJSONString(errorPictureAddress));
-                FileOutputStream jsonOut = new FileOutputStream(saveName + File.separator + sendName + ".json");
-                jsonOut.write(JSON.toJSONBytes(errorPictureAddress));
-                jsonOut.close();
-            }
+            zipFileUtils.handleErrorPicture(errorPictureAddress);
 
             deleteFile.add(new File(saveName));
             //第一次打包 原始包
@@ -148,7 +147,7 @@ public class SourceZipFileUtils {
         }
 
         //删除原始目录
-        deleteFile();
+        zipFileUtils.deleteFile();
         errorPictureAddress.clear();
     }
 
@@ -156,133 +155,54 @@ public class SourceZipFileUtils {
         URL url = new URL(handleFile.getUrl());
         URLConnection urlConnection = url.openConnection();
         InputStream inputStream = urlConnection.getInputStream();
-        byte[] bytes = readInputStream(inputStream);
+        byte[] bytes = zipFileUtils.readInputStream(inputStream);
         inputStream.close();
         os.write(bytes);
         os.close();
     }
 
-
     @SneakyThrows
     public void uploadZip() {
         if (CollectionUtils.isNotEmpty(readyUploadFiles)) {
             List<UploadZipFileResponse> uploadFiles = Lists.newArrayList();
-            for (int i = 0; i < readyUploadFiles.size(); i++) {
+            for (ReadyUploadFile readyUploadFile : readyUploadFiles) {
                 //file - > MultipartFile
-                byte[] bytes = Files.readAllBytes(Paths.get(readyUploadFiles.get(i).getUrl()));
+                byte[] bytes = Files.readAllBytes(Paths.get(readyUploadFile.getUrl()));
 
                 uploadFiles.add(UploadZipFileResponse.builder()
-                        .orderId(readyUploadFiles.get(i).getOrderId())
-                        .file(new MockMultipartFile("file", readyUploadFiles.get(i).getName(), "text/plain", bytes))
+                        .orderId(readyUploadFile.getOrderId())
+                        .file(new MockMultipartFile("file", readyUploadFile.getName(), "text/plain", bytes))
                         .build());
             }
+
+            PictureServiceImpl pictureService = ApplicationContextProvider.getBean(PictureServiceImpl.class);
 
             //批量处理 组装数据 内存 减少时间消耗
             List<PictureResponse> uploadResponses = pictureService.upload(uploadFiles, "sourceZip");
             Map<String, String> uploadMap = uploadResponses.stream()
                     .collect(Collectors.toMap(PictureResponse::getOrderId, PictureResponse::getUrl));
 
+            //todo 后面写入excel中进行下载
+
             //写入文件 进行压缩
             FileOutputStream jsonOut = new FileOutputStream(acceptFilePath + File.separator + "upload.json");
             jsonOut.write(JSON.toJSONBytes(uploadMap));
             jsonOut.close();
-            //压缩
-            zip(acceptFilePath, acceptFilePath + File.separator + "upload.zip");
 
             //上传
-            MultipartFile file = new MockMultipartFile("file", "upload.zip", "text/plain",
-                    Files.readAllBytes(Paths.get(acceptFilePath + File.separator + "upload.zip")));
+            MultipartFile file = new MockMultipartFile("file", "upload.json", "text/plain",
+                    Files.readAllBytes(Paths.get(acceptFilePath + File.separator + "upload.json")));
 
-            PictureResponse picture = pictureService.getPicture(file, "uploadZip");
+            deleteFile.add(new File(acceptFilePath + File.separator + "upload.json"));
+
+            PictureResponse picture = pictureService.getPicture(file, "uploadJson");
 
             logger.info("上传结果[{}]", picture.getUrl());
 
             //上传完毕删除数据
             logger.info("上传完毕开始删除数据");
-            deleteFile();
+            zipFileUtils.deleteFile();
         }
     }
 
-
-    private void deleteFile() {
-        deleteFile.forEach(this::deleteFile);
-    }
-
-    private void deleteFile(File file) {
-        if (file.exists()) {
-            if (file.getAbsolutePath().equals(acceptFilePath)) {
-                return;
-            }
-            if (file.isDirectory()) {
-                for (File listFile : Objects.requireNonNull(file.listFiles())) {
-                    deleteFile(listFile);
-                }
-            } else if (file.isFile()) {
-                //file
-                file.delete();
-            }
-            boolean delete = file.getAbsoluteFile().delete();
-            logger.info("delete " + file.getName() + " status " + delete);
-        }
-    }
-
-
-    private void judgeFileExists(List<String> fileNames) {
-        fileNames.forEach(fileName -> {
-            File file = new File(fileName);
-            if (!file.exists()) {
-                boolean mkdirs = file.mkdirs();
-                logger.info(file.getName() + " 第一次创建成功 " + mkdirs);
-            }
-        });
-    }
-
-
-    private void zip(String inputFileName, String zipFileName) throws Exception {
-        zip(zipFileName, new File(inputFileName));
-    }
-
-    private void zip(String zipFileName, File inputFile) throws Exception {
-        ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(Paths.get(zipFileName)));
-        zip(out, inputFile, "");
-        out.flush();
-        out.close();
-    }
-
-    private void zip(ZipOutputStream out, File f, String base) throws Exception {
-        if (f.isDirectory()) {
-            File[] fl = f.listFiles();
-            out.putNextEntry(new ZipEntry(base + "/"));
-            base = base.length() == 0 ? "" : base + "/";
-            assert fl != null;
-            for (File file : fl) {
-                zip(out, file, base + file.getName());
-            }
-        } else {
-            out.putNextEntry(new ZipEntry(base));
-            FileInputStream in = new FileInputStream(f);
-            int b;
-            while ((b = in.read()) != -1) {
-                out.write(b);
-            }
-            in.close();
-        }
-    }
-
-    private byte[] readInputStream(InputStream inStream) throws Exception {
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        //创建一个Buffer字符串
-        byte[] buffer = new byte[1024 * 1024];//10m
-        //每次读取的字符串长度，如果为-1，代表全部读取完毕
-        int len;
-        //使用一个输入流从buffer里把数据读取出来
-        while ((len = inStream.read(buffer)) != -1) {
-            //用输出流往buffer里写入数据，中间参数代表从哪个位置开始读，len代表读取的长度
-            outStream.write(buffer, 0, len);
-        }
-        //关闭输入流
-        inStream.close();
-        //把outStream里的数据写入内存
-        return outStream.toByteArray();
-    }
 }

@@ -6,6 +6,7 @@ import com.background.system.util.SourceZipFileUtils;
 import com.background.system.util.ZipFileUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -16,7 +17,7 @@ import javax.annotation.Resource;
  * @Date: 2022/9/3 4:37 PM
  */
 @RestController
-@RequestMapping("time")
+@RequestMapping("/time/")
 public class TimeTask {
 
     @Resource
@@ -40,12 +41,12 @@ public class TimeTask {
 
     @GetMapping("source/zipTask")
     @IgnoreLogin
-    public Result<?> sourceTask () {
+    public Result<?> sourceTask (@RequestParam("source") String source) {
 
         sourceZipFileUtils.deleteFile.clear();
         sourceZipFileUtils.readyUploadFiles.clear();
 
-        sourceZipFileUtils.cratePictureZip();
+        sourceZipFileUtils.cratePictureZip(source);
         sourceZipFileUtils.uploadZip();
 
         return Result.success("sourceZip-压缩上传完毕");

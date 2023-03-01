@@ -1,6 +1,7 @@
 package com.background.system.util;
 
 import com.alibaba.fastjson.JSON;
+import com.background.system.config.ApplicationContextProvider;
 import com.background.system.mapper.OrderMapper;
 import com.background.system.response.BaseResponse;
 import com.background.system.response.PictureResponse;
@@ -14,7 +15,6 @@ import lombok.SneakyThrows;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
@@ -27,6 +27,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
@@ -48,15 +49,6 @@ public class ZipFileUtils {
     @Value("${zip.path}")
     private String acceptFilePath;
 
-    @Autowired
-    private OrderServiceImpl orderService;
-
-    @Autowired
-    private PictureServiceImpl pictureService;
-
-    @Autowired
-    private OrderMapper orderMapper;
-
     /**
      * 准备删除的文件
      */
@@ -68,7 +60,9 @@ public class ZipFileUtils {
     public static List<String> errorPictureAddress = new ArrayList<>();
 
     /**
-     * 订单图片处理 压缩zip 上传服务器
+     * 订单图片处理 压缩zip 上传服务器<br>
+     *
+     * 如果是自己服务器，直接压缩zip，不用在上传服务器 生成更快 -- 是否需要改变路径
      */
     @SneakyThrows
     public void cratePictureZip() {
@@ -79,7 +73,9 @@ public class ZipFileUtils {
         //扫描前创建扫描目录
         judgeFileExists(Lists.newArrayList(acceptFilePath));
 
-        List<ReadyDownloadFileResponse> readyDownloadFIleResponses = orderService.getFile();
+        List<ReadyDownloadFileResponse> readyDownloadFIleResponses = ApplicationContextProvider
+                .getBean(OrderServiceImpl.class).getFile(Collections.emptyList());
+
         if (CollectionUtils.isEmpty(readyDownloadFIleResponses)) {
             logger.info("无待处理文件");
             return;
@@ -105,7 +101,6 @@ public class ZipFileUtils {
 
             logger.info("handleFiles[{}]", handleFiles.size());
 
-
             //创建目录 压缩zip 删除 目录 保留zip
             //订单号+成品名称+数量  日期+支付订单号+size(name)+数量
             String sendName = DateTimeFormatter.ofPattern("yyyyMMddhhmmss").format(LocalDateTime.now()) + "-" + response.getWxNo() + "-" + response.getSizeName() + "-" + response.getNumber();
@@ -114,7 +109,6 @@ public class ZipFileUtils {
 
             //1.创建临时文件
             judgeFileExists(Lists.newArrayList(saveName));
-
 
             int t = 2;
             // 下载图片
@@ -146,12 +140,7 @@ public class ZipFileUtils {
                 transformHandleFile(handleFiles.get(i), outputStream, i, weight, height);
             }
 
-            if (CollectionUtils.isNotEmpty(errorPictureAddress)) {
-                logger.info("error picture write [{}]", JSON.toJSONString(errorPictureAddress));
-                FileOutputStream jsonOut = new FileOutputStream(saveName + File.separator + sendName + ".json");
-                jsonOut.write(JSON.toJSONBytes(errorPictureAddress));
-                jsonOut.close();
-            }
+            handleErrorPicture(errorPictureAddress);
 
             deleteFile.add(new File(saveName));
             //第一次打包 原始包
@@ -195,32 +184,31 @@ public class ZipFileUtils {
         if (CollectionUtils.isNotEmpty(readyUploadFiles)) {
             List<BaseResponse> baseResponses = Lists.newArrayList();
             logger.info("开始上传zip包");
-//            List<MockMultipartFile> uploadFiles = Lists.newArrayList();
+            PictureServiceImpl pictureService = ApplicationContextProvider.getBean(PictureServiceImpl.class);
+
             for (ReadyUploadFile readyUploadFile : readyUploadFiles) {
                 //file - > MultipartFile
                 byte[] bytes = Files.readAllBytes(Paths.get(readyUploadFile.getUrl()));
                 MockMultipartFile mockMultipartFile = new MockMultipartFile("file", readyUploadFile.getName(), "text/plain", bytes);
-//                uploadFiles.add(mockMultipartFile);
                 PictureResponse picture = pictureService.getPicture(mockMultipartFile, "zip");
                 baseResponses.add(new BaseResponse(readyUploadFile.getOrderId(), picture.getUrl()));
                 deleteFile.add(new File(readyUploadFile.getUrl()));
             }
 
             //批量处理 组装数据 内存 减少时间消耗
-//            pictureService.upload()
             logger.info("上传完毕开始删除数据");
             //上传完毕删除数据
             deleteFile();
 
             //处理准备进入数据库
-            orderMapper.updateZipPathById(baseResponses);
+            ApplicationContextProvider.getBean(OrderMapper.class).updateZipPathById(baseResponses);
             //数据清空
             baseResponses.clear();
         }
     }
 
 
-    private void deleteFile() {
+    public void deleteFile() {
         deleteFile.forEach(this::deleteFile);
     }
 
@@ -243,7 +231,7 @@ public class ZipFileUtils {
     }
 
 
-    private void judgeFileExists(List<String> fileNames) {
+    public void judgeFileExists(List<String> fileNames) {
         fileNames.forEach(fileName -> {
             File file = new File(fileName);
             if (!file.exists()) {
@@ -254,7 +242,7 @@ public class ZipFileUtils {
     }
 
 
-    private void zip(String inputFileName, String zipFileName) throws Exception {
+    public void zip(String inputFileName, String zipFileName) throws Exception {
         zip(zipFileName, new File(inputFileName));
     }
 
@@ -285,7 +273,7 @@ public class ZipFileUtils {
         }
     }
 
-    private byte[] readInputStream(InputStream inStream) throws Exception {
+    public byte[] readInputStream(InputStream inStream) throws Exception {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         //创建一个Buffer字符串
         byte[] buffer = new byte[1024 * 1024];//10m
@@ -300,5 +288,18 @@ public class ZipFileUtils {
         inStream.close();
         //把outStream里的数据写入内存
         return outStream.toByteArray();
+    }
+
+    public void handleErrorPicture(List<String> errorPictureAddress) {
+        if (CollectionUtils.isNotEmpty(errorPictureAddress)) {
+            logger.info("error picture write [{}]", JSON.toJSONString(errorPictureAddress));
+            try {
+                FileOutputStream jsonOut = new FileOutputStream(acceptFilePath + File.separator + "errorPicture.json");
+                jsonOut.write(JSON.toJSONBytes(errorPictureAddress));
+                jsonOut.close();
+            } catch (IOException e) {
+                logger.error("handleErrorPicture error[{}]", e);
+            }
+        }
     }
 }

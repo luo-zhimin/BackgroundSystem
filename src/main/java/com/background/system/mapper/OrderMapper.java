@@ -63,7 +63,7 @@ public interface OrderMapper extends BaseMapper<Orderd> {
     int closeOrder(@Param("id")String id,
                    @Param("updateUser")String updateUser);
 
-    List<ReadyDownloadFileResponse> getNoZipPathOrder();
+    List<ReadyDownloadFileResponse> getNoZipPathOrder(@Param("ids")List<String> ids);
 
     void updateZipPathById(@Param("baseResponse") List<BaseResponse> responses);
 

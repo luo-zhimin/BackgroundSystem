@@ -1,7 +1,8 @@
-# BackgroundSystem
+# 铃星小程序
 
-## 版本 
-### 第一期-20220915交付
+## 大版本 
+![version](https://img.shields.io/badge/version-20220915-brightgreen.svg)
+
 小程序 + 后台管理系统
 
 请求统一拦截 后台请求路径 /admin 开头 其余都是小程序 
@@ -10,4 +11,11 @@
 
 使用了源码jar包加密 配置文件加密，确保代码更加安全..
 
-<img src="https://asugar.oss-cn-hangzhou.aliyuncs.com/default/1662988029901-64571662818029_.pic_hd.jpg">
+![version](https://img.shields.io/badge/version-20230301-brightgreen.svg)
+
+修复一些已知bug
+
+增加生产原始zip包，批量上传
+
+集成redis缓存，oss文件存储->自己本身服务器(上传速度提升)
+

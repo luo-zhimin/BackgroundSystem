@@ -59,7 +59,8 @@
         where id = #{id,jdbcType=VARCHAR}
     </delete>
 
-    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Orderd" useGeneratedKeys="true">
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Orderd"
+            useGeneratedKeys="true">
         insert into orderd
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="wxNo != null and wxNo != ''">
@@ -108,7 +109,7 @@
                 is_del,
             </if>
 
-                create_time,
+            create_time,
 
             <if test="updateTime != null">
                 update_time,
@@ -163,7 +164,7 @@
             <if test="isDel != null and isDel != ''">
                 #{isDel,jdbcType=CHAR},
             </if>
-           now(),
+            now(),
             <if test="updateTime != null">
                 #{updateTime,jdbcType=TIMESTAMP},
             </if>
@@ -257,12 +258,13 @@
     <select id="getOrderList" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from `orderd` where is_del = 0
-                        and create_user = #{openId}
+        from `orderd`
+        where is_del = 0
+          and create_user = #{openId}
         ORDER BY id desc
         <if test="page != null and size != null">
             limit #{page}
-              , #{size}
+                   , #{size}
         </if>
     </select>
 
@@ -374,16 +376,24 @@
                s.faces                     face,
                o.order_no                  wxNo,
                GROUP_CONCAT(oe.picture_id) pictureId,
-               oe.number              onlyNumber,
+               oe.number                   onlyNumber,
                sum(oe.number)              number
         from `orderd` o
                  inner join size s on o.size_id = s.id
                  inner join order_element oe on o.id = oe.order_id
         where o.is_del = 0
-           and o.is_pay = 1
-          and o.zip_path is null
-          and o.order_no is not null
-        GROUP BY o.id,oe.id
+          and o.is_pay = 1
+        <if test="ids == null || ids.size() == 0">
+            and o.zip_path is null
+            and o.order_no is not null
+        </if>
+        <if test="ids != null and ids.size() != 0">
+            and o.id in
+            <foreach collection="ids" item="key" index="index" open="(" close=")" separator=",">
+                #{key,jdbcType=VARCHAR}
+            </foreach>
+        </if>
+        GROUP BY o.id, oe.id
     </select>
 
     <update id="updateZipPathById" parameterType="com.background.system.response.BaseResponse">
@@ -415,30 +425,49 @@
     </select>
 
     <select id="getOrderTotalMoney" resultType="java.lang.Integer">
-        select sum(total) total from orderd where is_del=0
+        select sum(total) total
+        from orderd
+        where is_del = 0
     </select>
 
     <select id="getActualMoney" resultType="java.lang.Integer">
-        select sum(total) total from orderd where is_del=0 and is_pay = 1
+        select sum(total) total
+        from orderd
+        where is_del = 0
+          and is_pay = 1
     </select>
 
     <select id="getCloseOrderId" resultType="java.lang.Long">
-        select id from orderd where is_del=0 and is_pay = 1 and kd_no is not null and DATE_ADD(update_time,interval 15 day)&lt;NOW()
+        select id
+        from orderd
+        where is_del = 0
+          and is_pay = 1
+          and kd_no is not null
+          and DATE_ADD(update_time, interval 15 day) &lt; NOW()
     </select>
 
     <select id="close">
-        UPDATE orderd set status=3 ,update_user='system' where id in
+        UPDATE orderd
+        set status=3,
+            update_user='system' where id in
         <foreach collection="ids" item="key" index="index" open="(" close=")" separator=",">
             #{key,jdbcType=VARCHAR}
         </foreach>
     </select>
 
     <select id="getDeleteOrderIds" resultType="java.lang.Long">
-        select id from orderd where is_del=0 and is_pay = 0 and kd_no is null and DATE_ADD(update_time,interval 15 day)&lt;NOW()
+        select id
+        from orderd
+        where is_del = 0
+          and is_pay = 0
+          and kd_no is null
+          and DATE_ADD(update_time, interval 15 day) &lt; NOW()
     </select>
 
     <delete id="delete">
-        UPDATE orderd set status=4 ,update_user='system' where id in
+        UPDATE orderd
+        set status=4,
+            update_user='system' where id in
         <foreach collection="ids" item="key" index="index" open="(" close=")" separator=",">
             #{key,jdbcType=VARCHAR}
         </foreach>

@@ -85,21 +85,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         Caizhi caizhi = caizhiMapper.selectById(order.getCaizhiId());
         List<OrderElement> orderElements = orderVo.getOrderElements();
         //多个
-//        //材质价格
-//        //（材质+尺寸）
         BigDecimal total = caizhi.getPrice();
-//
-//        //价格计算 单 or 双 * 组  数量 *（材质+尺寸）
-//        //一共买了多少
+        //一共买了多少
         int totalNumber = orderElements.stream().mapToInt(OrderElement::getNumber).sum();
         total = total.multiply(BigDecimal.valueOf(totalNumber));
 
         order.setTotal(total);
-//        order.setIsPay(false);
-//        order.setIsDel(false);
-//        order.setStatus("0");
-//        order.setCreateTime(LocalDateTime.now());
-//        order.setUpdateTime(LocalDateTime.now());
         //谁下单的
         Token currentUser = getWeChatCurrentUser();
         order.setCreateUser(currentUser.getUsername());
@@ -192,6 +183,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         Token currentUser = getWeChatCurrentUser();
         page = (page - 1) * size;
         List<Orderd> orderList = orderMapper.getOrderList(page, size, currentUser.getUsername());
+//        orderMapper.selectMapsPage(new Page<>(page, size),
+//                new QueryWrapper<Orderd>()
+//                        .eq("create_user", currentUser.getUsername()));
         //商品
         List<OrderdResponse> orderResponses =  transformOrderResponse(orderList);
         int orderCount = orderMapper.getCurrentOrderCount(currentUser.getUsername());
@@ -373,9 +367,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
      * 得到没有zip链接的
      * @return 所有待处理对象
      */
-    public List<ReadyDownloadFileResponse> getFile() {
+    public List<ReadyDownloadFileResponse> getFile(List<String> targets) {
+
         //找到支付 没有删除的订单 并且没有链接生产的
-        List<ReadyDownloadFileResponse> orders = orderMapper.getNoZipPathOrder();
+        List<ReadyDownloadFileResponse> orders = orderMapper.getNoZipPathOrder(targets);
         //orderElements
         if (CollectionUtils.isEmpty(orders)) {
             return Collections.emptyList();
@@ -404,8 +399,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             targetOrders.add(response);
         });
 
-        //18, 19, 23, 30, 29, 22, 20, 17, 21, 24, 31, 32, 25, 33, 34, 36, 35, 27
-//        logger.info("source [{}]", targetOrders);
         return targetOrders;
     }
 }

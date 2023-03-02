@@ -96,7 +96,7 @@ public class MaterialQualityServiceImpl extends BaseService implements MaterialQ
         }
     }
 
-//    @Cacheable(value = "materialQuality",key = "#ids")
+    @Cacheable(value = "materialQuality")
     public List<Caizhi> getMaterialListByIds(List<String> ids){
         if (CollectionUtils.isEmpty(ids)){
             return Collections.emptyList();

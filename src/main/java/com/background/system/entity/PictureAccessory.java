@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
 * Created by IntelliJ IDEA.
 * @Author : 志敏.罗
@@ -13,7 +15,9 @@ import lombok.Data;
 @ApiModel(value="picture_accessory")
 @Data
 @AllArgsConstructor
-public class PictureAccessory {
+public class PictureAccessory implements Serializable {
+
+    private static final long serialVersionUID = -3301561387360158886L;
 
     @ApiModelProperty(value="主键id")
     private Long id;

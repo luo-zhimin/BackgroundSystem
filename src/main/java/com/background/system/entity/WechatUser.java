@@ -6,11 +6,14 @@ import lombok.Data;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @ToString
-public class WechatUser {
+public class WechatUser implements Serializable {
+
+    private static final long serialVersionUID = 3853684793403909772L;
 
     @ApiModelProperty(value="主键id")
     private Long id;

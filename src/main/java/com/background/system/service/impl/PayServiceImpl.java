@@ -8,9 +8,6 @@ import com.background.system.entity.Coupon;
 import com.background.system.entity.Orderd;
 import com.background.system.entity.Size;
 import com.background.system.entity.token.Token;
-import com.background.system.mapper.CouponMapper;
-import com.background.system.mapper.OrderMapper;
-import com.background.system.mapper.SizeMapper;
 import com.background.system.service.CouponService;
 import com.background.system.service.PayService;
 import com.background.system.util.WxUtils;
@@ -53,16 +50,13 @@ import java.util.UUID;
 public class PayServiceImpl extends BaseService implements PayService {
 
     @Resource
-    private OrderMapper orderMapper;
+    private SizeServiceImpl sizeService;
 
     @Resource
-    private SizeMapper sizeMapper;
+    private OrderServiceImpl orderService;
 
     @Resource
     private CouponService couponService;
-
-    @Resource
-    private CouponMapper couponMapper;
 
     @Override
     @Transactional
@@ -74,7 +68,7 @@ public class PayServiceImpl extends BaseService implements PayService {
         String openId = user.getUsername();
 
         // 获取订单金额
-        Orderd orderd = orderMapper.selectByPrimaryKey(orderId);
+        Orderd orderd = orderService.getOrderDetail(orderId);
         BigDecimal total = orderd.getTotal();
 
         // 前端判断运费是 0 或者 多少
@@ -87,7 +81,7 @@ public class PayServiceImpl extends BaseService implements PayService {
         }
 
         // 获取订单信息
-        Size size = sizeMapper.selectById(orderd.getSizeId());
+        Size size = sizeService.getSizeDetail(orderd.getSizeId());
 
         // 自动获取微信证书, 第一次获取证书绕过鉴权
         CertificatesManager instance = CertificatesManager.getInstance();
@@ -138,7 +132,8 @@ public class PayServiceImpl extends BaseService implements PayService {
         orderd.setWxNo(wx_no);
 //        orderd.setIsPay(false);  // 支付状态
 //        orderd.setStatus("0");     // 发货状态
-        orderMapper.updateByPrimaryKeySelective(orderd);
+//        orderMapper.updateByPrimaryKeySelective(orderd);
+        orderService.updateOrder(orderd);
 
         httpPost.setEntity(new StringEntity(bos.toString("UTF-8"), "UTF-8"));
         CloseableHttpResponse response = httpClient.execute(httpPost);
@@ -187,7 +182,7 @@ public class PayServiceImpl extends BaseService implements PayService {
     @Transactional
     public Boolean payOk(String orderId) {
         log.info("payOk [{}]",orderId);
-        Orderd orderd = orderMapper.selectByPrimaryKey(orderId);
+        Orderd orderd = orderService.getOrderDetail(orderId);
         orderd.setIsPay(true);
         orderd.setStatus("1");
         //检查是否有优惠卷
@@ -195,9 +190,9 @@ public class PayServiceImpl extends BaseService implements PayService {
             Coupon coupon = couponService.getCouponDetail(orderd.getCouponId());
             if (coupon!=null){
                 coupon.setIsUsed(true);
-                couponMapper.updateByPrimaryKeySelective(coupon);
+                couponService.update(coupon);
             }
         }
-        return orderMapper.updateByPrimaryKey(orderd)>0;
+        return orderService.updateOrder(orderd);
     }
 }

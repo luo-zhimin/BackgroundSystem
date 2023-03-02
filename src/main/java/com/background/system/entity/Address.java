@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -18,7 +19,9 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode
 //@AllArgsConstructor
-public class Address {
+public class Address implements Serializable {
+
+    private static final long serialVersionUID = 2856422720749910494L;
 
     @ApiModelProperty(value="主键id")
     private String id;

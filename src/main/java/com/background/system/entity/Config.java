@@ -4,9 +4,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @Data
 @ToString
-public class Config {
+public class Config implements Serializable {
+
+    private static final long serialVersionUID = 1967784472744837312L;
 
     @ApiModelProperty(value="主键id")
     private Long id;

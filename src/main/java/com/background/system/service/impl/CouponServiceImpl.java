@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,12 +82,14 @@ public class CouponServiceImpl extends BaseService implements CouponService {
     }
 
     @Override
+    @Cacheable(value = "coupon",key = "#id")
     public Coupon getCouponDetail(Long id) {
         return couponMapper.selectById(id);
     }
 
     @Override
     @Transactional
+    @CachePut(value = "coupon",key = "#request.couponId")
     public Boolean covertCoupon(BaseRequest request) {
         log.info("coverCoupon request[{}]",request);
         if (StringUtils.isEmpty(request.getCouponId())){
@@ -101,6 +105,7 @@ public class CouponServiceImpl extends BaseService implements CouponService {
 
     @Override
     @Transactional
+    @CachePut(value = "coupon",key = "#coupon.id")
     public Boolean insert(Coupon coupon) {
         log.info("coupon insert coupon[{}]",coupon);
         //随机生成优惠卷兑换码
@@ -112,7 +117,7 @@ public class CouponServiceImpl extends BaseService implements CouponService {
         if(coupon.getUseLimit()<=0){
             throw new ServiceException(1007,"优惠卷消费限制必须大于0");
         }
-        if (coupon.getPrice().compareTo(BigDecimal.valueOf(coupon.getUseLimit()))>=0){
+        if (coupon.getPrice()!=null && coupon.getPrice().compareTo(BigDecimal.valueOf(coupon.getUseLimit()))>=0){
             //1001 1000
             throw new ServiceException(1008,"优惠卷消费价格需要小于消费限制");
         }
@@ -121,6 +126,7 @@ public class CouponServiceImpl extends BaseService implements CouponService {
 
     @Override
     @Transactional
+    @CachePut(value = "coupon",key = "#coupon.id")
     public Boolean update(Coupon coupon) {
         log.info("coupon update coupon[{}]",coupon);
         if (coupon.getId()==null){
@@ -144,5 +150,11 @@ public class CouponServiceImpl extends BaseService implements CouponService {
             return;
         }
         this.couponMapper.close(couponIds);
+    }
+
+    @Transactional
+    @CachePut(value = "coupon",key = "#coupon.id")
+    public Boolean updateService(Coupon coupon) {
+        return couponMapper.updateByPrimaryKeySelective(coupon)>0;
     }
 }

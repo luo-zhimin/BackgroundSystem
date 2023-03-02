@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -15,7 +16,9 @@ import java.math.BigDecimal;
 @ApiModel(value="caizhi")
 @Data
 @ToString
-public class Caizhi {
+public class Caizhi implements Serializable {
+
+    private static final long serialVersionUID = -7992747140968718739L;
 
     @ApiModelProperty(value="主键id")
     private String id;

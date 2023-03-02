@@ -9,6 +9,7 @@ import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -21,7 +22,10 @@ import java.util.List;
 */
 @ApiModel(description="`order`")
 @Data
-public class Orderd {
+public class Orderd implements Serializable {
+
+    private static final long serialVersionUID = 1525223375313707081L;
+
     @ApiModelProperty(value="主键Id")
     private String id;
 

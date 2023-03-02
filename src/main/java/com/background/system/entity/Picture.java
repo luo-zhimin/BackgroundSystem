@@ -8,7 +8,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Tolerate;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -20,7 +22,11 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @Builder
-public class Picture {
+public class Picture implements Serializable {
+
+    private static final long serialVersionUID = 5845772495741906838L;
+
+    private MultipartFile file;
 
     @ApiModelProperty(value="主键Id")
     private String id;

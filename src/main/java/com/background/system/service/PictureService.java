@@ -3,7 +3,6 @@ package com.background.system.service;
 import com.background.system.entity.Picture;
 import com.background.system.response.PictureResponse;
 import com.background.system.response.file.UploadZipFileResponse;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,7 @@ import java.util.Map;
  */
 public interface PictureService {
 
-    PictureResponse getPicture(MultipartFile file,String father);
+    PictureResponse getPicture(Picture picture);
 
     Picture getIndexPicture();
 

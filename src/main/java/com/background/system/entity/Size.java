@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +20,10 @@ import java.util.List;
 @ApiModel(value="产品")
 @Data
 @ToString
-public class Size {
+public class Size implements Serializable {
+
+    private static final long serialVersionUID = -8262734260568890217L;
+
     @ApiModelProperty(value="主键id")
     private String id;
 

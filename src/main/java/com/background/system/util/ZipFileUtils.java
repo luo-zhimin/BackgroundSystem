@@ -2,6 +2,7 @@ package com.background.system.util;
 
 import com.alibaba.fastjson.JSON;
 import com.background.system.config.ApplicationContextProvider;
+import com.background.system.entity.Picture;
 import com.background.system.mapper.OrderMapper;
 import com.background.system.response.BaseResponse;
 import com.background.system.response.PictureResponse;
@@ -190,7 +191,10 @@ public class ZipFileUtils {
                 //file - > MultipartFile
                 byte[] bytes = Files.readAllBytes(Paths.get(readyUploadFile.getUrl()));
                 MockMultipartFile mockMultipartFile = new MockMultipartFile("file", readyUploadFile.getName(), "text/plain", bytes);
-                PictureResponse picture = pictureService.getPicture(mockMultipartFile, "zip");
+                PictureResponse picture = pictureService.getPicture(Picture.builder()
+                        .father("zip")
+                        .file(mockMultipartFile)
+                        .build());
                 baseResponses.add(new BaseResponse(readyUploadFile.getOrderId(), picture.getUrl()));
                 deleteFile.add(new File(readyUploadFile.getUrl()));
             }

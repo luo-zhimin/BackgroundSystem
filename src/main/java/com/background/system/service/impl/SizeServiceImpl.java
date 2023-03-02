@@ -14,6 +14,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +55,7 @@ public class SizeServiceImpl extends BaseService implements SizeService {
         List<Size> sizeList = sizeMapper.getSizeList(page, size);
         Long sizeCount = sizeMapper.selectCount(new QueryWrapper<Size>()
                 .eq("is_del", false));
+
         if (CollectionUtils.isEmpty(sizeList)) {
             return sizePage;
         }
@@ -83,6 +87,7 @@ public class SizeServiceImpl extends BaseService implements SizeService {
     }
 
     @Override
+    @Cacheable(value = "size",key = "#id",unless = "#result == null")
     public SizeResponse getSizeDetail(String id) {
         if (id == null){
             throw new ServiceException(1000,"id不可以为空");
@@ -100,6 +105,7 @@ public class SizeServiceImpl extends BaseService implements SizeService {
 
     @Override
     @Transactional
+    @CachePut(value = "size",key = "#size.id")
     public Boolean sizeInsert(Size size) {
         log.info("size insert [{}]",size);
         if (CollectionUtils.isEmpty(size.getMaterialIds()) && (size.getFaces()==null || size.getSize()==null)){
@@ -113,6 +119,7 @@ public class SizeServiceImpl extends BaseService implements SizeService {
 
     @Override
     @Transactional
+    @CachePut(value = "size",key = "#size.id")
     public Boolean sizeUpdate(Size size) {
         log.info("size update [{}]",size);
         checkSize(size.getId());
@@ -121,6 +128,7 @@ public class SizeServiceImpl extends BaseService implements SizeService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "size",key = "#id")
     public Boolean sizeDelete(String id) {
         log.info("size delete [{}]",id);
         checkSize(id);

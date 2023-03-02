@@ -7,13 +7,13 @@ import com.background.system.request.ConfigRequest;
 import com.background.system.service.ConfigService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.common.collect.Lists;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
@@ -24,6 +24,7 @@ public class ConfigServiceImpl extends BaseService implements ConfigService{
     private ConfigMapper configMapper;
 
     @Override
+    @Cacheable(value = "config",key = "#id")
     public Config selectByPrimaryKey(Long id) {
         return configMapper.selectById(id);
     }
@@ -40,6 +41,7 @@ public class ConfigServiceImpl extends BaseService implements ConfigService{
 
     @Override
     @Transactional
+    @CachePut(value = "config",key = "#request.id")
     public Boolean addConfig(ConfigRequest request) {
         configMapper.insert(request);
         ConfigCache.configMap.put(request.getConfigKey(), request.getConfigValue());
@@ -48,6 +50,7 @@ public class ConfigServiceImpl extends BaseService implements ConfigService{
 
     @Override
     @Transactional
+    @CachePut(value = "config",key = "#request.id")
     public Boolean updateConfig(ConfigRequest request) {
         configMapper.updateById(request);
         ConfigCache.configMap.put(request.getConfigKey(), request.getConfigValue());
@@ -57,10 +60,6 @@ public class ConfigServiceImpl extends BaseService implements ConfigService{
     public ConcurrentMap<String,String> getConfigs(){
         List<Config> configs = configMapper.getConfigs();
         return configs.stream().collect(Collectors.toConcurrentMap(Config::getConfigKey, Config::getConfigValue));
-    }
-
-    public List<Config> getConfigsByKeys(List<String> keys){
-        return Optional.ofNullable(configMapper.getConfigsByKeys(keys)).orElse(Lists.newArrayList());
     }
 
 }

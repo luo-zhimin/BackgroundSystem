@@ -17,10 +17,29 @@ spring:
   application:
     name: backgroundSystem
 
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 1
+    timeout: 10000
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 0
+
+
 logging:
   level:
     sql: debug
     com.background.system*: debug
+  file:
+#    prod
+#    path: /opt/project/log
+#    dev
+    path: /Users/luozhimin/Desktop/File/daily/backgroundSystem/log
 
 swagger:
   enable: true
@@ -33,7 +52,8 @@ jasypt:
   encryptor:
     bean: jasyptStringEncryptor
 
-# 加入配置vm
-#-Djasypt.encryptor.password=xx
 zip:
-  file: /Users/sugar/Desktop/BackgroundSystem/upload
+#  prod
+#  path: root/project/upload
+#  dev
+  path: /Users/luozhimin/Desktop/File/daily/backgroundSystem

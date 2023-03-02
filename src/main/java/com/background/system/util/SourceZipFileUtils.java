@@ -2,6 +2,7 @@ package com.background.system.util;
 
 import com.alibaba.fastjson.JSON;
 import com.background.system.config.ApplicationContextProvider;
+import com.background.system.entity.Picture;
 import com.background.system.response.PictureResponse;
 import com.background.system.response.file.HandleFile;
 import com.background.system.response.file.ReadyDownloadFileResponse;
@@ -195,7 +196,10 @@ public class SourceZipFileUtils {
 
             deleteFile.add(new File(acceptFilePath + File.separator + "upload.json"));
 
-            PictureResponse picture = pictureService.getPicture(file, "uploadJson");
+            PictureResponse picture = pictureService.getPicture(Picture.builder()
+                    .file(file)
+                    .father("uploadJson")
+                    .build());
 
             logger.info("上传结果[{}]", picture.getUrl());
 

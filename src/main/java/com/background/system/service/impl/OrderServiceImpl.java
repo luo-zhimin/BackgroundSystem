@@ -6,8 +6,6 @@ import com.background.system.entity.*;
 import com.background.system.entity.token.Token;
 import com.background.system.entity.vo.OrderVo;
 import com.background.system.exception.ServiceException;
-import com.background.system.mapper.CaizhiMapper;
-import com.background.system.mapper.CouponMapper;
 import com.background.system.mapper.OrderElementsMapper;
 import com.background.system.mapper.OrderMapper;
 import com.background.system.response.CountResponse;
@@ -24,6 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,12 +47,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     @Resource
     private OrderMapper orderMapper;
 
-    @Resource
-    private CaizhiMapper caizhiMapper;
-
-    @Resource
-    private CouponMapper couponMapper;
-
     @Autowired
     private PictureServiceImpl pictureService;
 
@@ -73,6 +67,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Override
     @Transactional
+    @CachePut(value = "order",key = "#orderVo.id")
     public String createOrder(OrderVo orderVo) {
         Orderd order = new Orderd();
 
@@ -82,7 +77,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
         BeanUtil.copyProperties(orderVo, order);
 
-        Caizhi caizhi = caizhiMapper.selectById(order.getCaizhiId());
+        Caizhi caizhi = materialQualityService.getMaterialQualityDetail(order.getCaizhiId());
         List<OrderElement> orderElements = orderVo.getOrderElements();
         //多个
         BigDecimal total = caizhi.getPrice();
@@ -111,33 +106,34 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     @Transactional
     // 只有在支付成功时才会调用，直接干掉优惠券
     public Boolean coupon(Long couponId, String orderId) {
-        Coupon coupon = couponMapper.selectById(couponId);
+        Coupon coupon = couponService.getCouponDetail(couponId);
 
         if (coupon.getIsUsed()) {
             return false;
         }
 
         // 更新订单
-        Orderd order = orderMapper.selectByPrimaryKey(orderId);
+        Orderd order = getOrderDetail(orderId);
         order.setStatus("1");
         order.setIsPay(true);
         order.setCouponId(couponId);
-        orderMapper.updateByPrimaryKeySelective(order);
+//        orderMapper.updateByPrimaryKeySelective(order);
+        updateOrder(order);
 
         // 优惠券标记使用过
         coupon.setIsUsed(true);
         Token weChatCurrentUser = getWeChatCurrentUser();
         String username = weChatCurrentUser.getUsername();
         coupon.setOpenId(username);
-        couponMapper.updateByPrimaryKeySelective(coupon);
-
+        couponService.updateService(coupon);
         return true;
     }
 
     @Override
     @Transactional
+    @CachePut(value = "order",key = "#orderId")
     public Boolean changeAddress(String orderId, String addressId) {
-        Orderd order = orderMapper.selectByPrimaryKey(orderId);
+        Orderd order = getOrderDetail(orderId);
         order.setAddressId(addressId);
         return orderMapper.updateById(order)>0;
     }
@@ -145,7 +141,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     @Override
     public OrderdResponse info(String orderId) {
         OrderdResponse orderResponse = new OrderdResponse();
-        Orderd order = orderMapper.selectByPrimaryKey(orderId);
+        Orderd order = getOrderDetail(orderId);
         BeanUtils.copyProperties(order,orderResponse);
         //图片 地址 尺寸 优惠卷
         //elements
@@ -196,6 +192,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Override
     @Transactional
+    @CachePut(value = "order",key = "#order.id")
     public Boolean updateOrder(Orderd order) {
         //判断优惠卷限制
         if (order.getCouponId()!=null && order.getCouponId()!=0){
@@ -213,7 +210,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     public Boolean cancelOrder(String id) {
         logger.info("cancelOrder [{}]",id);
         Token currentUser = getWeChatCurrentUser();
-        Orderd order = orderMapper.selectByPrimaryKey(id);
+        Orderd order = getOrderDetail(id);
         if (!order.getCreateUser().equals(currentUser.getUsername())){
             throw new ServiceException(1002,"请修改属于你自己的订单");
         }
@@ -274,6 +271,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Override
     @Transactional
+    @CachePut(value = "order",key = "#id")
     public Boolean updateKdNo(String  id, String orderNo) {
         logger.info("updateKdNo [{}] -- [{}]",id,orderNo);
         checkOrder(id);
@@ -283,6 +281,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Override
     @Transactional
+    @CachePut(value = "order",key = "#id")
     public Boolean orderClose(String  id) {
         logger.info("orderClose [{}]",id);
         checkOrder(id);
@@ -292,6 +291,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     }
 
     @Override
+    @CachePut(value = "order",key = "#id")
     public Boolean orderDownload(String id) {
         logger.info("orderDownload[{}]",id);
         return orderMapper.orderDownload(id)>0;
@@ -301,6 +301,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     public Object getOrderCurrentDay() {
         String currentDay = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now());
         return orderMapper.getIndexOrderCount(currentDay);
+    }
+
+
+    @Cacheable(value = "order",key = "#id")
+    public Orderd getOrderDetail(String id) {
+        return orderMapper.selectByPrimaryKey(id);
     }
 
     private Map<String,Integer> initCountMap(){
@@ -342,7 +348,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         if (StringUtils.isEmpty(id)){
             throw new ServiceException(1003,"id不可以为空");
         }
-        Orderd live = orderMapper.selectByPrimaryKey(id);
+        Orderd live = getOrderDetail(id);
         if (live==null){
             throw new ServiceException(1004,"该订单不存在，请确认后重新操作");
         }

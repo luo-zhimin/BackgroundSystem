@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -18,7 +19,9 @@ import java.time.LocalDateTime;
 //@Builder
 //@AllArgsConstructor
 @ToString
-public class Coupon {
+public class Coupon implements Serializable {
+
+    private static final long serialVersionUID = 8449488559542598451L;
 
     @ApiModelProperty(value = "主键Id")
     private Long id;
@@ -30,7 +33,7 @@ public class Coupon {
     private Boolean isUsed;
 
     @ApiModelProperty(value = "价格")
-    private BigDecimal price;
+    private BigDecimal price = BigDecimal.ZERO;
 
     @ApiModelProperty(value = "消费限制")
     private Integer useLimit;

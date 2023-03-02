@@ -8,6 +8,7 @@ import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +21,9 @@ import java.util.List;
  */
 @Data
 @ToString
-public class OrderElement {
+public class OrderElement implements Serializable {
+
+    private static final long serialVersionUID = 6540414636392908109L;
 
     private Long id;
 

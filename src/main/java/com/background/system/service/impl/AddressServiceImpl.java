@@ -11,6 +11,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +35,7 @@ public class AddressServiceImpl extends BaseService implements AddressService {
 
     @Override
     @Transactional
+    @CachePut(value = "address",key = "#request.id")
     public Boolean insertAddress(AddressRequest request) {
         log.info("insertAddress request[{}]",request);
         Token weChatCurrentUser = getWeChatCurrentUser();
@@ -46,6 +50,7 @@ public class AddressServiceImpl extends BaseService implements AddressService {
 
     @Override
     @Transactional
+    @CachePut(value = "address",key = "#request.id")
     public Boolean updateAddress(AddressRequest request) {
         log.info("updateAddress request[{}]",request);
         //校验
@@ -57,6 +62,7 @@ public class AddressServiceImpl extends BaseService implements AddressService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "address",key = "#id")
     public Boolean deleteAddress(String id) {
         log.info("deleteAddress id[{}]",id);
         return addressMapper.deleteAddressById(id)>0;
@@ -81,12 +87,14 @@ public class AddressServiceImpl extends BaseService implements AddressService {
     }
 
     @Override
+    @Cacheable(value = "address",key = "#id")
     public Address getAddressDetail(String id) {
         return selectByPrimaryKey(id);
     }
 
     @Override
     @Transactional
+    @CachePut(value = "address",key = "#id")
     public Boolean updateDefaultAddress(String id) {
         Token weChatCurrentUser = getWeChatCurrentUser();
         if (checkUser(id)) {
@@ -102,10 +110,12 @@ public class AddressServiceImpl extends BaseService implements AddressService {
         return false;
     }
 
+    @Cacheable(value = "address",key = "#id")
     public Address selectByPrimaryKey(String id) {
         return addressMapper.selectByPrimaryKey(id);
     }
 
+    @CachePut(value = "address",key = "#record.id")
     public int updateByPrimaryKeySelective(Address record) {
         return addressMapper.updateByPrimaryKeySelective(record);
     }

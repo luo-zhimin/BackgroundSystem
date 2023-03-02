@@ -6,7 +6,6 @@ import com.background.system.entity.Picture;
 import com.background.system.mapper.PictureMapper;
 import com.background.system.util.Result;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,7 +38,7 @@ public class PicErrorController {
         List<Picture> errorList = new ArrayList<>();
         pictures.forEach(picture -> {
             try {
-                String t = "http://119.23.228.135:8600/hello?url=" + picture.getUrl() + "&type=0&os=0&xnx=0&w=100&h=200";
+                String t = "http://119.23.228.135:8500/hello?url=" + picture.getUrl() + "&type=0&os=0&xnx=0&w=100&h=200";
                 HttpRequest.get(t).execute().body();
             }catch (Exception e) {
                 errorList.add(picture);

@@ -88,6 +88,8 @@ public class Orderd implements Serializable {
 
     private Boolean isDownload;
 
+    private Integer number;
+
     public List<String> getMaterialQualityIds(){
         if (StringUtils.isNotEmpty(this.caizhiId)){
             return Lists.newArrayList(caizhiId.split(","));

@@ -196,6 +196,12 @@
             <version>3.3</version>
         </dependency>
 
+        <!--  email 配置  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

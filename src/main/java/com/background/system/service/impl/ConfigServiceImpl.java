@@ -62,4 +62,9 @@ public class ConfigServiceImpl extends BaseService implements ConfigService{
         return configs.stream().collect(Collectors.toConcurrentMap(Config::getConfigKey, Config::getConfigValue));
     }
 
+    @CachePut(value = "config",key = "#key",unless = "#result == null")
+    public String getConfig(String key){
+        return configMapper.selectOne(new QueryWrapper<Config>().eq("config_key",key)).getConfigValue();
+    }
+
 }

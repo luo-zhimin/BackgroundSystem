@@ -472,4 +472,10 @@
             #{key,jdbcType=VARCHAR}
         </foreach>
     </delete>
+
+    <select id="getCurrentDay" resultType="com.background.system.entity.Orderd">
+        select *
+        from getPriceEveryDay
+        where create_time = DATE_FORMAT(NOW(), '%Y-%m-%d')
+    </select>
 </mapper>

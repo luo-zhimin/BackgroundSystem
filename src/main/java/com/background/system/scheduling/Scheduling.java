@@ -3,6 +3,7 @@ package com.background.system.scheduling;
 import com.background.system.controller.TimeTask;
 import com.background.system.service.impl.CouponServiceImpl;
 import com.background.system.service.impl.OrderServiceImpl;
+import com.background.system.service.impl.SendService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class Scheduling {
     @Autowired
     private CouponServiceImpl couponService;
 
+    @Autowired
+    private SendService sendService;
+
     @Scheduled(fixedDelayString="1800000")
     public synchronized void executeCreateZip(){
         logger.info("scheduling execute time[{}]", LocalDateTime.now().getHour()+":"+LocalDateTime.now().getMinute());
@@ -47,5 +51,11 @@ public class Scheduling {
     public synchronized void closeCoupon(){
         logger.info("closeCoupon");
         couponService.closeCoupon();
+    }
+
+    @Scheduled(cron = "0 58 23 * * ? ")
+    public synchronized void sendEmail(){
+        logger.info("sendEmail");
+        sendService.sendEmail();
     }
 }

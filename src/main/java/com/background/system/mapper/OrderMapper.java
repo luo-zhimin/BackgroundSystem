@@ -80,4 +80,6 @@ public interface OrderMapper extends BaseMapper<Orderd> {
     void delete(@Param("ids")List<Long> ids);
 
     List<Long> getDeleteOrderIds();
+
+    Orderd getCurrentDay();
 }

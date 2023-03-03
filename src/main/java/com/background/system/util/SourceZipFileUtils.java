@@ -228,7 +228,7 @@ public class SourceZipFileUtils {
 
     @Data
     @Builder
-    class SourceZipReadyUploadFile {
+    static class SourceZipReadyUploadFile {
 
         @Excel(name = "订单号")
         private String orderId;

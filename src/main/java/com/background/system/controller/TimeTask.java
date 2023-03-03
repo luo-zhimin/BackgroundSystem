@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @Description:    定时任务
@@ -41,13 +42,13 @@ public class TimeTask {
 
     @GetMapping("source/zipTask")
     @IgnoreLogin
-    public Result<?> sourceTask (@RequestParam("source") String source) {
+    public Result<?> sourceTask (@RequestParam("source") String source, HttpServletResponse response) {
 
         sourceZipFileUtils.deleteFile.clear();
         sourceZipFileUtils.readyUploadFiles.clear();
 
         sourceZipFileUtils.cratePictureZip(source);
-        sourceZipFileUtils.uploadZip();
+        sourceZipFileUtils.uploadZip(response);
 
         return Result.success("sourceZip-压缩上传完毕");
     }

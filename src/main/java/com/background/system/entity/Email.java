@@ -25,6 +25,10 @@ public class Email {
     @ApiModelProperty(value ="内容")
     private String content;
 
+    private String attachmentName;
+
+    private String attachmentPath;
+
     @Tolerate
     public Email() {}
 }

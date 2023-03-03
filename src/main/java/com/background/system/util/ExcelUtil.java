@@ -4,6 +4,7 @@ import cn.hutool.core.convert.Convert;
 import com.background.system.annotation.Excel;
 import com.background.system.annotation.Excels;
 import com.background.system.exception.ServiceException;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
@@ -14,10 +15,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,8 +30,6 @@ import static java.util.Objects.isNull;
 
 /**
  * Excel相关处理
- *
- * @author ruoyi
  */
 public class ExcelUtil<T> {
     private static final Logger log = LoggerFactory.getLogger(ExcelUtil.class);
@@ -246,6 +248,11 @@ public class ExcelUtil<T> {
         exportExcel(response);
     }
 
+    public String exportExcel(List<T> list, String sheetName) {
+        this.init(list, sheetName, Excel.Type.EXPORT);
+        return exportExcel();
+    }
+
     /**
      * 对list数据源将其里面的数据导入到excel表单
      *
@@ -265,24 +272,7 @@ public class ExcelUtil<T> {
     public void exportExcel(HttpServletResponse response) {
         try {
             // 取出一共有多少个sheet.
-            double sheetNo = Math.ceil(list.size() / sheetSize);
-            for (int index = 0; index <= sheetNo; index++) {
-                createSheet(sheetNo, index);
-
-                // 产生一行
-                Row row = sheet.createRow(0);
-                int column = 0;
-                // 写入各个字段的列头名称
-                for (Object[] os : fields) {
-                    Excel excel = (Excel) os[1];
-                    this.createCell(excel, row, column++);
-                }
-                if (Excel.Type.EXPORT.equals(type)) {
-                    fillExcelData(index, row);
-                    addStatisticsRow();
-                }
-            }
-            String filename = encodingFilename(sheetName);
+            String filename = assembleExcel();
             CommonUtils.setAttachmentResponseHeader(response, filename);
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             wb.write(response.getOutputStream());
@@ -298,6 +288,47 @@ public class ExcelUtil<T> {
                 }
             }
         }
+    }
+
+    public String exportExcel() {
+        try {
+            // 取出一共有多少个sheet.
+            String filename = assembleExcel();
+            wb.write(Files.newOutputStream(Paths.get(getAbsoluteFile(filename))));
+            return getAbsoluteFile(filename);
+        } catch (Exception e) {
+            log.error("导出Excel异常{}", e.getMessage());
+            throw new ServiceException(1000, "导出Excel失败，请联系网站管理员！");
+        } finally {
+            if (wb != null) {
+                try {
+                    wb.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private String assembleExcel() {
+        double sheetNo = Math.ceil(list.size() / sheetSize);
+        for (int index = 0; index <= sheetNo; index++) {
+            createSheet(sheetNo, index);
+
+            // 产生一行
+            Row row = sheet.createRow(0);
+            int column = 0;
+            // 写入各个字段的列头名称
+            for (Object[] os : fields) {
+                Excel excel = (Excel) os[1];
+                this.createCell(excel, row, column++);
+            }
+            if (Excel.Type.EXPORT.equals(type)) {
+                fillExcelData(index, row);
+                addStatisticsRow();
+            }
+        }
+        return encodingFilename(sheetName);
     }
 
     /**
@@ -702,14 +733,17 @@ public class ExcelUtil<T> {
      * 获取下载路径
      * @param filename 文件名称
      */
-//    public String getAbsoluteFile(String filename) {
-//        String downloadPath = zipPath + filename;
-//        File desc = new File(downloadPath);
-//        if (!desc.getParentFile().exists()) {
-//            desc.getParentFile().mkdirs();
-//        }
-//        return downloadPath;
-//    }
+    @SneakyThrows
+    public String getAbsoluteFile(String filename) {
+        Properties properties = new Properties();
+        properties.load(ExcelUtil.class.getResourceAsStream("/application.yml"));
+        String downloadPath = properties.getProperty("path") +File.separator+ filename;
+        File desc = new File(downloadPath);
+        if (!desc.getParentFile().exists()) {
+            desc.getParentFile().mkdirs();
+        }
+        return downloadPath;
+    }
 
     /**
      * 获取bean中的属性值

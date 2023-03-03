@@ -151,7 +151,7 @@ public class ZipFileUtils {
         }
 
         //删除原始目录
-        deleteFile();
+        deleteFile(Collections.emptyList());
         errorPictureAddress.clear();
     }
 
@@ -202,7 +202,7 @@ public class ZipFileUtils {
             //批量处理 组装数据 内存 减少时间消耗
             logger.info("上传完毕开始删除数据");
             //上传完毕删除数据
-            deleteFile();
+            deleteFile(Collections.emptyList());
 
             //处理准备进入数据库
             ApplicationContextProvider.getBean(OrderMapper.class).updateZipPathById(baseResponses);
@@ -212,7 +212,11 @@ public class ZipFileUtils {
     }
 
 
-    public void deleteFile() {
+    public void deleteFile(List<File> files) {
+        if (CollectionUtils.isNotEmpty(files)) {
+            files.forEach(this::deleteFile);
+            return;
+        }
         deleteFile.forEach(this::deleteFile);
     }
 

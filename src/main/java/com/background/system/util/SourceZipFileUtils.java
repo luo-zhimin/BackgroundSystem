@@ -1,6 +1,5 @@
 package com.background.system.util;
 
-import com.alibaba.fastjson.JSON;
 import com.background.system.annotation.Excel;
 import com.background.system.config.ApplicationContextProvider;
 import com.background.system.entity.Picture;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -153,7 +151,7 @@ public class SourceZipFileUtils {
         }
 
         //删除原始目录
-        zipFileUtils.deleteFile();
+        zipFileUtils.deleteFile(this.deleteFile);
         errorPictureAddress.clear();
     }
 
@@ -168,7 +166,7 @@ public class SourceZipFileUtils {
     }
 
     @SneakyThrows
-    public void uploadZip(HttpServletResponse response) {
+    public void uploadZip() {
         if (CollectionUtils.isNotEmpty(readyUploadFiles)) {
             List<UploadZipFileResponse> uploadFiles = Lists.newArrayList();
             for (ReadyUploadFile readyUploadFile : readyUploadFiles) {
@@ -190,38 +188,34 @@ public class SourceZipFileUtils {
 
             //todo 后面写入excel中进行下载
 
-//            List<SourceZipReadyUploadFile> sourceZipResponses = Lists.newArrayList();
-//            uploadMap.forEach((k, v) -> {
-//                sourceZipResponses.add(SourceZipReadyUploadFile.builder()
-//                        .orderId(k)
-//                        .url(v)
-//                        .build());
-//            });
+            List<SourceZipReadyUploadFile> sourceZipResponses = Lists.newArrayList();
+            uploadMap.forEach((k, v) -> {
+                sourceZipResponses.add(SourceZipReadyUploadFile.builder()
+                        .orderId(k)
+                        .url(v)
+                        .build());
+            });
 
-//            ExcelUtil<SourceZipReadyUploadFile> util = new ExcelUtil<>(SourceZipReadyUploadFile.class);
-//            util.exportExcel(sourceZipResponses,"sourceZipExcel",response);
-
-            //写入文件 进行压缩
-            FileOutputStream jsonOut = new FileOutputStream(acceptFilePath + File.separator + "upload.json");
-            jsonOut.write(JSON.toJSONBytes(uploadMap));
-            jsonOut.close();
+            ExcelUtil<SourceZipReadyUploadFile> util = new ExcelUtil<>(SourceZipReadyUploadFile.class);
+            String sourceZipExcel = util.exportExcel(sourceZipResponses, "sourceZipExcel");
+            logger.info("sourceZipExcel[{}]", sourceZipExcel);
 
             //上传
-            MultipartFile file = new MockMultipartFile("file", "upload.json", "text/plain",
-                    Files.readAllBytes(Paths.get(acceptFilePath + File.separator + "upload.json")));
+            MultipartFile file = new MockMultipartFile("file", System.currentTimeMillis()+"-sourceZipExcel", "text/plain",
+                    Files.readAllBytes(Paths.get(sourceZipExcel)));
 
-            deleteFile.add(new File(acceptFilePath + File.separator + "upload.json"));
+            deleteFile.add(new File(sourceZipExcel));
 
             PictureResponse picture = pictureService.getPicture(Picture.builder()
                     .file(file)
-                    .father("uploadJson")
+                    .father("sourceZipExcel")
                     .build());
 
             logger.info("上传结果[{}]", picture.getUrl());
 
             //上传完毕删除数据
             logger.info("上传完毕开始删除数据");
-            zipFileUtils.deleteFile();
+            zipFileUtils.deleteFile(this.deleteFile);
         }
     }
 

@@ -2,6 +2,7 @@ package com.background.system.mapper;
 
 import com.background.system.entity.Orderd;
 import com.background.system.response.BaseResponse;
+import com.background.system.response.CurrentOrderResponse;
 import com.background.system.response.IndexCountResponse;
 import com.background.system.response.OrderCount;
 import com.background.system.response.file.ReadyDownloadFileResponse;
@@ -82,4 +83,8 @@ public interface OrderMapper extends BaseMapper<Orderd> {
     List<Long> getDeleteOrderIds();
 
     Orderd getCurrentDay();
+
+    String getCurrentDayOrderIds();
+
+    List<CurrentOrderResponse> getCurrentOrders(@Param("ids")List<String> ids);
 }

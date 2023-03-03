@@ -442,6 +442,7 @@
         from orderd
         where is_del = 0
           and is_pay = 1
+          and status != 3
           and kd_no is not null
           and DATE_ADD(update_time, interval 15 day) &lt; NOW()
     </select>
@@ -460,6 +461,7 @@
         from orderd
         where is_del = 0
           and is_pay = 0
+          and status != 4
           and kd_no is null
           and DATE_ADD(update_time, interval 15 day) &lt; NOW()
     </select>
@@ -476,6 +478,34 @@
     <select id="getCurrentDay" resultType="com.background.system.entity.Orderd">
         select *
         from getPriceEveryDay
-        where create_time = DATE_FORMAT(NOW(), '%Y-%m-%d')
+<!--        where create_time = DATE_FORMAT(NOW(), '%Y-%m-%d')-->
+        where create_time = DATE_FORMAT( DATE_SUB( NOW(), INTERVAL 1 DAY ), '%Y-%m-%d' )
     </select>
+
+    <select id="getCurrentDayOrderIds" resultType="java.lang.String">
+        SELECT GROUP_CONCAT(id) id
+        FROM orderd
+        WHERE is_del = 0
+          AND is_pay = 1
+<!--          AND create_time LIKE CONCAT(DATE_FORMAT(now(), '%Y-%m-%d'), '%')-->
+          AND create_time LIKE CONCAT(DATE_FORMAT(DATE_SUB( NOW(), INTERVAL 1 DAY ), '%Y-%m-%d'), '%')
+    </select>
+
+    <select id="getCurrentOrders" resultType="com.background.system.response.CurrentOrderResponse">
+        SELECT o.id,
+               zip_path,
+               a.province,
+               a.address,
+               a.phone,
+               a.`name`,
+               order_no
+        FROM orderd o
+                 inner join address a on o.address_id = a.id
+                 inner join wechat_user w on w.open_id = a.openId
+        WHERE o.id in
+        <foreach collection="ids" item="key" index="index" open="(" close=")" separator=",">
+            #{key,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
 </mapper>

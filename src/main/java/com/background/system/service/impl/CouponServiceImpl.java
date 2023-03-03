@@ -8,6 +8,7 @@ import com.background.system.mapper.CouponMapper;
 import com.background.system.request.BaseRequest;
 import com.background.system.response.CouponResponse;
 import com.background.system.service.CouponService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -140,6 +141,12 @@ public class CouponServiceImpl extends BaseService implements CouponService {
             throw new ServiceException(1007,"优惠卷消费限制必须大于0");
         }
         return couponMapper.updateByPrimaryKeySelective(coupon)>0;
+    }
+
+    @Override
+    @Cacheable(value = "coupon")
+    public List<Coupon> selectCoupons(Coupon coupon) {
+        return couponMapper.selectList(new QueryWrapper<>(coupon));
     }
 
     @Transactional(rollbackFor = ServiceException.class)

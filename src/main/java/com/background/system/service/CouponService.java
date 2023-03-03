@@ -5,6 +5,8 @@ import com.background.system.request.BaseRequest;
 import com.background.system.response.CouponResponse;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -21,4 +23,6 @@ public interface CouponService {
     Boolean insert(Coupon coupon);
 
     Boolean update(Coupon coupon);
+
+    List<Coupon> selectCoupons(Coupon coupon);
 }

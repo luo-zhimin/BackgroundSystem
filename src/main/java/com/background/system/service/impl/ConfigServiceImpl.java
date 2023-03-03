@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
@@ -57,14 +58,22 @@ public class ConfigServiceImpl extends BaseService implements ConfigService{
         return Boolean.TRUE;
     }
 
+    @Override
+    @Cacheable(value = "config")
+    public List<Config> selectConfigList(Config config) {
+        return configMapper.selectList(new QueryWrapper<>(config));
+    }
+
     public ConcurrentMap<String,String> getConfigs(){
         List<Config> configs = configMapper.getConfigs();
         return configs.stream().collect(Collectors.toConcurrentMap(Config::getConfigKey, Config::getConfigValue));
     }
 
-    @CachePut(value = "config",key = "#key",unless = "#result == null")
-    public String getConfig(String key){
-        return configMapper.selectOne(new QueryWrapper<Config>().eq("config_key",key)).getConfigValue();
+    @CachePut(value = "config", key = "#key", unless = "#result == null")
+    public String getConfig(String key) {
+        return Optional.ofNullable(configMapper.selectOne(new QueryWrapper<Config>()
+                        .eq("config_key", key)).getConfigValue())
+                        .orElse(" ");
     }
 
 }

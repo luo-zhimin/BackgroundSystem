@@ -23,7 +23,7 @@ import java.util.List;
 @EnableEncryptableProperties
 public class JasyptTest {
 
-    private static final String key = "5de88f71a509010ba5a0491c751b2d77";
+    private static final String key = "";
 
     @Autowired
     @Qualifier(value = "jasyptStringEncryptor")
@@ -31,7 +31,7 @@ public class JasyptTest {
 
     @Test
     void encrypt(){
-        List<String> values = Lists.newArrayList("1798677862@qq.com");
+        List<String> values = Lists.newArrayList("11@qq.com");
         StringBuilder builder = new StringBuilder();
         PooledPBEStringEncryptor pooledPBEStringEncryptor = new PooledPBEStringEncryptor();
         pooledPBEStringEncryptor.setConfig(cryptOr());
@@ -46,8 +46,7 @@ public class JasyptTest {
 
     @Test
     void decry(){
-        //ENC(yOcA+pTrPhZyuJKlBQ52O5MedEIQe7Dl1SFzBTu0R1nqZdiwjz3gMg==),ENC(nNjoKm63Ltqm2/LnKb3p9eitKY0lj8xaxlKalCfNfExtMN9Drz5I9Q==)
-        List<String> values = Lists.newArrayList("ENC(yOcA+pTrPhZyuJKlBQ52O5MedEIQe7Dl1SFzBTu0R1nqZdiwjz3gMg==)","ENC(nNjoKm63Ltqm2/LnKb3p9eitKY0lj8xaxlKalCfNfExtMN9Drz5I9Q==)");
+        List<String> values = Lists.newArrayList("ENC(yOcA+5MedEIQe7Dl1SFzBTu0R1nqZdiwjz3gMg==)","ENC(nNjeitKY0lj8xaxlKalCfNfExtMN9Drz5I9Q==)");
         PooledPBEStringEncryptor pooledPBEStringEncryptor = new PooledPBEStringEncryptor();
         pooledPBEStringEncryptor.setConfig(cryptOr());
         values.forEach(v->{

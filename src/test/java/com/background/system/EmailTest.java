@@ -11,9 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 /**
  * Created by IntelliJ IDEA.
  *
@@ -38,11 +35,8 @@ public class EmailTest {
 
     @Test
     void sendSimpleMail() {
-        //goodtan231@outlook.com  admin@asugar.cn
         //读取缓存
         String to = configService.getConfig("send-email");
-
-        System.out.println("to-->"+to);
         String[] addressees = to.split(",");
         Email email = Email.builder()
                 .addressees(addressees)
@@ -67,7 +61,6 @@ public class EmailTest {
     @Test
     void sendEmail(){
         System.out.println(sendService.sendEmail());
-        System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
     }
 
 }

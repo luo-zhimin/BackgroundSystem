@@ -38,10 +38,9 @@ public class Scheduling {
     public synchronized void executeCreateZip(){
         logger.info("scheduling execute time[{}]", LocalDateTime.now().getHour()+":"+LocalDateTime.now().getMinute());
         timeTask.task();
-//        timeTask.sourceTask();
     }
 
-    @Scheduled(cron = "0 0 12 * * ? ")
+    @Scheduled(cron = "0 58 23 * * ? ")
     public synchronized void closeOrder(){
         logger.info("closeOrder delOrder");
         orderService.closeOrder();

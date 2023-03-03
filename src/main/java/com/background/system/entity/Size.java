@@ -1,5 +1,6 @@
 package com.background.system.entity;
 
+import com.background.system.annotation.Excel;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -28,9 +29,11 @@ public class Size implements Serializable {
     private String id;
 
     @ApiModelProperty(value="标题")
+    @Excel(name = "标题")
     private String title;
 
     @ApiModelProperty(value="尺寸")
+    @Excel(name = "尺寸")
     private String name;
 
     @ApiModelProperty(value="产品详情页图 多个逗号分隔")
@@ -40,18 +43,22 @@ public class Size implements Serializable {
     private String detailPic;
 
     @ApiModelProperty(value="原价")
+    @Excel(name = "原价")
     private Integer price;
 
     @ApiModelProperty(value="优惠后价格")
+    @Excel(name = "优惠后价格")
     private BigDecimal uPrice;
 
     @ApiModelProperty(value = "材质id集合")
     private String materialId;
 
     @ApiModelProperty(value = "尺寸 第一个width 第二个height")
+    @Excel(name = "尺寸")
     private String size;
 
     @ApiModelProperty(value = "单面 or 双面")
+    @Excel(name = "单面 or 双面")
     private String faces;
 
     private Boolean isDel;

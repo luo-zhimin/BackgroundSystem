@@ -1,5 +1,6 @@
 package com.background.system.entity;
 
+import com.background.system.annotation.Excel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -24,9 +25,11 @@ public class Caizhi implements Serializable {
     private String id;
 
     @ApiModelProperty(value="材质")
+    @Excel(name = "材质名称")
     private String name;
 
     @ApiModelProperty(value="价格")
+    @Excel(name = "材质价格")
     private BigDecimal price;
 
     private Boolean isDel;

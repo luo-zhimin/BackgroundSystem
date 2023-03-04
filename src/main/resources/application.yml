@@ -53,8 +53,7 @@ spring:
 
 logging:
   level:
-    sql: debug
-    com.background.system*: debug
+    com.background.system.*: debug
   file:
 #    prod
 #    path: /opt/project/log
@@ -77,3 +76,7 @@ zip:
 #  path: root/project/upload
 #  dev
   path: /Users/luozhimin/Desktop/File/daily/backgroundSystem
+
+file:
+  address: http://localhost:8000
+  token: ENC(a0A4+mHJ3y68MbYC2vvPGBXa8SbrPyPgZb+depGkHsxj5KjNhDWJOg==)

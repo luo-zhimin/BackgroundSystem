@@ -71,6 +71,9 @@ public class Result<T> {
 		return error(errorCode, "");
 	}
 
+	public static Result<?> error(String msg) {
+		return error(CODE_SYS_ERROR, msg);
+	}
 
 	public static Result<?> success() {
 		return success(null);

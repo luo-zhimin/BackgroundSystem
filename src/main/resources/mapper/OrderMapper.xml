@@ -478,8 +478,7 @@
     <select id="getCurrentDay" resultType="com.background.system.entity.Orderd">
         select *
         from getPriceEveryDay
-<!--        where create_time = DATE_FORMAT(NOW(), '%Y-%m-%d')-->
-        where create_time = DATE_FORMAT( DATE_SUB( NOW(), INTERVAL 1 DAY ), '%Y-%m-%d' )
+        where create_time = DATE_FORMAT(NOW(), '%Y-%m-%d')
     </select>
 
     <select id="getCurrentDayOrderIds" resultType="java.lang.String">
@@ -487,8 +486,7 @@
         FROM orderd
         WHERE is_del = 0
           AND is_pay = 1
-<!--          AND create_time LIKE CONCAT(DATE_FORMAT(now(), '%Y-%m-%d'), '%')-->
-          AND create_time LIKE CONCAT(DATE_FORMAT(DATE_SUB( NOW(), INTERVAL 1 DAY ), '%Y-%m-%d'), '%')
+          AND create_time LIKE CONCAT(DATE_FORMAT(now(), '%Y-%m-%d'), '%')
     </select>
 
     <select id="getCurrentOrders" resultType="com.background.system.response.CurrentOrderResponse">

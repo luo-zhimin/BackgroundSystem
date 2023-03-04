@@ -27,6 +27,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -108,7 +109,12 @@ public class SourceZipFileUtils {
             //一个订单里面所有的照片
             List<HandleFile> handleFiles = Lists.newArrayList();
             response.getPictures().forEach(picture -> {
-                handleFiles.add(new HandleFile(picture.getId(), picture.getName(), picture.getUrl()));
+                try {
+                    handleFiles.add(new HandleFile(picture.getId(), picture.getName(), CommonUtils.percentEncode(picture.getUrl())));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                    logger.error("createSourceZip[{}]", e.getMessage());
+                }
             });
 
             logger.info("handleFiles[{}]", handleFiles.size());

@@ -95,6 +95,12 @@ public class CommonUtils {
         response.setHeader("Content-disposition", contentDispositionValue);
     }
 
+    /**
+     * 转换url编码 用于解决中文 空格
+     * @param s url
+     * @return 处理过后的地址
+     * @throws UnsupportedEncodingException exception
+     */
     public static String percentEncode(String s) throws UnsupportedEncodingException
     {
         String encode = URLEncoder.encode(s, StandardCharsets.UTF_8.toString());

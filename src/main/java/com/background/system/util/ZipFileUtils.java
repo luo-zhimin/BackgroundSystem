@@ -97,7 +97,12 @@ public class ZipFileUtils {
             //一个订单里面所有的照片
             List<HandleFile> handleFiles = Lists.newArrayList();
             response.getPictures().forEach(picture -> {
-                handleFiles.add(new HandleFile(picture.getId(), picture.getName(), picture.getUrl()));
+                try {
+                    handleFiles.add(new HandleFile(picture.getId(), picture.getName(), CommonUtils.percentEncode(picture.getUrl())));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                    logger.error("cratePictureZip[{}]", e.getMessage());
+                }
             });
 
             logger.info("handleFiles[{}]", handleFiles.size());

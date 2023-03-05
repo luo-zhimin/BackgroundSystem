@@ -4,13 +4,13 @@
     <img src="https://img.shields.io/badge/JDK-1.8+-green.svg"  alt="java"/></a>
 </p>
 
-[特性](#特性) | [快速开始](#快速开始) 
+[特性](#特性) |[注意](#注意) | [快速开始](#快速开始) 
 
 # 简介
 
 **Background-System**是一个基于SpringBoot的后台管理系统，前端使用Vue，后端使用SpringBoot，数据库使用MySQL，缓存使用Redis，使用了MybatisPlus，Shiro，JWT，Swagger，Quartz，Jasypt等技术，实现了用户管理，角色管理，权限管理，菜单管理，接口管理，定时任务，文件上传，邮件发送等功能。
 
-已经上线小程序，[铃星印品]()，欢迎体验
+已经上线小程序，[铃星印品](![wechat.jpg](src%2Fmain%2Fresources%2Fstatic%2Fwechat.jpg))，欢迎体验
 
 # 特性
 - 支持MySQL数据库
@@ -38,7 +38,7 @@
 
 [下载地址](https://github.com/luo-zhimin/BackgroundSystem/releases)  
 
-## 修改application.yml配置文件
+## 修改[application.yml](src%2Fmain%2Fresources%2Fapplication.yml)配置文件
 
 ```yaml
 # 邮件配置/数据库配置 涉及到密码的配置都需要加密，加密方式为：jasypt.encryptor.password=xx，xx为你的key，然后使用jasypt加密
@@ -46,14 +46,19 @@ spring:
   mail:
     host: smtp.qq.com
     protocol: smtp
+#    中文编码
     default-encoding: utf-8
+#  发送的邮箱账号
     username: ENC(yOcA+pTrPhZyuJKlBQ52O5MedEIQe7Dl1SFzBTu0R1nqZdiwjz3gMg==)
+#    发送的邮箱授权码
     password: ENC(nNjoKm63Ltqm2/LnKb3p9eitKY0lj8xaxlKalCfNfExtMN9Drz5I9Q==)
-# 临时生产zip包的路径
+# 临时生产zip包的路径 linux配置为 /zip window 配置为 /opt/project/zip 具体路径
 zip:
-  path: /opt/project/zip
+  path: zip
 # 文件上传路径，如果使用本地上传，需要配置此路径，默认是阿里云oss，上传脚本放在resources/fileServer
 file:
+#  布置的fileServer的地址
   address: http://localhost:8000
+#  fileServer的config里面配置的token
   token: ENC(a0A4+mHJ3y68MbYC2vvPGBXa8SbrPyPgZb+depGkHsxj5KjNhDWJOg==)
 ```

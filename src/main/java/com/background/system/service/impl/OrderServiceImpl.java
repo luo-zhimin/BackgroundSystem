@@ -125,8 +125,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         Token weChatCurrentUser = getWeChatCurrentUser();
         String username = weChatCurrentUser.getUsername();
         coupon.setOpenId(username);
-        couponService.updateService(coupon);
-        return true;
+        return couponService.updateService(coupon);
     }
 
     @Override

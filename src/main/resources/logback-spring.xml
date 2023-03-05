@@ -29,7 +29,7 @@
         <file>${log.path}/backgroundSystem-info.log</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${log.path}/backgroundSystem-info.%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
+            <fileNamePattern>${log.path}/backgroundSystem-info.%d{yyyy-MM-dd}.zip</fileNamePattern>
             <maxFileSize>200MB</maxFileSize>
             <maxHistory>7</maxHistory>
             <totalSizeCap>1GB</totalSizeCap>
@@ -54,7 +54,7 @@
         <file>${log.path}/backgroundSystem-debug.log</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${log.path}/backgroundSystem-debug.%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
+            <fileNamePattern>${log.path}/backgroundSystem-debug.%d{yyyy-MM-dd}.zip</fileNamePattern>
             <maxFileSize>200MB</maxFileSize>
             <maxHistory>7</maxHistory>
             <totalSizeCap>1GB</totalSizeCap>

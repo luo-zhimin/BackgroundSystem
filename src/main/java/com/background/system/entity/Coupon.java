@@ -46,7 +46,7 @@ public class Coupon implements Serializable {
     private String openId;
 
     @ApiModelProperty(value = "'是否失效'")
-    @Excel(name = "是否失效",readConverterExp = "true=未失效,false=已失效")
+    @Excel(name = "是否失效",readConverterExp = "false=未失效,true=已失效")
     private Boolean status;
 
     private String pictureId;

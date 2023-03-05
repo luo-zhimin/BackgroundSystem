@@ -96,10 +96,22 @@ public class CouponServiceImpl extends BaseService implements CouponService {
         if (StringUtils.isEmpty(request.getCouponId())){
             throw new ServiceException(1003,"兑换码不可以为空");
         }
-        Boolean live = couponMapper.getCouponByCouponId(request.getCouponId());
-        if (!live){
+
+        Coupon coupon = couponMapper.selectOne(new QueryWrapper<Coupon>()
+                .eq("coupon_id", request.getCouponId()));
+
+        if (coupon==null){
+            throw new ServiceException(1004,"该兑换码不存在，请确认后在操作");
+        }
+
+        if (StringUtils.isNotEmpty(coupon.getOpenId()) || coupon.getIsUsed()){
             throw new ServiceException(1004,"该兑换码已经使用，请确认后在操作");
         }
+
+        if (coupon.getStatus()){
+            throw new ServiceException(1004,"该兑换码已经过期，请确认后在操作");
+        }
+
         Token currentUser = getWeChatCurrentUser();
         return couponMapper.updateCouponUserById(currentUser.getUsername(), request.getCouponId())>0;
     }

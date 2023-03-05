@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +48,6 @@ public class SizeServiceImpl extends BaseService implements SizeService {
     public Page<SizeResponse> getSizeList(Integer page, Integer size) {
         log.info("getSizeList page[{}],size[{}]", page, size);
         //todo 商品-> 尺寸 下单(图片+尺寸+材质)
-        List<SizeResponse> sizeResponses = new ArrayList<>();
         Page<SizeResponse> sizePage = initPage(page, size);
 
         page = (page - 1) * size;
@@ -59,27 +59,9 @@ public class SizeServiceImpl extends BaseService implements SizeService {
         if (CollectionUtils.isEmpty(sizeList)) {
             return sizePage;
         }
-        List<String> ids = Lists.newArrayList();
-        //组装数据
-        sizeList.forEach(sz -> {
-            ids.addAll(sz.getPictureIds());
-            ids.addAll(sz.getDetailPictureIds());
-            SizeResponse sizeResponse = new SizeResponse();
-            BeanUtils.copyProperties(sz, sizeResponse);
-            sizeResponses.add(sizeResponse);
-        });
 
-        //避免长连接
-        List<Picture> pictures = pictureService.getPicturesByIds(ids);
-
-        sizeResponses.forEach(response -> {
-            response.setPictures(pictures.stream()
-                    .filter(picture -> response.getPictureIds().contains(picture.getId()))
-                    .collect(Collectors.toList()));
-            response.setDetailPictures(pictures.stream()
-                    .filter(picture -> response.getDetailPictureIds().contains(picture.getId()))
-                    .collect(Collectors.toList()));
-        });
+        //封装返回数据
+        List<SizeResponse> sizeResponses = transSize(sizeList);
 
         sizePage.setRecords(sizeResponses);
         sizePage.setTotal(sizeCount);
@@ -135,6 +117,16 @@ public class SizeServiceImpl extends BaseService implements SizeService {
         return sizeMapper.deleteByPrimaryKey(id)>0;
     }
 
+    @Override
+    public List<SizeResponse> getSizes(Size size) {
+        List<Size> sizes = sizeMapper.selectList(new QueryWrapper<>(size)
+                .eq("is_del",false));
+        if (CollectionUtils.isEmpty(sizes)){
+            return Collections.emptyList();
+        }
+        return transSize(sizes);
+    }
+
     private void checkSize(String id){
         if (StringUtils.isEmpty(id)){
             throw new ServiceException(1003,"id不可以为空");
@@ -143,5 +135,31 @@ public class SizeServiceImpl extends BaseService implements SizeService {
         if (live==null){
             throw new ServiceException(1004,"该尺寸不存在，请确认后重新操作");
         }
+    }
+
+    private List<SizeResponse> transSize(List<Size> sizes){
+        List<SizeResponse> sizeResponses = new ArrayList<>();
+        List<String> ids = Lists.newArrayList();
+        //组装数据
+        sizes.forEach(sz -> {
+            ids.addAll(sz.getPictureIds());
+            ids.addAll(sz.getDetailPictureIds());
+            SizeResponse sizeResponse = new SizeResponse();
+            BeanUtils.copyProperties(sz, sizeResponse);
+            sizeResponses.add(sizeResponse);
+        });
+
+        //避免长连接
+        List<Picture> pictures = pictureService.getPicturesByIds(ids);
+
+        sizeResponses.forEach(response -> {
+            response.setPictures(pictures.stream()
+                    .filter(picture -> response.getPictureIds().contains(picture.getId()))
+                    .collect(Collectors.toList()));
+            response.setDetailPictures(pictures.stream()
+                    .filter(picture -> response.getDetailPictureIds().contains(picture.getId()))
+                    .collect(Collectors.toList()));
+        });
+        return sizeResponses;
     }
 }

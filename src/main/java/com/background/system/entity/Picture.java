@@ -34,11 +34,11 @@ public class Picture implements Serializable {
     private String id;
 
     @ApiModelProperty(value="文件名字")
-    @Excel(name = "名字")
+    @Excel(name = "图片名字")
     private String name;
 
     @ApiModelProperty(value="图片地址")
-    @Excel(name = "地址")
+    @Excel(name = "图片下载地址")
     private String url;
 
     @ApiModelProperty(value="是否删除")

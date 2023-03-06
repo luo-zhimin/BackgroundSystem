@@ -321,20 +321,7 @@ public class ExcelUtil<T> {
                 wb.setSheetName(index++, sheetName);
                 //获取表头
                 Row headRow = sheet.createRow(0);
-
-                //为字段设置属性高宽
-//                List<Field> anyFields = new ArrayList<>();
-                if (clazz != null) {
-                    Field[] declaredFields = clazz[size++].getDeclaredFields();
-//                    anyFields.addAll(Arrays.asList(declaredFields));
-                    for (int i = 0; i < declaredFields.length; i++) {
-                        if (isNull(declaredFields[i].getAnnotation(Excel.class))) {
-                            continue;
-                        }
-                        sheet.setColumnWidth(i, (int) ((declaredFields[i].getAnnotation(Excel.class).width() * 0.72) * 256));
-                        headRow.setHeight((short) (declaredFields[i].getAnnotation(Excel.class).height() * 20));
-                    }
-                }
+                Map<String,Integer> maxMap = new LinkedHashMap<>();
 
                 int columnNum = 0;
                 SXSSFRow rows;
@@ -354,12 +341,42 @@ public class ExcelUtil<T> {
                             cells.setCellStyle(styles.get("header"));
                             cellCache.put(s, columnNum++);
                         }
-                        String value = values.get(i).put(s, values.get(i).get(s) == null ? "" : values.get(i).get(s));
+                        String value = values.get(i).put(s, values.get(i).get(s) == null ? " " : values.get(i).get(s));
                         //根据表头填充数据
                         cells = rows.createCell(cellCache.get(s));
                         cells.setCellValue(value);
+                        //比较最大值并且更新
+                        maxMap.computeIfAbsent(s, k -> value.getBytes().length);
+                        if(maxMap.get(s)<value.getBytes().length)
+                            maxMap.put(s,value.getBytes().length);
                     }
                 }
+//                System.out.println(maxMap);
+
+                //为字段设置属性高宽
+                List<Field> anyFields = new LinkedList<>();
+                if (clazz != null) {
+                    Field[] declaredFields = clazz[size++].getDeclaredFields();
+
+                    for (Field declaredField : declaredFields) {
+                        if (isNull(declaredField.getAnnotation(Excel.class))) {
+                            continue;
+                        }
+                        //把所有带有注解的字段取出来 在遍历
+                        anyFields.add(declaredField);
+                    }
+
+                    for (int i = 0; i < anyFields.size(); i++) {
+                        //需要自适应宽度 找到最长的字符串
+                        String name = anyFields.get(i).getAnnotation(Excel.class).name();
+                        double width = anyFields.get(i).getAnnotation(Excel.class).width();
+                        if (maxMap.containsKey(name)) {
+                            sheet.setColumnWidth(i, ((maxMap.get(name)==0 || maxMap.get(name)< (int) width ? (int) width :maxMap.get(name)+5) * 256));
+                        }
+                        headRow.setHeight((short) (anyFields.get(i).getAnnotation(Excel.class).height() * 20));
+                    }
+                }
+
             }
             String filename = encodingFilename(fileName);
             CommonUtils.setAttachmentResponseHeader(response, filename);
@@ -413,10 +430,12 @@ public class ExcelUtil<T> {
                 this.createCell(excel, row, column++);
             }
             if (Excel.Type.EXPORT.equals(type)) {
+                // 填充数据
                 fillExcelData(index, row);
                 addStatisticsRow();
             }
         }
+        //单sheet 应该在这里设置 行宽 设置 共有属性 map todo 待补充
         return encodingFilename(sheetName);
     }
 
@@ -426,9 +445,11 @@ public class ExcelUtil<T> {
      * @param index 序号
      * @param row   单元格行
      */
+    @SneakyThrows
     public void fillExcelData(int index, Row row) {
         int startNo = index * sheetSize;
         int endNo = Math.min(startNo + sheetSize, list.size());
+
         for (int i = startNo; i < endNo; i++) {
             row = sheet.createRow(i + 1 - startNo);
             // 得到导出对象.
@@ -881,7 +902,7 @@ public class ExcelUtil<T> {
      * 得到所有定义字段
      */
     private void createExcelField() {
-        this.fields = new ArrayList<Object[]>();
+        this.fields = new ArrayList<>();
         List<Field> tempFields = new ArrayList<>();
         tempFields.addAll(Arrays.asList(clazz.getSuperclass().getDeclaredFields()));
         tempFields.addAll(Arrays.asList(clazz.getDeclaredFields()));

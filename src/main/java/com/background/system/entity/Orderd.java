@@ -70,7 +70,7 @@ public class Orderd implements Serializable {
     private LocalDateTime updateTime;
 
     @ApiModelProperty(value="商品总价（不包含优惠券）")
-    @Excel(name = "商品总价（不包含优惠券）")
+    @Excel(name = "商品总价（不包含优惠券）",width = 30)
     private BigDecimal total;
 
     @ApiModelProperty(value="优惠券id")

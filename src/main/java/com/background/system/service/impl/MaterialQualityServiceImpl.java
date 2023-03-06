@@ -1,8 +1,8 @@
 package com.background.system.service.impl;
 
-import com.background.system.entity.Caizhi;
+import com.background.system.entity.MaterialQuality;
 import com.background.system.exception.ServiceException;
-import com.background.system.mapper.CaizhiMapper;
+import com.background.system.mapper.MaterialQualityMapper;
 import com.background.system.service.MaterialQualityService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
@@ -28,17 +28,17 @@ import java.util.List;
 public class MaterialQualityServiceImpl extends BaseService implements MaterialQualityService {
 
     @Resource
-    private CaizhiMapper caizhiMapper;
+    private MaterialQualityMapper materialQualityMapper;
 
     @Override
-    public Page<Caizhi> getMaterialQualityList(Integer page, Integer size) {
-        Page<Caizhi> materialPage = initPage(page, size);
+    public Page<MaterialQuality> getMaterialQualityList(Integer page, Integer size) {
+        Page<MaterialQuality> materialPage = initPage(page, size);
 
-        List<Caizhi> materialQualitiesList = caizhiMapper.getMaterialQualitiesList((page - 1) * size, size);
+        List<MaterialQuality> materialQualitiesList = materialQualityMapper.getMaterialQualitiesList((page - 1) * size, size);
         if (CollectionUtils.isEmpty(materialQualitiesList)){
             return materialPage;
         }
-        int qualities = caizhiMapper.countMaterialQualities();
+        int qualities = materialQualityMapper.countMaterialQualities();
         materialPage.setTotal(qualities);
         materialPage.setRecords(materialQualitiesList);
         return materialPage;
@@ -46,32 +46,32 @@ public class MaterialQualityServiceImpl extends BaseService implements MaterialQ
 
     @Override
     @Cacheable(value = "materialQuality")
-    public List<Caizhi> getMaterialQualityList() {
-        return caizhiMapper.getMaterialQualitiesList(null,null);
+    public List<MaterialQuality> getMaterialQualityList() {
+        return materialQualityMapper.getMaterialQualitiesList(null,null);
     }
 
     @Override
     @Cacheable(value = "materialQuality",key = "#id")
-    public Caizhi getMaterialQualityDetail(String id) {
+    public MaterialQuality getMaterialQualityDetail(String id) {
         return selectByPrimaryKey(id);
     }
 
     @Override
-    @CachePut(value = "materialQuality",key = "#caizhi.id")
-    public Boolean materialQualityInsert(Caizhi caizhi) {
-        log.info("materialQuality insert [{}]",caizhi);
-        if (caizhi.getName()==null){
+    @CachePut(value = "materialQuality",key = "#materialQuality.id")
+    public Boolean materialQualityInsert(MaterialQuality materialQuality) {
+        log.info("materialQuality insert [{}]",materialQuality);
+        if (materialQuality.getName()==null){
             throw new ServiceException(1008,"材质名字不可以为空");
         }
-        return caizhiMapper.insertSelective(caizhi)>0;
+        return materialQualityMapper.insertSelective(materialQuality)>0;
     }
 
     @Override
-    @CachePut(value = "materialQuality",key = "#caizhi.id")
-    public Boolean materialQualityUpdate(Caizhi caizhi) {
-        log.info("materialQuality update [{}]",caizhi);
-        check(caizhi.getId());
-        return caizhiMapper.updateByPrimaryKey(caizhi)>0;
+    @CachePut(value = "materialQuality",key = "#materialQuality.id")
+    public Boolean materialQualityUpdate(MaterialQuality materialQuality) {
+        log.info("materialQuality update [{}]",materialQuality);
+        check(materialQuality.getId());
+        return materialQualityMapper.updateByPrimaryKey(materialQuality)>0;
     }
 
     @Override
@@ -79,28 +79,28 @@ public class MaterialQualityServiceImpl extends BaseService implements MaterialQ
     @CacheEvict(value = "materialQuality",key = "#id")
     public Boolean deleteMaterialQuality(String id) {
         check(id);
-        return caizhiMapper.deleteByPrimaryKey(id)>0;
+        return materialQualityMapper.deleteByPrimaryKey(id)>0;
     }
 
-    public Caizhi selectByPrimaryKey(String id) {
-        return caizhiMapper.selectByPrimaryKey(id);
+    public MaterialQuality selectByPrimaryKey(String id) {
+        return materialQualityMapper.selectByPrimaryKey(id);
     }
 
     private void check(String id){
         if (StringUtils.isEmpty(id)){
             throw new ServiceException(1003,"id不可以为空");
         }
-        Caizhi live = getMaterialQualityDetail(id);
+        MaterialQuality live = getMaterialQualityDetail(id);
         if (live==null){
             throw new ServiceException(1004,"该材质不存在，请确认后重新操作");
         }
     }
 
     @Cacheable(value = "materialQuality")
-    public List<Caizhi> getMaterialListByIds(List<String> ids){
+    public List<MaterialQuality> getMaterialListByIds(List<String> ids){
         if (CollectionUtils.isEmpty(ids)){
             return Collections.emptyList();
         }
-        return caizhiMapper.getMaterialListByIds(ids);
+        return materialQualityMapper.getMaterialListByIds(ids);
     }
 }

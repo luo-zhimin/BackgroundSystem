@@ -176,4 +176,12 @@ public class CouponServiceImpl extends BaseService implements CouponService {
     public Boolean updateService(Coupon coupon) {
         return couponMapper.updateByPrimaryKeySelective(coupon)>0;
     }
+
+    @Cacheable(value = "coupons")
+    public List<Coupon> getCouponListByIds(List<Long> ids) {
+        if (CollectionUtils.isEmpty(ids)){
+            return Lists.newArrayList();
+        }
+        return couponMapper.selectBatchIds(ids);
+    }
 }

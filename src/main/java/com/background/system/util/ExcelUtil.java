@@ -8,6 +8,8 @@ import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.xssf.streaming.SXSSFCell;
+import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 import org.slf4j.Logger;
@@ -97,6 +99,8 @@ public class ExcelUtil<T> {
     public ExcelUtil(Class<T> clazz) {
         this.clazz = clazz;
     }
+
+    public ExcelUtil() {}
 
     public void init(List<T> list, String sheetName, Excel.Type type) {
         if (list == null) {
@@ -273,6 +277,91 @@ public class ExcelUtil<T> {
         try {
             // 取出一共有多少个sheet.
             String filename = assembleExcel();
+            CommonUtils.setAttachmentResponseHeader(response, filename);
+            response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+            wb.write(response.getOutputStream());
+        } catch (Exception e) {
+            log.error("导出Excel异常{}", e.getMessage());
+            throw new ServiceException(1000, "导出Excel失败，请联系网站管理员！");
+        } finally {
+            if (wb != null) {
+                try {
+                    wb.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * 多sheet导出
+     * @param response servlet响应
+     * @param map 多sheet数据 Map<"sheet名字",List<Map< "字段名字","字段值">>> map
+     * @param fileName 文件名
+     * @param clazz 实体类
+     */
+    @SuppressWarnings({"rawtypes"})
+    public void exportExcel(HttpServletResponse response,Map<String,List<Map<String,String>>> map,String fileName,Class... clazz) {
+        try {
+            SXSSFWorkbook wb = new SXSSFWorkbook();
+            this.styles = createStyles(wb);
+
+            Map<String,Integer> cellCache = new LinkedHashMap<>();
+            int index = 0;
+            int size = 0;
+            for (Map.Entry<String, List<Map<String, String>>> entry : map.entrySet()) {
+                //清理表头缓存
+                cellCache.clear();
+                //创建sheet
+                String sheetName = entry.getKey();
+                List<Map<String, String>> values = entry.getValue();
+
+                Sheet sheet = wb.createSheet();
+                wb.setSheetName(index++, sheetName);
+                //获取表头
+                Row headRow = sheet.createRow(0);
+
+                //为字段设置属性高宽
+//                List<Field> anyFields = new ArrayList<>();
+                if (clazz != null) {
+                    Field[] declaredFields = clazz[size++].getDeclaredFields();
+//                    anyFields.addAll(Arrays.asList(declaredFields));
+                    for (int i = 0; i < declaredFields.length; i++) {
+                        if (isNull(declaredFields[i].getAnnotation(Excel.class))) {
+                            continue;
+                        }
+                        sheet.setColumnWidth(i, (int) ((declaredFields[i].getAnnotation(Excel.class).width() * 0.72) * 256));
+                        headRow.setHeight((short) (declaredFields[i].getAnnotation(Excel.class).height() * 20));
+                    }
+                }
+
+                int columnNum = 0;
+                SXSSFRow rows;
+                SXSSFCell cells;
+                for (int i = 0; i < values.size(); i++) {
+                    //在这个sheet创建一行
+                    rows = (SXSSFRow) sheet.createRow(i + 1);
+                    Set<String> strings = values.get(i).keySet();
+                    List<String> headList = new ArrayList<>(strings);
+                    //赋值
+                    for (String s : headList) {
+                        //查看缓存列名是否存在
+                        if (!cellCache.containsKey(s)) {
+                            //不存在则创建
+                            cells = (SXSSFCell) headRow.createCell(columnNum);
+                            cells.setCellValue(s);
+                            cells.setCellStyle(styles.get("header"));
+                            cellCache.put(s, columnNum++);
+                        }
+                        String value = values.get(i).put(s, values.get(i).get(s) == null ? "" : values.get(i).get(s));
+                        //根据表头填充数据
+                        cells = rows.createCell(cellCache.get(s));
+                        cells.setCellValue(value);
+                    }
+                }
+            }
+            String filename = encodingFilename(fileName);
             CommonUtils.setAttachmentResponseHeader(response, filename);
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             wb.write(response.getOutputStream());
@@ -822,7 +911,7 @@ public class ExcelUtil<T> {
         double maxHeight = 0;
         for (Object[] os : this.fields) {
             Excel excel = (Excel) os[1];
-            maxHeight = maxHeight > excel.height() ? maxHeight : excel.height();
+            maxHeight = Math.max(maxHeight, excel.height());
         }
         return (short) (maxHeight * 20);
     }
@@ -903,5 +992,53 @@ public class ExcelUtil<T> {
 
     private boolean isNotNull(Object obj) {
         return !isNull(obj);
+    }
+
+
+    /**
+     * 转换实体类 成map结构
+     * <"字段名称","字段值">
+     */
+    @SneakyThrows
+    public Map<String, Object> convertToMap(T vo,List<Object[]> fields) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        for (Object[] os : fields) {
+            Field field = (Field) os[0];
+            Excel attr = (Excel) os[1];
+            field.setAccessible(true);
+            Object val = field.get(vo);
+            String dateFormat = attr.dateFormat();
+            String readConverterExp = attr.readConverterExp();
+            String separator = attr.separator();
+            if (StringUtils.isNotEmpty(dateFormat) && isNotNull(val)) {
+                val = CommonUtils.parseDateToStr(dateFormat, (Date) val);
+            } else if (StringUtils.isNotEmpty(readConverterExp) && isNotNull(val)) {
+                val = convertByExp(String.valueOf(val), readConverterExp, separator);
+            }else {
+                val = Convert.toStr(val);
+            }
+            map.put(attr.name(), isNotNull(val) ? val : attr.defaultValue());
+        }
+        return map;
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    public List<Object[]> getAllFields(Class clazz){
+        List<Object[]> fields = new ArrayList<>();
+        Field[] declaredFields = clazz.getDeclaredFields();
+        for (Field field : declaredFields) {
+            //单注解
+            if (field.isAnnotationPresent(Excel.class)){
+                Excel fieldAnnotation = field.getAnnotation(Excel.class);
+                fields.add(new Object[]{field,fieldAnnotation});
+            }else if (field.isAnnotationPresent(Excels.class)){
+                Excels fieldAnnotation = field.getAnnotation(Excels.class);
+                Excel[] value = fieldAnnotation.value();
+                for (Excel excel : value) {
+                    fields.add(new Object[]{field,excel});
+                }
+            }
+        }
+        return fields;
     }
 }

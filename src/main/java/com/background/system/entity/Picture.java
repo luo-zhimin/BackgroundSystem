@@ -1,5 +1,6 @@
 package com.background.system.entity;
 
+import com.background.system.annotation.Excel;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -29,12 +30,15 @@ public class Picture implements Serializable {
     private MultipartFile file;
 
     @ApiModelProperty(value="主键Id")
+    @Excel(name = "图片编号")
     private String id;
 
     @ApiModelProperty(value="文件名字")
+    @Excel(name = "名字")
     private String name;
 
     @ApiModelProperty(value="图片地址")
+    @Excel(name = "地址")
     private String url;
 
     @ApiModelProperty(value="是否删除")

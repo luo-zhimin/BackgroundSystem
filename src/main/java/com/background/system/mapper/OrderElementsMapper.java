@@ -19,4 +19,6 @@ public interface OrderElementsMapper {
     List<OrderElement> getOrderElementsByOrderId(@Param("orderId")String orderId);
 
     List<CountResponse> getOrderCountByIds(@Param("ids")List<String> ids);
+
+    List<OrderElement> getOrderElementsByOrderIds(@Param("orderIds") List<String> orderIds);
 }

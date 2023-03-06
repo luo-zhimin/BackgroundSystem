@@ -1,6 +1,6 @@
 package com.background.system.controller.backstage;
 
-import com.background.system.entity.Caizhi;
+import com.background.system.entity.MaterialQuality;
 import com.background.system.service.MaterialQualityService;
 import com.background.system.util.ExcelUtil;
 import com.background.system.util.Result;
@@ -28,16 +28,16 @@ public class BackstageMaterialQualityController {
 
     @PostMapping("/insert")
     @ApiOperation("后台-材质新增")
-    public Result<?> materialQualityInsert(@RequestBody Caizhi caizhi)
+    public Result<?> materialQualityInsert(@RequestBody MaterialQuality materialQuality)
     {
-        return Result.success(qualityService.materialQualityInsert(caizhi));
+        return Result.success(qualityService.materialQualityInsert(materialQuality));
     }
 
     @PostMapping("/update")
     @ApiOperation("后台-材质修改")
-    public Result<?> materialQualityUpdate(@RequestBody Caizhi caizhi)
+    public Result<?> materialQualityUpdate(@RequestBody MaterialQuality materialQuality)
     {
-        return Result.success(qualityService.materialQualityUpdate(caizhi));
+        return Result.success(qualityService.materialQualityUpdate(materialQuality));
     }
 
     @GetMapping("/list")
@@ -58,8 +58,8 @@ public class BackstageMaterialQualityController {
     @ApiOperation(value = "材质导出")
     public void export(HttpServletResponse response)
     {
-        List<Caizhi> list = qualityService.getMaterialQualityList();
-        ExcelUtil<Caizhi> util = new ExcelUtil<>(Caizhi.class);
+        List<MaterialQuality> list = qualityService.getMaterialQualityList();
+        ExcelUtil<MaterialQuality> util = new ExcelUtil<>(MaterialQuality.class);
         util.exportExcel(list, "material",response);
     }
 }

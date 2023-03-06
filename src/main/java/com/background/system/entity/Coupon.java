@@ -25,6 +25,7 @@ public class Coupon implements Serializable {
     private static final long serialVersionUID = 8449488559542598451L;
 
     @ApiModelProperty(value = "主键Id")
+    @Excel(name = "优惠卷编号")
     private Long id;
 
     @ApiModelProperty(value = "兑换码")

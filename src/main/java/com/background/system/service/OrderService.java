@@ -5,6 +5,7 @@ import com.background.system.entity.vo.OrderVo;
 import com.background.system.response.OrderdResponse;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,4 +40,6 @@ public interface OrderService {
     Boolean orderDownload(String id);
 
     Object getOrderCurrentDay();
+
+    Map<String, List<Map<String,String>>> orderExport(Integer page, Integer size, Integer type, String sizeId,Long orderId,String orderNo,String name);
 }

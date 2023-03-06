@@ -1,10 +1,9 @@
 package com.background.system.controller.backstage;
 
-import com.background.system.response.OrderdResponse;
+import com.background.system.entity.*;
 import com.background.system.service.OrderService;
 import com.background.system.util.ExcelUtil;
 import com.background.system.util.Result;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -12,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,7 +28,7 @@ public class BackstageOrderController {
     @Autowired
     private OrderService orderService;
 
-    @GetMapping("/order/list")
+    @GetMapping("/list")
     @ApiOperation("后台-订单列表")
     public Result<?> getAdminOrderList(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                        @RequestParam(value = "size", defaultValue = "10") Integer size,
@@ -50,12 +51,15 @@ public class BackstageOrderController {
                        @RequestParam(value = "name", required = false) String name,
                        HttpServletResponse response)
     {
-        Page<OrderdResponse> orderdResponsePage = orderService
-                .getAdminOrderList(page, size, type, sizeId, orderId, orderNo, name);
-
-        ExcelUtil<OrderdResponse> util = new ExcelUtil<>(OrderdResponse.class);
-        //可以使用多表单导出
-        util.exportExcel(orderdResponsePage.getRecords(), "order", response);
+        Map<String, List<Map<String, String>>> orderMap = orderService.orderExport(page, size, type, sizeId, orderId, orderNo, name);
+        new ExcelUtil<>().exportExcel(response, orderMap, "订单",
+                Orderd.class,
+                OrderElement.class,
+                Picture.class,
+                Address.class,
+                Size.class,
+                MaterialQuality.class,
+                Coupon.class);
     }
 
     @PostMapping("/download")

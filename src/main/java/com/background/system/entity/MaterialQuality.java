@@ -14,14 +14,15 @@ import java.math.BigDecimal;
 * @Author : 志敏.罗
 * @create 2022/8/20 14:53
 */
-@ApiModel(value="caizhi")
+@ApiModel(value="materialQuality")
 @Data
 @ToString
-public class Caizhi implements Serializable {
+public class MaterialQuality implements Serializable {
 
     private static final long serialVersionUID = -7992747140968718739L;
 
     @ApiModelProperty(value="主键id")
+    @Excel(name = "材质编号")
     private String id;
 
     @ApiModelProperty(value="材质")

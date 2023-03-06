@@ -1,6 +1,6 @@
 package com.background.system.service;
 
-import com.background.system.entity.Caizhi;
+import com.background.system.entity.MaterialQuality;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.util.List;
@@ -12,15 +12,15 @@ import java.util.List;
  */
 public interface MaterialQualityService {
 
-    Page<Caizhi> getMaterialQualityList(Integer page, Integer size);
+    Page<MaterialQuality> getMaterialQualityList(Integer page, Integer size);
 
-    List<Caizhi> getMaterialQualityList();
+    List<MaterialQuality> getMaterialQualityList();
 
-    Caizhi getMaterialQualityDetail(String id);
+    MaterialQuality getMaterialQualityDetail(String id);
 
-    Boolean materialQualityInsert(Caizhi caizhi);
+    Boolean materialQualityInsert(MaterialQuality materialQuality);
 
-    Boolean materialQualityUpdate(Caizhi caizhi);
+    Boolean materialQualityUpdate(MaterialQuality materialQuality);
 
     Boolean deleteMaterialQuality(String id);
 }

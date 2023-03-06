@@ -1,5 +1,6 @@
 package com.background.system.entity;
 
+import com.background.system.annotation.Excel;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiModelProperty;
@@ -28,12 +29,15 @@ public class OrderElement implements Serializable {
     private Long id;
 
     @ApiModelProperty(value = "订单号")
+    @Excel(name = "订单号")
     private String orderId;
 
     @ApiModelProperty(value = "'商品数量'")
+    @Excel(name = "商品数量")
     private Integer number;
 
     @ApiModelProperty(value = "'商品图片'")
+    @Excel(name = "商品图片编号")
     private String pictureId;
 
     @ApiModelProperty(value = "'是否删除'")

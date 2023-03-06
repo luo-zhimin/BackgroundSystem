@@ -1,6 +1,6 @@
 package com.background.system.response;
 
-import com.background.system.entity.Caizhi;
+import com.background.system.entity.MaterialQuality;
 import com.background.system.entity.Picture;
 import com.background.system.entity.Size;
 import io.swagger.annotations.ApiModelProperty;
@@ -27,5 +27,5 @@ public class SizeResponse extends Size {
     private List<Picture> detailPictures;
 
     @ApiModelProperty(value = "材质集合")
-    private List<Caizhi> materials;
+    private List<MaterialQuality> materials;
 }

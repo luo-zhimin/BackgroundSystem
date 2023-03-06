@@ -136,4 +136,9 @@ public class AddressServiceImpl extends BaseService implements AddressService {
         //暂时只校验微信小程序
         return weChatCurrentUser.getUsername().equals(address.getOpenid());
     }
+
+    @Cacheable(value = "address")
+    public List<Address> getAddressesByIds(List<String> ids) {
+        return addressMapper.selectBatchIds(ids);
+    }
 }

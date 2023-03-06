@@ -28,6 +28,7 @@ public class Orderd implements Serializable {
     private static final long serialVersionUID = 1525223375313707081L;
 
     @ApiModelProperty(value="主键Id")
+    @Excel(name = "序号")
     private String id;
 
     @ApiModelProperty(value="微信支付订单号")
@@ -40,7 +41,7 @@ public class Orderd implements Serializable {
     private String kdNo;
 
     @ApiModelProperty(value="是否支付")
-    @Excel(name = "是否支付", readConverterExp = "true=否,false=是")
+    @Excel(name = "是否支付", readConverterExp = "true=是,false=否")
     private Boolean isPay;
 
     @ApiModelProperty(value="备注")
@@ -73,6 +74,7 @@ public class Orderd implements Serializable {
     private BigDecimal total;
 
     @ApiModelProperty(value="优惠券id")
+    @Excel(name = "优惠券编号")
     private Long couponId;
 
     @ApiModelProperty(value="订单状态：待付款，待发货，售后订单，交易关闭")
@@ -80,12 +82,15 @@ public class Orderd implements Serializable {
     private String status;
 
     @ApiModelProperty(value="收货地址id")
+    @Excel(name = "地址编号")
     private String addressId;
 
     @ApiModelProperty(value="尺寸ID")
+    @Excel(name = "尺寸编号")
     private String sizeId;
 
     @ApiModelProperty(value="材质ID")
+    @Excel(name = "材质编号")
     private String caizhiId;
 
     private String createUser;

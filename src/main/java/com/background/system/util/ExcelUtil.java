@@ -92,6 +92,11 @@ public class ExcelUtil<T> {
     private static final DecimalFormat DOUBLE_FORMAT = new DecimalFormat("######0.00");
 
     /**
+     * 当前行数据最大宽度
+     */
+    private Map<String,Integer> maxMap = new LinkedHashMap<>();
+
+    /**
      * 实体对象
      */
     public Class<T> clazz;
@@ -167,8 +172,7 @@ public class ExcelUtil<T> {
             Field[] allFields = clazz.getDeclaredFields();
             // 定义一个map用于存放列的序号和field.
             Map<Integer, Field> fieldsMap = new HashMap<Integer, Field>();
-            for (int col = 0; col < allFields.length; col++) {
-                Field field = allFields[col];
+            for (Field field : allFields) {
                 Excel attr = field.getAnnotation(Excel.class);
                 if (attr != null && (attr.type() == Excel.Type.ALL || attr.type() == type)) {
                     // 设置类的私有字段属性可访问.
@@ -321,7 +325,6 @@ public class ExcelUtil<T> {
                 wb.setSheetName(index++, sheetName);
                 //获取表头
                 Row headRow = sheet.createRow(0);
-                Map<String,Integer> maxMap = new LinkedHashMap<>();
 
                 int columnNum = 0;
                 SXSSFRow rows;
@@ -346,12 +349,9 @@ public class ExcelUtil<T> {
                         cells = rows.createCell(cellCache.get(s));
                         cells.setCellValue(value);
                         //比较最大值并且更新
-                        maxMap.computeIfAbsent(s, k -> value.getBytes().length);
-                        if(maxMap.get(s)<value.getBytes().length)
-                            maxMap.put(s,value.getBytes().length);
+                        assembleMaxMap(value,s);
                     }
                 }
-//                System.out.println(maxMap);
 
                 //为字段设置属性高宽
                 List<Field> anyFields = new LinkedList<>();
@@ -435,6 +435,16 @@ public class ExcelUtil<T> {
                 addStatisticsRow();
             }
         }
+
+        for (int i = 0; i < fields.size(); i++) {
+            //需要自适应宽度 找到最长的字符串
+            String name = ((Excel)fields.get(i)[1]).name();
+            double width = ((Excel)fields.get(i)[1]).width();
+            if (maxMap.containsKey(name)) {
+                sheet.setColumnWidth(i, ((maxMap.get(name)==0 || maxMap.get(name)< (int) width ? (int) width :maxMap.get(name)+5) * 256));
+            }
+        }
+
         //单sheet 应该在这里设置 行宽 设置 共有属性 map todo 待补充
         return encodingFilename(sheetName);
     }
@@ -650,9 +660,10 @@ public class ExcelUtil<T> {
                     setCellVo(value, attr, cell);
                 }
                 addStatisticsData(column, Convert.toStr(value), attr);
+                assembleMaxMap(value.toString(),attr.name());
             }
         } catch (Exception e) {
-            log.error("导出Excel失败{}", e);
+            log.error("导出Excel失败{}", e.getMessage());
         }
         return cell;
     }
@@ -1061,5 +1072,15 @@ public class ExcelUtil<T> {
             }
         }
         return fields;
+    }
+
+    private void assembleMaxMap(String value, String name){
+        if (StringUtils.isEmpty(value)){
+            return;
+        }
+        //比较最大值并且更新
+        maxMap.computeIfAbsent(name, k -> value.getBytes().length);
+        if(maxMap.get(name)<value.getBytes().length)
+            maxMap.put(name,value.getBytes().length);
     }
 }

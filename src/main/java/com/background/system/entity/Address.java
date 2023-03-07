@@ -28,7 +28,7 @@ public class Address implements Serializable {
     private String id;
 
     @ApiModelProperty(value="用户唯一标识")
-    @Excel(name = "用户唯一标识")
+    @Excel(name = "用户唯一标识",width = 35)
     private String openid;
 
     @ApiModelProperty(value="姓名")

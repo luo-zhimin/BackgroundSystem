@@ -10,7 +10,7 @@
 
 **Background-System**是一个基于SpringBoot的后台管理系统，前端使用Vue，后端使用SpringBoot，数据库使用MySQL，缓存使用Redis，使用了MybatisPlus，Shiro，JWT，Swagger，Quartz，Jasypt等技术，实现了用户管理，角色管理，权限管理，菜单管理，接口管理，定时任务，文件上传，邮件发送等功能。
 
-已经上线小程序，[铃星印品](![wechat.jpg](src%2Fmain%2Fresources%2Fstatic%2Fwechat.jpg))，欢迎体验
+已经上线小程序，铃星印品-（原代码）
 
 # 特性
 - 配置文件加密，（java）打包混淆

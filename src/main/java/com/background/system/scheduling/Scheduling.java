@@ -36,8 +36,11 @@ public class Scheduling {
 
     @Scheduled(fixedDelayString="1800000")
     public synchronized void executeCreateZip(){
+        //todo 生成zip文件(若前端进行裁剪，则可以直接用sourceZip,若后端进行裁剪(py),则需要用到第一个)
         logger.info("scheduling execute time[{}]", LocalDateTime.now().getHour()+":"+LocalDateTime.now().getMinute());
         timeTask.task();
+        //若是要使用 则需要将上面的getFile方法取出来，放到这里，进行入参
+//        timeTask.sourceTask();
     }
 
     @Scheduled(cron = "0 58 23 * * ? ")

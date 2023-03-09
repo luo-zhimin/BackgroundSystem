@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.background.system.mapper.CaizhiMapper">
-    <resultMap id="BaseResultMap" type="com.background.system.entity.Caizhi">
+<mapper namespace="com.background.system.mapper.MaterialQualityMapper">
+    <resultMap id="BaseResultMap" type="com.background.system.entity.MaterialQuality">
         <!--@Table caizhi-->
         <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
@@ -30,13 +30,13 @@
         where id = #{id,jdbcType=VARCHAR}
     </delete>
 
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Caizhi"
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.MaterialQuality"
             useGeneratedKeys="true">
         insert into caizhi (`name`,`price`)
         values (#{name,jdbcType=VARCHAR},#{price,jdbcType=DECIMAL})
     </insert>
 
-    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.Caizhi"
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.background.system.entity.MaterialQuality"
             useGeneratedKeys="true">
         insert into caizhi
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -57,7 +57,7 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.Caizhi">
+    <update id="updateByPrimaryKeySelective" parameterType="com.background.system.entity.MaterialQuality">
         update caizhi
         <set>
             <if test="name != null and name != ''">
@@ -70,7 +70,7 @@
         where id = #{id,jdbcType=VARCHAR}
     </update>
 
-    <update id="updateByPrimaryKey" parameterType="com.background.system.entity.Caizhi">
+    <update id="updateByPrimaryKey" parameterType="com.background.system.entity.MaterialQuality">
         update caizhi
         set `name` = #{name,jdbcType=VARCHAR}
         where id = #{id,jdbcType=VARCHAR}

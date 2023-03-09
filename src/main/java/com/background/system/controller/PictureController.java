@@ -1,6 +1,7 @@
 package com.background.system.controller;
 
 import com.background.system.annotation.IgnoreLogin;
+import com.background.system.entity.Picture;
 import com.background.system.service.PictureService;
 import com.background.system.util.Result;
 import io.swagger.annotations.Api;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,23 +33,25 @@ public class PictureController {
     @PostMapping("getPicture")
     @ApiOperation("上传图片")
     @IgnoreLogin
-    public Result<?> getPicture(MultipartFile file) {
+    public Result<?> getPicture(Picture picture) {
         //前端一直循环调取 是否加锁
-        return Result.success(pictureService.getPicture(file,"default"));
+        picture.setFather("default");
+        return Result.success(pictureService.getPicture(picture));
     }
 
-    @PostMapping("/upload")
-    @ApiOperation("批量-上传图片")
-    @IgnoreLogin
-    public Result<?> upload(MultipartFile[] file) {
-        return Result.success(pictureService.upload(file,"default"));
-    }
+//    @PostMapping("/upload")
+//    @ApiOperation("批量-上传图片")
+//    @IgnoreLogin
+//    public Result<?> upload(MultipartFile[] file) {
+//        return Result.success(pictureService.upload(file,"default"));
+//    }
 
     @PostMapping("uploadIndex")
     @ApiOperation("上传首页图片")
     @IgnoreLogin
-    public Result<?> uploadIndex(MultipartFile file) {
-        return Result.success(pictureService.getPicture(file,"index"));
+    public Result<?> uploadIndex(Picture picture) {
+        picture.setFather("index");
+        return Result.success(pictureService.getPicture(picture));
     }
 
     @GetMapping("getIndexPicture")

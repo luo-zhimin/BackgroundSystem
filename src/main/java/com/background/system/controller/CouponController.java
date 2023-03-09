@@ -1,5 +1,6 @@
 package com.background.system.controller;
 
+import com.background.system.annotation.IgnoreLogin;
 import com.background.system.request.BaseRequest;
 import com.background.system.service.CouponService;
 import com.background.system.util.Result;
@@ -40,6 +41,7 @@ public class CouponController {
 
     @PostMapping("/covert")
     @ApiOperation(value = "兑换优惠卷")
+    @IgnoreLogin
     public Result<?> covertCoupon(@RequestBody BaseRequest request){
         return Result.success(couponService.covertCoupon(request));
     }

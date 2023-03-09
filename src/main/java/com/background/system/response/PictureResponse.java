@@ -1,9 +1,12 @@
 package com.background.system.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Tolerate;
+
+import java.io.Serializable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,11 +17,16 @@ import lombok.experimental.Tolerate;
 @Data
 @ToString
 @Builder
-public class PictureResponse {
+public class PictureResponse implements Serializable {
+
+    private static final long serialVersionUID = -8992410913157215639L;
 
     private String id;
 
     private String url;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String orderId;
 
     @Tolerate
     public PictureResponse(){}

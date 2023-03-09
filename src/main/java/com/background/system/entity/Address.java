@@ -1,5 +1,6 @@
 package com.background.system.entity;
 
+import com.background.system.annotation.Excel;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -18,24 +20,31 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode
 //@AllArgsConstructor
-public class Address {
+public class Address implements Serializable {
+
+    private static final long serialVersionUID = 2856422720749910494L;
 
     @ApiModelProperty(value="主键id")
     private String id;
 
     @ApiModelProperty(value="用户唯一标识")
+    @Excel(name = "用户唯一标识",width = 35)
     private String openid;
 
     @ApiModelProperty(value="姓名")
+    @Excel(name = "姓名")
     private String name;
 
     @ApiModelProperty(value="手机号")
+    @Excel(name = "手机号")
     private String phone;
 
     @ApiModelProperty(value="省市区")
+    @Excel(name = "省市区")
     private String province;
 
     @ApiModelProperty(value="详细地址")
+    @Excel(name = "详细地址")
     private String address;
 
     @ApiModelProperty(value="是否是默认地址")

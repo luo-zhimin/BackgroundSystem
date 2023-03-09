@@ -177,4 +177,15 @@
             #{key,jdbcType=VARCHAR}
         </foreach>
     </update>
+
+    <select id="getAddressesByOpenIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from address
+        where is_del = 0
+          and openId in
+        <foreach collection="openIds" item="key" index="index" open="(" close=")" separator=",">
+            #{key,jdbcType=VARCHAR}
+        </foreach>
+    </select>
 </mapper>

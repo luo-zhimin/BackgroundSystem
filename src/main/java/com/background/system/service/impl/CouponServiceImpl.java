@@ -8,6 +8,7 @@ import com.background.system.mapper.CouponMapper;
 import com.background.system.request.BaseRequest;
 import com.background.system.response.CouponResponse;
 import com.background.system.service.CouponService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,27 +83,42 @@ public class CouponServiceImpl extends BaseService implements CouponService {
     }
 
     @Override
+    @Cacheable(value = "coupon",key = "#id")
     public Coupon getCouponDetail(Long id) {
         return couponMapper.selectById(id);
     }
 
     @Override
     @Transactional
+    @CachePut(value = "coupon",key = "#request.couponId")
     public Boolean covertCoupon(BaseRequest request) {
         log.info("coverCoupon request[{}]",request);
         if (StringUtils.isEmpty(request.getCouponId())){
             throw new ServiceException(1003,"兑换码不可以为空");
         }
-        Boolean live = couponMapper.getCouponByCouponId(request.getCouponId());
-        if (!live){
+
+        Coupon coupon = couponMapper.selectOne(new QueryWrapper<Coupon>()
+                .eq("coupon_id", request.getCouponId()));
+
+        if (coupon==null){
+            throw new ServiceException(1004,"该兑换码不存在，请确认后在操作");
+        }
+
+        if (StringUtils.isNotEmpty(coupon.getOpenId()) || coupon.getIsUsed()){
             throw new ServiceException(1004,"该兑换码已经使用，请确认后在操作");
         }
+
+        if (coupon.getStatus()){
+            throw new ServiceException(1004,"该兑换码已经过期，请确认后在操作");
+        }
+
         Token currentUser = getWeChatCurrentUser();
         return couponMapper.updateCouponUserById(currentUser.getUsername(), request.getCouponId())>0;
     }
 
     @Override
     @Transactional
+    @CachePut(value = "coupon",key = "#coupon.id")
     public Boolean insert(Coupon coupon) {
         log.info("coupon insert coupon[{}]",coupon);
         //随机生成优惠卷兑换码
@@ -112,7 +130,7 @@ public class CouponServiceImpl extends BaseService implements CouponService {
         if(coupon.getUseLimit()<=0){
             throw new ServiceException(1007,"优惠卷消费限制必须大于0");
         }
-        if (coupon.getPrice().compareTo(BigDecimal.valueOf(coupon.getUseLimit()))>=0){
+        if (coupon.getPrice()!=null && coupon.getPrice().compareTo(BigDecimal.valueOf(coupon.getUseLimit()))>=0){
             //1001 1000
             throw new ServiceException(1008,"优惠卷消费价格需要小于消费限制");
         }
@@ -121,6 +139,7 @@ public class CouponServiceImpl extends BaseService implements CouponService {
 
     @Override
     @Transactional
+    @CachePut(value = "coupon",key = "#coupon.id")
     public Boolean update(Coupon coupon) {
         log.info("coupon update coupon[{}]",coupon);
         if (coupon.getId()==null){
@@ -136,6 +155,12 @@ public class CouponServiceImpl extends BaseService implements CouponService {
         return couponMapper.updateByPrimaryKeySelective(coupon)>0;
     }
 
+    @Override
+    @Cacheable(value = "coupon")
+    public List<Coupon> selectCoupons(Coupon coupon) {
+        return couponMapper.selectList(new QueryWrapper<>(coupon));
+    }
+
     @Transactional(rollbackFor = ServiceException.class)
     public void closeCoupon(){
         List<Long> couponIds = this.couponMapper.getCloseCoupon();
@@ -144,5 +169,19 @@ public class CouponServiceImpl extends BaseService implements CouponService {
             return;
         }
         this.couponMapper.close(couponIds);
+    }
+
+    @Transactional
+    @CachePut(value = "coupon",key = "#coupon.id")
+    public Boolean updateService(Coupon coupon) {
+        return couponMapper.updateByPrimaryKeySelective(coupon)>0;
+    }
+
+    @Cacheable(value = "coupons")
+    public List<Coupon> getCouponListByIds(List<Long> ids) {
+        if (CollectionUtils.isEmpty(ids)){
+            return Lists.newArrayList();
+        }
+        return couponMapper.selectBatchIds(ids);
     }
 }

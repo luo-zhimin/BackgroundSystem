@@ -17,10 +17,48 @@ spring:
   application:
     name: backgroundSystem
 
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 1
+    timeout: 10000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 0
+  mail:
+    host: smtp.qq.com
+    protocol: smtp
+    default-encoding: utf-8
+    username: ENC(yOcA+pTrPhZyuJKlBQ52O5MedEIQe7Dl1SFzBTu0R1nqZdiwjz3gMg==)
+    password: ENC(nNjoKm63Ltqm2/LnKb3p9eitKY0lj8xaxlKalCfNfExtMN9Drz5I9Q==)
+    test-connection: true
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            enable: true
+            trust: smtp.qq.com
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+            fallback: false
+            port: 465
+
 logging:
   level:
-    sql: debug
-    com.background.system*: debug
+    com.background.system.*: debug
+  file:
+#    prod
+#    path: /opt/project/log
+#    dev
+    path: /Users/luozhimin/Desktop/File/daily/backgroundSystem/log
 
 swagger:
   enable: true
@@ -33,7 +71,12 @@ jasypt:
   encryptor:
     bean: jasyptStringEncryptor
 
-# 加入配置vm
-#-Djasypt.encryptor.password=xx
 zip:
-  file: /Users/sugar/Desktop/BackgroundSystem/upload
+#  prod
+#  path: root/project/upload
+#  dev
+  path: /Users/luozhimin/Desktop/File/daily/backgroundSystem
+
+file:
+  address: http://localhost:8000
+  token: ENC(a0A4+mHJ3y68MbYC2vvPGBXa8SbrPyPgZb+depGkHsxj5KjNhDWJOg==)

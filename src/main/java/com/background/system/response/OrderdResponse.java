@@ -25,9 +25,7 @@ public class OrderdResponse extends Orderd {
 
     private Coupon coupon;
 
-//    private Caizhi caizhi;
-
-    private List<Caizhi> materialQualities;
+    private List<MaterialQuality> materialQualities;
 
     private Size size;
 

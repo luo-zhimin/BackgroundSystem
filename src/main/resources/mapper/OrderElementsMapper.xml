@@ -181,4 +181,15 @@
         </foreach>
         group by order_id
     </select>
+
+    <select id="getOrderElementsByOrderIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from order_element
+        where order_id in
+        <foreach collection="orderIds" item="key" index="index" open="(" close=")" separator=",">
+            #{key,jdbcType=VARCHAR}
+        </foreach>
+        and is_del = 0
+    </select>
 </mapper>

@@ -17,8 +17,7 @@ import javax.servlet.http.HttpServletRequest;
  * @Author : 志敏.罗
  * @create 2022/8/20 12:08
  */
-public abstract class BaseService {
-
+public abstract class BaseService<T> {
 
     /**
      * 初始化page
@@ -26,9 +25,9 @@ public abstract class BaseService {
      * @param size 条数
      * @return page
      */
-    @SuppressWarnings("all")
-    public Page initPage(Integer page,Integer size){
-        Page initPage = new Page<>();
+//    @SuppressWarnings("all")
+    public Page<T> initPage(Integer page,Integer size){
+        Page<T> initPage = new Page<>();
         initPage.setPages(page);
         initPage.setSize(size);
         return initPage;

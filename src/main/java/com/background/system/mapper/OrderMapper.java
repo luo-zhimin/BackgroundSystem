@@ -2,6 +2,7 @@ package com.background.system.mapper;
 
 import com.background.system.entity.Orderd;
 import com.background.system.response.BaseResponse;
+import com.background.system.response.CurrentOrderResponse;
 import com.background.system.response.IndexCountResponse;
 import com.background.system.response.OrderCount;
 import com.background.system.response.file.ReadyDownloadFileResponse;
@@ -63,7 +64,7 @@ public interface OrderMapper extends BaseMapper<Orderd> {
     int closeOrder(@Param("id")String id,
                    @Param("updateUser")String updateUser);
 
-    List<ReadyDownloadFileResponse> getNoZipPathOrder();
+    List<ReadyDownloadFileResponse> getNoZipPathOrder(@Param("ids")List<String> ids);
 
     void updateZipPathById(@Param("baseResponse") List<BaseResponse> responses);
 
@@ -80,4 +81,10 @@ public interface OrderMapper extends BaseMapper<Orderd> {
     void delete(@Param("ids")List<Long> ids);
 
     List<Long> getDeleteOrderIds();
+
+    Orderd getCurrentDay();
+
+    String getCurrentDayOrderIds();
+
+    List<CurrentOrderResponse> getCurrentOrders(@Param("ids")List<String> ids);
 }

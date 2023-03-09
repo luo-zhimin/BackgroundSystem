@@ -18,6 +18,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,7 @@ public class WechatUserServiceImpl extends BaseService implements WechatUserServ
     private WechatUserMapper wechatUserMapper;
 
     @Override
+    @Cacheable(value = "wechatUser", key = "#id")
     public WechatUser selectByPrimaryKey(Long id) {
         return wechatUserMapper.selectByPrimaryKey(id);
     }
@@ -46,12 +48,14 @@ public class WechatUserServiceImpl extends BaseService implements WechatUserServ
     }
 
     @Override
+    @Cacheable(value = "wechatUser", key = "#openId")
     public Boolean selectByOpenId(String openId) {
         return wechatUserMapper.selectByOpenId(openId);
     }
 
     @Override
     @Transactional
+    @Cacheable(value = "wechatUser", key = "#userInfo.openId")
     public Boolean updateUserInfo(WechatUserInfo userInfo) {
         Token currentUser = getWeChatCurrentUser();
         userInfo.setOpenId(currentUser.getUsername());

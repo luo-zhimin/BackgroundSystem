@@ -117,12 +117,13 @@ public class OrderController {
     @ApiOperation("今日订单数-金额数")
     @IgnoreLogin
     public Result<?> todayOrderOrPrice(String type) {
+        //直接sql拼接最好
         // 当天订单信息
         QueryWrapper<Orderd> wrapper = new QueryWrapper<>();
         wrapper.apply(true, "TO_DAYS(NOW())-TO_DAYS(create_time) = 0");
         List<Orderd> orders = orderMapper.selectList(wrapper);
 
-        // init
+        // init - 当前月-月天数
         int []timeCount = new int[25];
         double []priceCount = new double[25];
 

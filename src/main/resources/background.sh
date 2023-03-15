@@ -34,7 +34,7 @@ start)
 	   exit 0
         fi
     fi
-    nohup java -DBIG_DATA_CONFIG_HOME=$WEB_HOME/config -Djasypt.encryptor.password=xxx  -javaagent:BackgroundSystem-0.0.1-SNAPSHOT-encrypted.jar='-pwd backgroundSystem' -jar BackgroundSystem-0.0.1-SNAPSHOT-encrypted.jar  2>&1< /dev/null &
+    nohup java -DBIG_DATA_CONFIG_HOME=$WEB_HOME/config -Djasypt.encryptor.password=5de88f71a509010ba5a0491c751b2d77  -javaagent:BackgroundSystem-0.0.1-SNAPSHOT-encrypted.jar='-pwd backgroundSystem' -jar BackgroundSystem-0.0.1-SNAPSHOT-encrypted.jar  2>&1< /dev/null &
 #    nohup java -DBIG_DATA_CONFIG_HOME=$WEB_HOME/config -jar $WEB_HOME/$FILE_NAME  2>&1< /dev/null &
     if [ $? -eq 0 ]
     then

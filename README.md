@@ -32,8 +32,10 @@
 - **Djasypt.encryptor.password=xx**
 - **如果不配置解密密码，启动时会报错，无法启动**
 - **xx是你配置的key，根据你的key进行解密**
+- **key默认5de88f71a509010ba5a0491c751b2d77**
 - **项目也进行了加密，若要防止暴露，推荐使用 encrypted.jar，密码在[pom.xml](pom.xml)中设置，默认是项目名称**
-- 启动脚本[background.sh](src%2Fmain%2Fresources%2Fbackground.sh)，linux启动脚本，需要配置加密的key
+- 启动脚本[background.sh](src%2Fmain%2Fresources%2Fbackground.sh)，linux启动脚本，需要配置加密的key，配置默认key
+- 启动mysql脚本[backgroundSystem.sql](src%2Fmain%2Fresources%2Fstatic%2FbackgroundSystem.sql)
 
 # 快速开始
 

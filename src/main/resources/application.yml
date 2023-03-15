@@ -9,9 +9,9 @@ spring:
       max-file-size: 500MB
       max-request-size: 20MB
   datasource:
-    url: ENC(ZSYUag+xsz7GgoYU08vMUH+tHqiYW+H1stPbtVWpyzH+kI4st9pc20BTPtN80W0WMMHe0ODi2yajsf9MNNSwpHipNt7h2VKJ+LpDtX3a2OnQA4bSlT1oHc82jxSuRMSOxtY2ounon3pO9z5kyelAodlqzlAoBONjn4W+z75Basb7l+tJPEQYYC2eoKfb/+iOM2jhN0UV6V0MQAxn69diDGLWK7YLmnP1i+Ab9drzH/VLBLAf7OSl0IWnniKcrAAdhtKJzW1x9bYGOXjrwrAp36cRG0uTSC5YyqsxAp6ljDg=)
-    username: ENC(yYyhCiJrQK/rhL69R4y1vqJp2Y7JlTkG)
-    password: ENC(8nVpq8EfxZEYu7rSPxjX5pKUFhE56CG8u1x5wgx/QyI=)
+    url: ENC(w8rIeHNvQe/JE2MMRmt/j6y4Nzz2mihEa+2t25jnp7vLf7CTh00C8JFIWkRvhuUG+FlSGAXVMGzbmNVVyVGXrVPyy/eSMJFgA13Wg5HdNUXKsiK2CfI1VsQ1eiuG8Z4VYTEI6AiXBMT70L5CO5A+11658HXj/gh6si3M9v7GQgen02EK/BKZkiwfflh4bkkpi/VF/F4DDwqfAP9eRHOSQFY/ZpiZC06leiTm7Ffhhqwie7WqWioMvbS20PENIREhKVtx9cXty0GLzs7iYACD6O43pt2EH646)
+    username: ENC(c6KCn5keVa13zufD1jNhidXbzuDk6oiy)
+    password: ENC(gHb/+6cDupo7dO2BqQh6bRqx69C6YkTSqu6bHs6Zb/g=)
     driverClassName: com.mysql.cj.jdbc.Driver
 
   application:
@@ -55,9 +55,6 @@ logging:
   level:
     com.background.system.*: debug
   file:
-#    prod
-#    path: /opt/project/log
-#    dev
     path: /Users/luozhimin/Desktop/File/daily/backgroundSystem/log
 
 swagger:
@@ -72,9 +69,6 @@ jasypt:
     bean: jasyptStringEncryptor
 
 zip:
-#  prod
-#  path: root/project/upload
-#  dev
   path: /Users/luozhimin/Desktop/File/daily/backgroundSystem
 
 file:
